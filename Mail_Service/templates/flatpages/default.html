@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}{% endblock title %}</title>
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800;900&family=Montserrat:wght@300;500;700&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="wrapper">
+        <header class="header">
+            <div id="navbar">
+                <div class="navbar__logo">
+                    <div class="logo-img">
+                        <a href="{% url 'index' %}"><img src="{% static 'images/icon-mail.png'%}" alt=""></a>
+                    </div>
+                    <div class="logo-name">
+                        Почтмен
+                    </div>
+                </div>
+                <div class="navbar__menu">
+                    <a href="{% url 'index' %}">Главная</a>
+                    <a href="">Отзывы</a>
+                    <div class="dropdown">
+                        <button class="dropbtn">Документация
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'docs' %}">Начало</a>
+                            <a href="#">Link 2</a>
+                            <a href="#">Link 3</a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropbtn">Личный кабинет
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'constructor' %}">Конструктор форм</a>
+                            <a href="#">Мои формы</a>
+                            <a href="#">Уведомления</a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropbtn">API
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#">Link 1</a>
+                            <a href="#">Link 2</a>
+                            <a href="#">Link 3</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="navbar__auth">
+                    {% if user.is_authenticated %}
+                        <div class="navbar__auth-username">
+                            <p>{{user.username}}</p>
+                        </div>
+                        <div class="navbar__user">
+                            <a href="{% url 'lk' %}" class="navbar__username" data-user-id="{{ request.user.id }}"><img src="{% static 'images/icon-user.png' %}" alt="User image" title="Перейти в профиль"></a>
+                        </div>
+                        <div class="navbar__actions">
+                            <!-- <a href="{% url 'logout' %}"><img src="{% static 'images/logout.png' %}" alt="Quit" title="Выйти"></a> -->
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="navbar__actions navbar__actions_button-quit">
+                                    <img src="{% static 'images/logout.png' %}" alt="Quit" title="Выйти">
+                                </button>
+                            </form>
+                        </div>
+                        
+                    {% else %}
+                        <a class="login-link" href="{% url 'login' %}">Войти</a>
+                        <a class="register-link" href="{% url 'register' %}">Регистрация</a>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+        <main class="main">
+            <div class="main-container">
+            {% block content %}
+                
+            {% endblock content %}
+            </div>   
+        </main>
+
+        <footer class="footer">
+            <div class="footer-container">
+                <p>&#169; Почтмен 2024. Все права защищены.</p>
+            </div>
+        </footer>
+    </div>
+    <script src="{% static 'js/index.js' %}"></script>
+    {% block scripts %}
+    {% endblock scripts %}
+</body>
+</html>

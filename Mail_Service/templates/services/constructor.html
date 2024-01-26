@@ -1,0 +1,64 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% block title %}{{title}}{% endblock title %}
+
+{% block content %}
+
+<section class="head">
+    <h1 class="head__title">{{title}}</h1>
+    <h2 class="head__description"><p>Собирайте свои формы на свой вкус.</p><p>Получайте код и вставляйте его к себе на сайт!</p></h2>
+    <button class="btn create-form-btn">Создать свою форму</button>
+</section>
+<section class="constructor">
+    <div class="constructor__form-name"></div>
+    <div class="constructor__fields-wrapper" data-csrf={{csrf_token}}>
+        <div class="fields">
+
+        </div>
+        <div class="selected-fields">
+            
+        </div>
+    </div>
+    
+</section>
+<section class="constructor-results">
+    <div class="navigation padding-top-2rem">
+        <ul class="navigation__menu">
+            <li class="navigation__item"><button class="navigation__btn border" data-name="html">HTML</button></li>
+            <li class="navigation__item"><button class="navigation__btn border" data-name="css">CSS</button></li>
+            <li class="navigation__item"><button class="navigation__btn border" data-name="js">JS</button></li>
+        </ul>
+    </div>
+    <div class="results-wrapper">
+        <div class="html-code-content hidden">
+            <p>index.html</p>
+            
+        </div>
+        <div class="css-code-content hidden">
+            <p>style.css</p>
+            <pre class="css-result">
+                
+            </pre>
+        </div>
+        <div class="js-code-content hidden">
+            <p>index.js</p>
+            
+        </div>
+    </div>
+</section>
+
+
+{% block scripts %}
+<script>
+    
+    
+</script>
+<script src="{% static 'js/constructor.js' %}"></script>
+
+{% endblock scripts %}
+    
+
+
+
+{% endblock content %}

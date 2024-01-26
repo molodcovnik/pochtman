@@ -1,0 +1,177 @@
+.fields
+    width: 50%
+    height: auto
+    display: flex
+    flex-wrap: wrap
+    gap: 2rem
+
+.field
+    width: 15rem
+    height: 18rem
+    // border: 1px solid black
+    text-align: center
+    &__title
+    &__desc
+    &__btn
+        &::before
+            height: 4.4rem
+    
+
+.selected-fields
+    margin-top: -5.8rem
+    width: 50%
+    height: 30rem
+    // background-color: grey
+    &__title
+        text-align: center
+    &__field
+        text-align: center
+
+.create-form-btn
+    z-index: 10
+    &:before
+        height: 4.4rem
+
+.constructor
+    opacity: 0
+    transition: opacity 1s linear
+    // &__show
+    //     opacity: 1
+    &__input-form-name
+        width: 30rem
+        height: 5rem
+        // border: none
+        padding: 1rem
+        font-size: 1.8rem
+        font-weight: 700
+        color: #867575
+    &__fields-wrapper
+        display: flex
+    &__form-name
+
+
+
+.btn-not-anim
+    padding: 1rem 4rem
+    outline: none
+    background: none
+    cursor: pointer
+    border: .3rem solid #1C58F0
+    color: #8b8585
+    font-size: 1.8rem
+    font-weight: 500
+    border-radius: 1rem
+    transition: background .4s ease-in-out
+    &:hover:not(:active)
+        background: #f4ebeb
+    &:active
+        background-color: #f4ebeb
+        transform: scale(.95)
+
+.constructor-results
+    opacity: 0
+    transition: opacity 1s linear
+        
+
+
+.show
+    opacity: 1
+
+  
+.btn-wrapper-copy-text
+    position: absolute
+    right: 0
+    top: 0
+
+.keyword
+    color: #A5292A
+    
+.rules
+    
+.rule
+    &__keyword
+        color: #FF2D26
+        &:after
+            content: " "
+            
+.value
+    color: #659900
+
+.js-keyword
+    color: #0177AA
+
+.js-function
+    color: #C23C55
+
+.js-body-str
+    color: #659900
+
+.js-body-int
+    color: #0177AA
+
+.results-wrapper
+    display: flex
+
+.html-code-content
+    width: 100%
+.css-code-content
+    width: 100%
+.js-code-content
+    width: 100%
+
+.h-tag
+    color: #006599
+
+.h-atr
+    color: #C23C55
+
+.h-str
+    color: #659900
+
+.navigation
+    width: 100%
+    height: 6rem
+    &__menu
+        list-style: none
+        display: flex
+        justify-content: center
+    &__item
+        &:not(:last-child)
+            padding-right: .5rem
+    &__btn
+        cursor: pointer
+        text-decoration: none
+        color: #867575  
+        font-weight: 600
+        border: 10px solid
+        border-image-slice: 1
+        border-width: .3rem
+        border-image-source: linear-gradient(to left, #07a9b2, #3585e8)
+        background: #fff
+        padding: 1rem 3rem
+        transition: all .4s ease-in-out
+        &:hover, &:active
+            color: #1B9CFF
+            font-weight: 900
+
+.loader-css
+    width: 100%
+    height: 10rem
+    text-align: center
+
+.loader
+    width: 48px
+    height: 48px
+    border: 5px solid #a8a3a3
+    border-bottom-color: transparent
+    border-radius: 50%
+    display: inline-block
+    box-sizing: border-box
+    animation: rotation 1s linear infinite
+    
+
+@keyframes rotation
+    0%
+        transform: rotate(0deg)
+    100%
+        transform: rotate(360deg)

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .btn {
+            padding: 3px 40px;
+            background-color: #e48989;
+            border-radius: 5px;
+            border: none;
+        }
+        .wrapper-input-tg {
+            display: flex;
+
+        }
+        .tg-input {
+            display: block;
+            width: 200px;
+            animation: 1s text ease;
+        }
+
+        @keyframes text {
+        0% {
+            opacity: 0;
+            transform: translateY(-3vh);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+        
+    </style>
+</head>
+<body>
+    <h1 class="wlc">Hello {{ name }}</h1>
+    {% if request.user.is_authenticated %}
+        <p>{{request.user.username }}</p>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">logout</button>
+        </form>
+    {% else %}
+        <p>Not auth</p>
+    <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+    <div class="wrapper-input-tg">
+        <div class="inputs">
+            <!-- <input class="tg-input" type="text" placeholder="Введите id telegram">
+            <input class="tg-input" type="text" placeholder="Введите id telegram"> -->
+        </div>
+        <div class="btns">
+            <button class="btn btn__add">+</button>
+            <button class="btn btn__save">OK</button>
+        </div>
+        
+    </div>
+    <script>
+        // let count = 0;
+        const field = `<input class="tg-input" type="text" placeholder="Введите id telegram">`;
+        const inp = document.querySelector('.tg-input');
+        const hello = document.querySelector('.wlc');
+        const addTg = document.querySelector('.btn__add');
+        addEventListener('DOMContentLoaded', (e) => {
+            console.log('dom content loaded');
+            document.querySelector('.inputs').insertAdjacentHTML("afterbegin", field);
+        });
+        addTg.addEventListener('click', (e) => {
+            document.querySelector('.inputs').insertAdjacentHTML("afterbegin", field);
+        });
+        document.querySelector('.btn__save').addEventListener('click', (e) => {
+            // Array.from(document.querySelectorAll('.tg-input')).map(inputElement => {
+            //     // console.log(inputElement.value);
+            // });
+            let arr = Array.from(document.querySelectorAll('.tg-input'));
+            let eArr = arr.values();
+            let text = '';
+            for (let letter of eArr) {
+                text += letter.value + ',';
+            }
+            console.log(text);
+        });
+    </script>
+</body>
+</html>

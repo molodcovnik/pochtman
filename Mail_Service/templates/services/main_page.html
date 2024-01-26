@@ -1,0 +1,143 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% block title %}Главная{% endblock title %}
+
+{% block content %}
+    <section class="head">
+        <h1 class="head__title margin-top-5rem">Почтмен - легкий способ обработки форм и уведомлений.</h1>
+        <h2 class="head__description margin-top-2rem"><p>Не упустите возможность максимизировать эффективность сбора данных.</p><p>Присоединяйтесь к Почтмен сегодня и упростите ваш процесс обратной связи!</p></h2>
+    
+        <div class="head composition margin-top-5rem">
+            <div class="composition__item composition__item_simple-integration">
+                <h2 class="composition__text"><p>Простота</p><p>интеграции</p></h2>
+            </div>
+            <div class="composition__item composition__item_real-time-notifications">
+                <h2 class="composition__text"><p>Уведомления в</p><p>реальном</p><p>времени</p></h2>
+            </div>
+            <div class="composition__item composition__item_static">
+                <h2 class="composition__text"><p>Статистика и</p><p>аналитика</p></h2>
+            </div>
+            <div class="composition__item composition__item_tg">
+                <h2 class="composition__text"><p>Интеграция с</p><p>Телеграмм</p></h2>
+            </div>
+            <div class="composition__item composition__item_safety">
+                <h2 class="p composition__text"><p>Безопасность и</p><p>конфиденциальность</p></h2>
+            </div>
+        
+        </div>
+    </section>
+    {% if not request.user.is_authenticated %}
+        <div class="not-auth-users-wrap margin-top-5rem padding-bottom-5rem">
+            <div class="wrapper-btn center">
+                <a href="{% url 'login' %}" class="btn">Войти</a>
+            </div>
+            <div class="wrapper-btn center">
+                <a href="{% url 'register' %}" class="btn border-green">Регистрация</a>
+            </div>
+        </div>
+        {% else %}
+        <div class="not-auth-users-wrap margin-top-5rem padding-bottom-5rem">
+            <div class="wrapper-btn center">
+                <a href="#" class="btn">Личный кабинет</a>
+            </div>
+        </div>
+    {% endif %}
+    <section class="advantage">
+        <div class="advantage__wrapper">
+            <div class="advantage__text margin-left-10rem"><p class="advantage__desc">Наше API разработано так, чтобы сделать сбор данных простым, даже для новичков. За несколько минут вы будете собирать информацию с вашего веб-сайта.</p></div>
+            <div class="advantage__image-wrap">
+                <img src="{%static 'images/kandinsky-main-page-img.png'%}" alt="" class="advantage__image">
+            </div>
+        </div>
+    </section>
+    <section class="advantage">
+        <div class="advantage__wrapper reverse">
+            <div class="advantage__text margin-right-10rem"><p class="advantage__desc">Получайте данные с форм в реальном времени. Наше API уведомляет вас сразу на электронную почту и в телеграмм, когда посетитель вашего сайта отправляет форму. </p></div>
+            <div class="advantage__image-wrap">
+                <img src="{%static 'images/kandinsky-advanced-app.png'%}" alt="" class="advantage__image">
+            </div>
+        </div>
+    </section>
+    <section class="advantage">
+        <div class="advantage__wrapper">
+            <div class="advantage__text margin-left-10rem"><p class="advantage__desc">Отслеживайте, как работают ваши формы. Наша статистика предоставляет вам обзор ключевых метрик, позволяя вам улучшать взаимодействие с вашей аудиторией.</p></div>
+            <div class="advantage__image-wrap">
+                <img src="{%static 'images/kandinsky-app-static.png'%}" alt="" class="advantage__image">
+            </div>
+        </div>
+    </section>
+    <section class="advantage">
+        <div class="advantage__wrapper reverse">
+            <div class="advantage__text margin-right-10rem"><p class="advantage__desc">Ваши данные под вашим полным контролем. Вы управляете, кому предоставлять доступ, и какие действия разрешены, обеспечивая безопасность вашей информации.</p></div>
+            <div class="advantage__image-wrap">
+                <img src="{%static 'images/kandinsky-beautiful-girl-3-anime.png'%}" alt="" class="advantage__image">
+            </div>
+        </div>
+    </section>
+    <section class="feedBack padding-top-5rem">
+            <h2 class="feedBack__title">Отзывы наших клиентов</h2>
+        <div class="carousel">
+            <div class="nav nav-left">
+              <div class="ion-chevron-left carousel-arrow-icon-left"></div>
+            </div>
+      
+              <div class="carousel-content">
+                {% if comments %}
+                {% for comment in comments %}
+                <div class="slide">
+                    <div class="slide__item">
+                        <div class="slide__item_inner">
+                            <div class="slide__date">{{comment.get_date}} г.</div>
+                            <div class="hr"></div>
+                            <div class="slide__text margin-top-2rem">
+                                <p>{{comment.text}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor%}
+                {% else %}
+                <p>Нет отзывов</p>
+                {% endif %}
+                
+    
+              </div>
+      
+            <div class="nav nav-right">
+              <div class="ion-chevron-right carousel-arrow-icon-right"></div>
+            </div>
+          </div>
+    </section>
+
+    {% if request.user.is_authenticated %}
+    <section class="form-feedBack">
+        <div class="form-wrapper">
+            <form class="form-feedback-main-page" method="post" action="">
+                {% csrf_token %}
+                <div class="form__fieldWrapper">
+                    {{ form.text.errors }}
+                    <label class="form__label" for="{{ form.text.id_for_label }}">Оставьте свой отзыв о нашем приложении.</label>
+                    {{ form.text }}
+                </div>
+                <div class="wrapper-btn center margin-top-3px">
+                    <button type="submit" class="btn btn_green-bg">Оставить отзыв</button>
+                </div>
+            </form>
+        </div>
+        <div class="hr correct-hr"></div>
+    </section>
+    {% endif %}
+        {% if not request.user.is_authenticated %}
+            <div class="wrapper-btn center padding-bottom-5rem">
+                <a href="{% url 'login' %}" class="btn">Войти</a>
+            </div>
+        {% else %}
+            <div class="wrapper-btn center padding-bottom-5rem">
+                <a href="#" class="btn">Добавить новый сайт</a>
+            </div>
+        {% endif %}
+
+        
+{% endblock content %}
+

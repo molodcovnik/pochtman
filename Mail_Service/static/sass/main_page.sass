@@ -1,0 +1,372 @@
+@import 'var'
+
+.box-shadow
+    box-shadow: 1px 3px 15px #1C58F0
+    border-radius: 1rem
+
+.border
+    border: .3rem solid #1C58F0
+    border-radius: 1rem
+
+.correct-hr 
+    margin-top: 10rem
+.center
+    text-align: center
+.reverse
+    flex-direction: row-reverse
+
+.margin-left-10rem
+    margin-left: 10rem 
+
+.margin-right-10rem
+    margin-right: 10rem 
+
+.margin-top-5rem
+    margin-top: 5rem 
+
+.margin-top-2rem
+    margin-top: 2rem 
+
+.padding-top-5rem
+    padding-top: 5rem
+
+.padding-top-2rem
+    padding-top: 2rem
+
+.padding-bottom-5rem
+    padding-bottom: 5rem
+
+.margin-bottom-3rem
+    margin-bottom: 3rem
+
+.padding-bottom-10rem
+    padding-bottom: 10rem
+
+.not-auth-users-wrap
+    display: flex
+    gap: 5rem
+    justify-content: center
+.head
+    text-align: center
+    &__title
+        letter-spacing: .1rem
+        font-size: 3rem
+        font-family: 'Montserrat', sans-serif
+        background: linear-gradient(198deg, rgba(255,255,255,1) 0%, rgb(7, 169, 178) 30%, rgb(53, 133, 232) 93%)
+        background-clip: text
+        -webkit-background-clip: text
+        color: transparent
+    &__description
+        font-size: 2rem
+        font-weight: 600
+        letter-spacing: .1rem
+        color: #867575
+
+.composition
+
+    display: flex
+    justify-content: center
+    width: 100%
+    position: relative
+    gap: 1rem
+    color: #bab2b2
+    &__item
+        flex: 0 0 15rem
+        display: flex
+        align-items: flex-end
+        justify-content: center
+        height: 30rem
+        background-color: #867575
+        border-radius: 0.5rem
+        transition: .5s ease-in-out, flex .4s ease-in-out, transform .4s ease-in-out
+        cursor: pointer
+        box-shadow: 1px 5px 15px #1C58F0
+        // position: relative
+        backface-visibility: hidden
+        &:nth-of-type(1)
+            background: url("/static/images/kandinsky-main-page-img.png") no-repeat 50% / cover
+            &:hover
+                color: #fff
+        &:nth-of-type(2)
+            background: url("/static/images/kandinsky-advanced-app.png") no-repeat 50% / cover
+            &:hover
+                color: #fff
+        &:nth-of-type(3)
+            background: url("/static/images/kandinsky-app-static.png") no-repeat 50% / cover
+            &:hover
+                color: #fff
+        &:nth-of-type(5)
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 59%, rgba(95, 28, 95, 0.9) 100%), url("/static/images/kandinsky-beautiful-girl-3-anime.png") no-repeat 50% / cover
+            &:hover
+                color: #fff
+        &:nth-of-type(4)
+            background: url("/static/images/kandinsky-tech-app-cyberpunk.png") no-repeat 50% / cover
+            &:hover
+                color: #fff
+
+        &:hover
+            flex: 0 0 22rem
+            box-shadow: 1px 3px 15px #f684f6
+            transform: translate(2rem, -1rem)
+            z-index: 10
+
+                    
+    &__text
+        font-weight: bold
+        font-size: 1.6rem
+    
+
+
+.hidden
+    display: none
+
+// .show
+//     display: block !important
+
+.margin-top-3rem
+    margin-top: 3rem
+
+.btn
+    display: inline-block
+    text-decoration: none
+    outline: none
+    border: .3rem solid #1C58F0
+    color: #8b8585
+    border-radius: 1rem 
+    background: transparent
+    cursor: pointer
+    padding: 1rem 4rem
+    font-size: 1.8rem
+    font-weight: 700
+    transition: ease-out, color .5s ease-out
+    backface-visibility: hidden
+    position: relative
+    box-sizing: border-box
+    &:focus
+        border: .3rem solid #F67EF3
+        color: $black
+    &:hover
+        color: $black
+    &:before
+        content:''
+        position: absolute
+        top: 0
+        left: 0
+        width: 0
+        height: 5rem
+        background: rgba(51, 91, 201, 0.2)
+        border-radius: 5px
+        transition: all 1s ease-in-out
+    &:hover::before
+        width: 100%
+        height: 100%
+
+.btn_green-bg
+    &:before
+        height: 4.1rem
+        background: rgba(28, 207, 129, 0.4)   
+
+.border-green
+    border: .3rem solid #1cbc66
+.advantage
+    margin: 5rem auto
+    width: 80%
+    height: 40rem
+    // border: 1px solid #000
+    &__wrapper
+        display: flex
+        justify-content: space-between
+    &__text
+        width: 50%
+        display: flex
+        align-self: center
+        text-align: center
+        border-radius: 1rem
+        box-shadow: 1px 3px 15px #1C58F0
+        transition: background .5s linear
+        &:hover
+            background: rgba(#1C58F0, 0.2)   
+            
+    &__desc
+        font-weight: 700
+        font-family: 'Montserrat', sans-serif
+        line-height: 1.7
+        letter-spacing: .1rem
+        font-size: 2rem
+    &__image-wrap
+        width: 50%
+        display: flex
+        justify-content: center
+        
+        
+    &__image
+        height: 40rem
+        width: 35rem
+        border-radius: 1rem
+        box-shadow: 1px 3px 15px #1C58F0
+        // float: right
+        // clear: both
+        transition: all .4s ease-in-out
+        &:hover
+            transform: scale(.9)
+
+.feedBack
+    width: 100%
+    height: 50rem
+    &__title
+        text-align: center
+        letter-spacing: .3rem
+        font-size: 3rem
+        font-family: 'Montserrat', sans-serif
+        color: #867575
+        background: linear-gradient(198deg, #ffffff 0%, #07a9b2 30%, #3585e8 93%)
+        background-clip: text
+        -webkit-background-clip: text
+        color: transparent
+
+.form-feedBack
+    width: 100%
+    height: 50rem
+    // border: 1px solid black
+
+
+.carousel 
+  position: relative
+  width: 100%
+  height: 25rem
+  margin: 5rem auto
+
+
+.carousel-content 
+  position: relative
+  overflow: hidden
+  transition: width .4s
+  height: 100%
+
+
+.slide 
+
+    height: 100%
+    background-color: #FFFFFF
+    position: absolute
+    z-index: 1
+    transition: left .4s cubic-bezier(.47,.13,.15,.89)
+
+.slide__item
+    margin-top: .5rem
+    // box-shadow: 1px 2px 10px #1C58F0
+    border: .3rem solid rgba(#1C58F0, .2)
+    border-radius: 1.5rem
+    height: 24rem
+    margin-right: 3rem
+    overflow: scroll
+    transition: .2s ease-in-out 
+    &:hover
+        border: .4rem solid rgba(#1C58F0, .5)
+    &:first-child
+        margin-left: 3rem
+    &_inner
+        padding: 1rem
+
+.hr
+    width: 100%
+    height: .3rem
+    border-radius: 1rem
+    background-color: rgba(#1C58F0, .5)
+
+.slide__date
+    text-align: right
+    color: #867575
+    font-weight: 600
+    font-size: 1.4rem
+
+.slide__text
+    font-size: 1.4rem
+    color: #6b5f5f
+
+.nav 
+  position: absolute
+  top: 50%
+  margin-top: -10px
+  background: rgba(#1C58F0, .5)
+  width: 20px
+  height: 20px
+  z-index: 2
+  cursor: pointer
+  border-radius: 50%
+  border: none
+  outline: none
+  color: white
+  transition: background .3s ease-in-out
+  -webkit-user-select: none
+  &:hover
+    background: rgba(#1C58F0, .8)
+
+.nav-left 
+  left: -25px
+
+.nav-right 
+  right: -25px
+
+
+.carousel-arrow-icon-left 
+  margin-left: 5px
+  margin-top: 2px
+
+
+.carousel-arrow-icon-right 
+  margin-left: 7px
+  margin-top: 2px
+
+
+.form-feedback-main-page textarea
+    margin-left: 2rem
+    padding: 1rem
+    outline: none
+    border: none
+    border: .2rem solid rgba(#1C58F0, .2)
+    background: rgba(#7a7e87, .2)
+    resize: none
+    width: 50rem
+    height: 15rem
+    border-radius: 1rem
+    font-size: 1.8rem
+    letter-spacing: .2rem
+    font-family: 'Montserrat', sans-serif
+    color: #6b5f5f
+    transition: border .4s ease-in-out
+    
+    &:focus, &:hover
+        border: .4rem solid rgba(#1C58F0, .2)
+
+.form-feedback-main-page label
+    text-align: center
+    background: linear-gradient(198deg, rgba(255,255,255,1) 0%, rgb(7, 169, 178) 30%, rgb(53, 133, 232) 93%)
+    background-clip: text
+    -webkit-background-clip: text
+    color: transparent
+    font-size: 2.5rem
+
+pre 
+    width: 70%
+    background-color: #f4f4f4
+    color: #110303
+    border: 1px solid #ddd
+    border-radius: 5px
+    overflow: auto
+    margin: 2rem 0
+
+code
+    display: block
+    white-space: pre-wrap
+    font-family: 'Courier New', monospace
+    color: #0f0101
+    
+
+.code-result
+    position: relative
+
+
+.code-html
+
+.css-code
