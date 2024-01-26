@@ -15,9 +15,9 @@
 
 
 #### Главная страница
-![main_page](Mail_service/static/images/pochtman.png)
+![main_page](https://github.com/molodcovnik/pochtman/blob/main/Mail_Service/static/images/pochtman.png?raw=true)
 
 
 
 #### Страница конструктора форм
-![main_page](Mail_service/static/images/constructor.png)
+![main_page](https://github.com/molodcovnik/pochtman/blob/main/Mail_Service/static/images/constructor.png?raw=true)
