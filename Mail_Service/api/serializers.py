@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from services.models import Form, Field, TemplateForm
 from django.contrib.auth.models import User
-
+from rest_framework.authtoken.models import Token
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -38,3 +38,10 @@ class LastTemplateSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemplateForm
         fields = ("id", "name", "fields", "author", )
+
+
+class TokenSerializer(serializers.ModelSerializer):
+    created = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    class Meta:
+        model = Token
+        fields = ("user", "key", "created",)

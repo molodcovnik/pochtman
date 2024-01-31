@@ -1,0 +1,53 @@
+.temp-cards-wrapper
+    width: 100%
+    
+.temp-cards
+    width: 80%
+    margin: 0 auto
+    display: flex
+    gap: 5.8rem 
+    flex-wrap: wrap
+.temp-card
+    position: relative
+    width: 21rem
+    border: 1px #0d6efd solid
+    border-radius: .5rem  
+    padding-bottom: 5rem  
+    &__header
+        padding: 0.5rem 1rem
+        font-size: 1.8rem
+        font-weight: 500
+        background-color: rgba(0,0,0,.03)
+        border-bottom: 1px solid rgba(0,0,0,.125)
+    &__body
+        padding-left: .5rem
+        color: #6b5f5f
+    &__title
+        font-size: 1.6rem
+        font-weight: 500
+        padding-bottom: 1rem
+    &__text
+        font-size: 1.4rem
+
+        &:last-child
+            // margin-bottom: 6rem
+    &__text-bold
+        color: #0d6efd
+        font-size: 1.2rem
+        font-weight: bold
+    &__text-underline
+        text-decoration: underline
+    &__buttons
+        position: absolute
+        bottom: 0
+        display: flex
+        text-align: center
+    &__button
+        transition: transform .2s ease-in-out
+        &:hover
+            transform: scale(1.1, 1.1)
+        &:not(:last-child)
+            margin-right: 1rem
+            
+        
+

@@ -1,0 +1,19 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% block title %}{{title}}{% endblock title %}
+
+{% block content %}
+<h1>{{title}}</h1>
+
+<div class="api">
+    {% if token %}
+    <button class="api__create-api-key-btn">View API key</button>
+    {% else %}
+    <button class="api__create-api-key-btn">Create API key</button>
+    {% endif%}
+    
+</div>
+
+<script src="{% static 'js/lk.js' %}"></script>
+{% endblock content %}

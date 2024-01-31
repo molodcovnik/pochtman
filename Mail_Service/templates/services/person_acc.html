@@ -1,22 +1,15 @@
 {% extends 'flatpages/default.html' %}
 {% load static %}
 
-{% block title %}{{title}}{% endblock title %}
+{% block title %}Формы и сайты{% endblock title %}
 
 {% block content %}
-<h1>{{title}}</h1>
+<h1>Мои формы и сайты</h1>
 {% if forms %}
-    {% for form in forms %}
-        <p>{{form.name}}</p>
-        {% if form.fields %}
-            {% for field in form.fields.all %}
-                <p>{{field.field_name}}</p>
-            {% endfor %}
-        {% else %}
-            <p>У формы пока не добавлены поля</p>
-        {% endif %}
-    {% endfor %}
+
+
 {% else %}
     <p>Форм нет</p>
+
 {% endif %}
 {% endblock content %}

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Comment
+from .models import Comment, TemplateForm
 from django.forms import ValidationError
 
 
@@ -8,3 +8,8 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['text', ]
 
+
+class TemplatesForm(forms.ModelForm):
+    class Meta:
+        model = TemplateForm
+        fields = ['name', 'fields', ]

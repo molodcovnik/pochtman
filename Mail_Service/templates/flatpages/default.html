@@ -39,7 +39,7 @@
                         </button>
                         <div class="dropdown-content">
                             <a href="{% url 'constructor' %}">Конструктор форм</a>
-                            <a href="#">Мои формы</a>
+                            <a href="{% url 'templates' %}">Мои формы</a>
                             <a href="#">Уведомления</a>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                             <p>{{user.username}}</p>
                         </div>
                         <div class="navbar__user">
-                            <a href="{% url 'lk' %}" class="navbar__username" data-user-id="{{ request.user.id }}"><img src="{% static 'images/icon-user.png' %}" alt="User image" title="Перейти в профиль"></a>
+                            <a href="{% url 'profile' %}" class="navbar__username" data-user-id="{{ request.user.id }}"><img src="{% static 'images/icon-user.png' %}" alt="User image" title="Перейти в профиль"></a>
                         </div>
                         <div class="navbar__actions">
                             <!-- <a href="{% url 'logout' %}"><img src="{% static 'images/logout.png' %}" alt="Quit" title="Выйти"></a> -->

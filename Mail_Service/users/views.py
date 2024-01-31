@@ -10,9 +10,11 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.core.mail import send_mail
 from django.shortcuts import redirect
+
+from services.models import TemplateForm
 from .forms import UserRegisterForm, UserLoginForm
 from .mixins import UserIsNotAuthenticated
-
+from rest_framework.authtoken.models import Token
 
 User = get_user_model()
 
@@ -109,3 +111,14 @@ class UserLoginView(LoginView):
 class UserLogoutView(LogoutView):
     next_page = 'index'
 
+
+def get_personal_account(request):
+    try:
+        token = Token.objects.get(user=request.user)
+    except Token.DoesNotExist:
+        token = False
+    context = {
+        "title": "Личный кабинет",
+        "token": token
+    }
+    return render(request, "users/lk.html", context)

@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 
+from django.urls import reverse
+
+
 class Form(models.Model):
     name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
@@ -47,10 +50,13 @@ class Field(models.Model):
 class TemplateForm(models.Model):
     name = models.CharField(max_length=64, unique=True)
     fields = models.ManyToManyField(Field, related_name='forms')
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, related_name='templates', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.name} {self.fields} {self.author}'
+
+    def get_absolute_url(self):
+        return reverse('template_detail', args=[str(self.id)])
 
 
 class FieldData(models.Model):

@@ -115,7 +115,7 @@ async function fetchFieldsJSON() {
     document.querySelector('.constructor__form-name').insertAdjacentHTML('afterbegin', `<input id="input-name-template" class="constructor__input-form-name margin-top-3rem border margin-bottom-3rem" type="text" placeholder="Название формы">`);
     const inputFormName = document.querySelector('.constructor__input-form-name');
     const selectedFields = document.querySelector('.selected-fields');
-    inputFormName.addEventListener("change", (e) => {
+    inputFormName.addEventListener("change", async (e) => {
         let newFormName = e.target.value;
         let selectedFieldsTitle = `<div class="selected-fields__title"><h3>${newFormName}</h3></div>`;
         let btnSendData = `<div class="wrapper-btn center margin-top-2rem selected-fields__btn-send-data"><button class="btn-not-anim selected-fields__send-data selected-fields__send-data-create-form">Создать</button></div>`;
@@ -123,12 +123,11 @@ async function fetchFieldsJSON() {
         selectedFields.insertAdjacentHTML("beforeend", btnSendData);
         let userName = document.querySelector('.navbar__auth-username').textContent;
         let sendData = document.querySelector('.selected-fields__send-data-create-form');
-        sendData.addEventListener("click", () => {
+        sendData.addEventListener("click", async () => {
             let fieldsSelected = [].map.call(document.querySelectorAll('.selected-fields__field[data-id]'), function(el) {
                 return el.dataset.id;
             })
 
-            
             let authorUser = document.querySelector(".navbar__username");
             let authorId = authorUser.getAttribute("data-user-id");
 
@@ -136,41 +135,6 @@ async function fetchFieldsJSON() {
             constructorDiv.remove();
             addSectionResults(newFormName);
             constructorResults.classList.add('show');
-            let templateId = Number(localStorage.getItem("templateId")) + 1;
-            console.log(JSON.stringify(templateId));
-            fetch("http://127.0.0.1:8000/api/last_template/", {
-                method: 'POST',
-                body: JSON.stringify({
-                    templateId: templateId
-                }),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrf
-                },
-                
-            })
-            .then((response) => {
-                if (response.status === 200) {
-                    document.querySelector('.loader-css').remove();
-                    document.querySelector('[data-name="html"]').click()
-                } else if (response.status > 400) {
-                    document.querySelector('.loader').textContent = 'Internal Server';
-                }
-                return response.json()
-                
-            })
-            .then(data => {
-                let jsCode = data.js_code;
-                let code = data.code;
-
-                htmlDiv.insertAdjacentHTML('beforeend', code);
-                cssDiv.insertAdjacentHTML('afterbegin', cssCodeGen(newFormName, code));
-                jsBlock.insertAdjacentHTML('beforeend', jsCode);
-                
-            })
-            .catch(error =>  {
-            console.log('error', error);
-            });
         });
             
     });
@@ -178,8 +142,7 @@ async function fetchFieldsJSON() {
 
 
 function addSectionResults(formName) {
-    const resultsDiv = `<h2 class="constructor-results__title">${formName}</h2>
-    `;
+    const resultsDiv = `<h2 class="constructor-results__title">${formName}</h2>`;
     
     document.querySelector('.constructor-results').insertAdjacentHTML('afterbegin', resultsDiv);
     // document.querySelector('.constructor-results__title').insertAdjacentHTML('afterend', navBlock);
@@ -207,8 +170,43 @@ async function createForm(formName, fieldsSelected, userId, token){
          const data = await response.json();
       // enter you logic when the fetch is successful
          console.log(data);
-         let templateId = data.id;
-         localStorage.setItem("templateId", templateId);
+        //  let templateId = data.id;
+        //  localStorage.setItem("templateId", templateId);
+         let lastTemp =  await getLastTempId(userId);
+         let lastTempData =  await lastTemp.json();
+         await fetch("http://127.0.0.1:8000/api/last_template/", {
+                method: 'POST',
+                body: JSON.stringify({
+                    templateId: lastTempData.id
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrf
+                },
+                
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    document.querySelector('.loader-css').remove();
+                    document.querySelector('[data-name="html"]').click()
+                } else if (response.status > 400) {
+                    document.querySelector('.loader').textContent = 'Internal Server';
+                }
+                return response.json()
+                
+            })
+            .then(data => {
+                let jsCode = data.js_code;
+                let code = data.code;
+
+                htmlDiv.insertAdjacentHTML('beforeend', code);
+                cssDiv.insertAdjacentHTML('afterbegin', cssCodeGen(lastTempData.name));
+                jsBlock.insertAdjacentHTML('beforeend', jsCode);
+                
+            })
+            .catch(error =>  {
+            console.log('error', error);
+            });
        } catch(error) {
      // enter your logic for when there is an error (ex. error toast)
 
@@ -216,6 +214,19 @@ async function createForm(formName, fieldsSelected, userId, token){
          } 
     }
 
+async function getLastTempId(userId) {
+    return await fetch("http://127.0.0.1:8000/api/last_template", {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authentication': userId,
+            }
+        });
+};
+
+async function insertedResultCode() {
+
+}
 
 const fieldsBlock = document.querySelector('.fields');
 fieldsBlock.addEventListener('click', function(e) {
@@ -255,3 +266,4 @@ function loaderBlock() {
     resultsWrapper.insertAdjacentHTML("afterend", `<p class="loader">Loading</p>`);
     
 }
+

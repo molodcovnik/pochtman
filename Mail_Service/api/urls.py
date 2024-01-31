@@ -1,7 +1,6 @@
 from django.urls import path
-
 from api.views import FormsViews, FormViews, FieldsViews, TemplatesView, TemplateViews, LastTemplateView, FieldViews, \
-    SendMessageViews
+    SendMessageViews, TokenView
 
 urlpatterns = [
     path('forms/', FormsViews.as_view()),
@@ -12,4 +11,5 @@ urlpatterns = [
     path('last_template/', LastTemplateView.as_view()),
     path('templates/<int:pk>/', TemplateViews.as_view()),
     path('send_data/', SendMessageViews.as_view()),
+    path('token/', TokenView.as_view()),
 ]

@@ -1,18 +1,20 @@
 import random
 import re
 import time
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.db.models import Count
 from django.http import Http404, JsonResponse
 from django.shortcuts import render
 from jinja2 import Template
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 
-from api.serializers import FormSerializer, FieldSerializer, TemplatesSerializer, LastTemplateSerializer
+from api.serializers import FormSerializer, FieldSerializer, TemplatesSerializer, LastTemplateSerializer, TokenSerializer
 from services.models import Form, Field, TemplateForm, FieldData
 
 
@@ -42,16 +44,17 @@ class FieldViews(APIView):
 class LastTemplateView(APIView):
 
     def get(self, request, format=None):
-        # user = User.objects.get(id=kwargs['user_id'])
-        print(self.request.user.id)
+        user = User.objects.get(id=self. request.headers["Authentication"])
+        print(user)
         try:
             form = TemplateForm.objects.filter(author=self.request.user).last()
             fields = form.fields.all()
             print(fields)
+
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
         serializer = LastTemplateSerializer(form, )
-        #
         return Response(serializer.data)
 
     def post(self, request):
@@ -59,28 +62,40 @@ class LastTemplateView(APIView):
         print(data)
         template_id = self.request.data["templateId"]
         print(template_id)
-        time.sleep(10)
         temp = TemplateForm.objects.get(id=template_id)
         t_name = temp.name
         temp_name = t_name.replace(" ", "_")
         fields = temp.fields.all()
-        js_template = Template("""\n
-        
+        js_template = Template("""
             <pre>
                 <code class="js-code">
 <span class="js-keyword">const</span> btnForm = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'.btn'</span>);
 <span class="js-keyword">const</span> form = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'.form'</span>);
-<span class="js-keyword">btnForm.</span><span class="js-function">addEventListener</span>(<span class="js-body-str">'click'</span>, (e) => {
+
+form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async</span> (e) => {
     e.<span class="js-function">preventDefault</span>();{% for field in fields %}{% if field.field_type == "BOOLEAN" %}
     <span class="js-keyword">const</span> {{field.field_name|lower}} = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'#{{field.field_name|lower}}'</span>).checked;{% else %}
     <span class="js-keyword">const</span> {{field.field_name|lower}} = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'#{{field.field_name|lower}}'</span>).value;{% endif %}{% endfor %}
-    <span class="js-function">asyncPostCall</span>({% for field in fields %}{{field.field_name|lower}}<span>, </span>{% endfor %});
-    });
+    
+    <span class="js-keyword">const</span> data = {
+        <span class="js-body-str">"tempId"</span>: <span class="js-keyword">{Your_tempID}</span>, <span class="js-body-str">// "tempId": 123,</span>{% for field in fields %}
+        <span class="js-body-str">"{{field.field_name|lower}}"</span>: {{field.field_name|lower}},{% endfor %}
+    };
+                               
+    <span class="js-keyword">let</span> response = <span class="js-keyword">await</span> <span class="js-function">fetch</span>(<span class="js-body-str">'http://127.0.0.1:8000/api/send_data/'</span>, {
+        method: <span class="js-body-str">'POST'</span>,
+        headers: {
+            <span class="js-body-str">'Content-Type'</span>: <span class="js-body-str">'application/json'</span>
+        },
+        body: JSON.<span class="js-function">stringify</span>(data),
+      });
+    <span class="js-keyword">let</span> result = <span class="js-keyword">await</span> response.<span class="js-function">json()</span>;
+    console.<span class="js-function">log</span>(result);
+};
                 </code>
             </pre>
         """)
-        template = Template(
-"""
+        template = Template("""
     <pre>
     <code class="code-result">
 <span class="h-tag">&lt;div</span> <span class="h-atr">class=</span><span class="h-str">&quot;{{temp_name}}&quot;</span><span class="h-tag">&gt;</span>
@@ -114,9 +129,7 @@ class LastTemplateView(APIView):
 class TemplatesView(APIView):
     def get(self, request, format=None):
         data = TemplateForm.objects.all()
-
         serializer = TemplatesSerializer(data, many=True)
-
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -229,3 +242,19 @@ class SendMessageViews(APIView):
             "ok": "ok"
         }
         return Response(data, status=status.HTTP_201_CREATED)
+
+
+class TokenView(APIView):
+
+    def get(self, request, format=None):
+        user = self.request.user
+        try:
+            token = Token.objects.get(user=user)
+            serializer = TokenSerializer(token, )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            token = Token.objects.create(user=User.objects.get(id=self.request.user.id))
+            token.save()
+            serializer = TokenSerializer(token, )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
