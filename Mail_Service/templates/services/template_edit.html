@@ -4,9 +4,22 @@
 {% block title %}{{title}}{% endblock title %}
 
 {% block content %}
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save" />
-</form>
+<div class="head margin-bottom-3rem">
+    <h1 class="head__title margin-top-5rem">Редактировать форму</h1>
+    <div class="back-btn">
+        <a href="#" class="back-btn__btn" title="Назад" onclick="history.back();">&#8592;</a>
+    </div>
+</div>
+<div class="form-wrapper-temp-edit">
+    <form action="" class="temp-edit-form box-shadow" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="send-btn margin-top-3rem">
+            <button class="btn-nav" type="submit">Сохранить</button>
+        </div>
+    </form>
+    <div class="edit-form-img margin-top-5rem">
+        <img src="{% static 'images/shester.png'%}" class="edit-form-img__image" alt="image">
+    </div>
+</div>
 {% endblock content %}

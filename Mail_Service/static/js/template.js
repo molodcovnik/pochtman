@@ -74,6 +74,7 @@ function cssCodeGen(tempName) {
 
 
 async function loadTempCode(currentTempId) {
+    loaderBlockTemplate();
     await fetch("http://127.0.0.1:8000/api/last_template/", {
         method: 'POST',
         body: JSON.stringify({
@@ -83,15 +84,13 @@ async function loadTempCode(currentTempId) {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrf
         },
-        
     })
     .then((response) => {
-        // if (response.status === 200) {
-        //     document.querySelector('.loader-css').remove();
-        //     document.querySelector('[data-name="html"]').click()
-        // } else if (response.status > 400) {
-        //     document.querySelector('.loader').textContent = 'Internal Server';
-        // }
+        if (response.status === 200) {
+            document.querySelector('.loader-css').remove();
+        } else if (response.status > 400) {
+            console.log('error');
+        }
         return response.json()
         
     })
@@ -125,3 +124,9 @@ document.querySelector('.navigation__menu').addEventListener('click', (e) => {
         document.querySelector('.html-code-content').classList.add('hidden');
     }
 });
+
+function loaderBlockTemplate() {
+    const resultsWrapper = document.querySelector('.temp-detail-right');
+    resultsWrapper.insertAdjacentHTML("beforeend", `<div class="loader-css margin-top-10rem"><p class="loader"></p></div>`);
+    
+}

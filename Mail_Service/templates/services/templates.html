@@ -6,6 +6,9 @@
 {% block content %}
 <section class="head margin-bottom-3rem">
     <h1 class="head__title margin-top-5rem">Мои формы</h1>
+    <div class="back-btn">
+        <a href="#" class="back-btn__btn" title="Назад" onclick="history.back();">&#8592;</a>
+    </div>
 </section>
 {% if templates %}
 <div class="temp-cards-wrapper margin-bottom-3rem">
@@ -20,9 +23,10 @@
                 <p class="temp-card__text"><span class="temp-card__text-underline">{{field.field_name}}</span>: <span class="temp-card__text-bold">{{field.field_type}}</span></p>
                 {% endfor %}
                 <div class="temp-card__buttons">
+                    <a href="{% url 'notification_temp' template.id %}" class="temp-card__button"><img src="{% static 'images/bell.png' %}" alt="read" title="Уведомления"></a>
                     <a href="{% url 'template_detail' template.id %}" class="temp-card__button"><img src="{% static 'images/detail.png' %}" alt="read" title="Детали"></a>
                     <a href="{% url 'template_edit' template.id %}" class="temp-card__button"><img src="{% static 'images/edit2.png' %}" alt="edit" title="Редактировать"></a>
-                    <a href="#" class="temp-card__button"><img src="{% static 'images/remove.png' %}" alt="delete" title="Удалить"></a>
+                    <a href="{% url 'template_delete' template.id %}" class="temp-card__button"><img src="{% static 'images/remove.png' %}" alt="delete" title="Удалить"></a>
                 </div>
             {% else%}
             <p class="temp-card__text">Полей нет</p>

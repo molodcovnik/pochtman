@@ -1,0 +1,37 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% block title %}Уведомления{% endblock title %}
+
+{% block content %}
+<div class="head margin-bottom-3rem">
+    <h1 class="head__title margin-top-5rem">Детальная информация</h1>
+    <div class="back-btn">
+        <a href="#" class="back-btn__btn" title="Назад" onclick="history.back();">&#8592;</a>
+    </div>
+</div>
+{% if fields %}
+    <div class="field-card" data-uid="{{request.resolver_match.kwargs.uid}}" data-csrf="{{csrf_token}}" data-id="{{request.resolver_match.kwargs.pk}}">
+        <table class="field-card-table">
+            {% for field in fields %}
+            
+                <tr class="field-card-table__row">
+                    <td class="field-card-table__cell field-card-table__cell_type-field">{{field.field.field_name | truncatechars:15}}:</td>
+                    <td class="field-card-table__cell field-card-table__cell_data">{{field.data}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <form action="" method="POST" class="form-delete-temp-data padding-top-5rem">
+            {% csrf_token %}
+            <div class="wrapper-btn center">
+                <button type="submit" class="navigation__btn navigation__btn_red">Удалить</button>
+            </div>
+        </form>
+    </div>
+    
+{% else %}
+
+<h1>No data</h1>
+{% endif %}
+<script src="{% static 'js/notification.js'%}"></script>
+{% endblock content %}

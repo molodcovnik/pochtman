@@ -1,0 +1,46 @@
+.wrapper-grid-table
+    display: grid
+    // gap: .5rem
+    grid-auto-rows: minmax(2rem, auto)
+    grid-auto-columns: minmax(3rem, auto)
+
+.wrapper-grid-table-head
+    display: grid
+    // gap: 10px    
+    grid-auto-rows: minmax(2rem, auto)
+    grid-auto-columns: minmax(3rem, auto)
+    font-weight: 700
+
+.wrapper-grid-table-head
+    // border-bottom: 2px solid #000000
+
+.grid-cell-head
+    border: 1px solid #000000
+    background: #d5d1d1
+    padding: .7rem .5rem
+
+.grid-cell
+    cursor: pointer
+    border: 1px solid #000000
+    padding-left: .5rem
+    &:hover
+        background: #cec9c9
+
+.field-card
+    width: 100%
+
+.field-card-table
+    margin: 0 auto
+    width: 50%
+    border: 1px solid #000000
+    border-radius: .5rem 
+    &__row
+    &__cell
+        min-width: 15rem
+        text-align: center
+        &_data
+            text-align: center
+            border-bottom: 1px solid #000
+        &_type-field
+            font-weight: 500
+            background: #d5d1d1

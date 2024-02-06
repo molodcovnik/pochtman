@@ -5,10 +5,13 @@
 
 {% block content %}
 
-<section class="head">
-    <h1 class="head__title">{{title}}</h1>
-    <h2 class="head__description"><p>Собирайте свои формы на свой вкус.</p><p>Получайте код и вставляйте его к себе на сайт!</p></h2>
-    <button class="btn create-form-btn">Создать свою форму</button>
+<section class="head margin-bottom-3rem">
+    <h1 class="head__title margin-top-5rem">{{title}}</h1>
+    <h2 class="head__description margin-top-3rem"><p>Собирайте свои формы на свой вкус.</p><p>Получайте код и вставляйте его к себе на сайт!</p></h2>
+    <button class="btn create-form-btn margin-top-3rem">Создать свою форму</button>
+    <div class="back-btn">
+        <a href="#" class="back-btn__btn" title="Назад" onclick="history.back();">&#8592;</a>
+    </div>
 </section>
 <section class="constructor">
     <div class="constructor__form-name"></div>
@@ -62,3 +65,4 @@
 
 
 {% endblock content %}
+

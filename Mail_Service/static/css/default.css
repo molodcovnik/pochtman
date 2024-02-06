@@ -46,3 +46,9 @@ body {
 }
 
 .footer-container {}
+
+.temp-edit-form > p:nth-of-type(2) {
+    color: #867575;  
+    font-weight: 600;
+    font-size: 1.7rem
+}

@@ -9,12 +9,14 @@ from django.shortcuts import render
 from jinja2 import Template
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
-from rest_framework import status, permissions
+from rest_framework import status, permissions, viewsets
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 
-from api.serializers import FormSerializer, FieldSerializer, TemplatesSerializer, LastTemplateSerializer, TokenSerializer
+from api.serializers import FormSerializer, FieldSerializer, TemplatesSerializer, LastTemplateSerializer, \
+    TokenSerializer, FieldDataSerializer
 from services.models import Form, Field, TemplateForm, FieldData
 
 
@@ -62,14 +64,13 @@ class LastTemplateView(APIView):
         print(data)
         template_id = self.request.data["templateId"]
         print(template_id)
+        # time.sleep(2)
         temp = TemplateForm.objects.get(id=template_id)
         t_name = temp.name
         temp_name = t_name.replace(" ", "_")
         fields = temp.fields.all()
-        js_template = Template("""
-            <pre>
-                <code class="js-code">
-<span class="js-keyword">const</span> btnForm = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'.btn'</span>);
+        js_template = Template("""<pre>
+<code class="js-code">
 <span class="js-keyword">const</span> form = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'.form'</span>);
 
 form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async</span> (e) => {
@@ -78,7 +79,7 @@ form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async<
     <span class="js-keyword">const</span> {{field.field_name|lower}} = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'#{{field.field_name|lower}}'</span>).value;{% endif %}{% endfor %}
     
     <span class="js-keyword">const</span> data = {
-        <span class="js-body-str">"tempId"</span>: <span class="js-keyword">{Your_tempID}</span>, <span class="js-body-str">// "tempId": 123,</span>{% for field in fields %}
+        <span class="js-body-str">"tempId"</span>: <span class="js-keyword">{Your_tempID}</span>, <span class="js-body-com">// "tempId": 123,</span>{% for field in fields %}
         <span class="js-body-str">"{{field.field_name|lower}}"</span>: {{field.field_name|lower}},{% endfor %}
     };
                                
@@ -93,8 +94,7 @@ form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async<
     console.<span class="js-function">log</span>(result);
 };
                 </code>
-            </pre>
-        """)
+            </pre>""")
         template = Template("""
     <pre>
     <code class="code-result">
@@ -113,9 +113,7 @@ form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async<
     <span class="h-tag">&lt;/form&gt;</span>
 <span class="h-tag">&lt;/div&gt;</span>
 </code>
-</pre>
-        """
-        )
+</pre>""")
         code = template.render(temp_name=temp_name, fields=fields)
         js_code = js_template.render(fields=fields)
 
@@ -258,3 +256,41 @@ class TokenView(APIView):
             serializer = TokenSerializer(token, )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
+class FieldDataViewSet(viewsets.ModelViewSet):
+    queryset = FieldData.objects.all()
+    serializer_class = FieldDataSerializer
+
+    @action(methods=["DELETE"], detail=False, )
+    def delete(self, request):
+        delete_uid = request.data
+        delete_fields = self.queryset.filter(uid__in=delete_uid)
+
+        delete_fields.delete()
+        return Response(self.serializer_class(delete_fields, many=True).data)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def field_data_detail(request):
+    """
+    Retrieve, update or delete a code snippet.
+    """
+    try:
+        uid = request.data["uid"]
+        fd = FieldData.objects.filter(uid=uid)
+    except FieldData.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    # if request.method == 'GET':
+    #     serializer = FieldDataSerializer(fd)
+    #     return Response(serializer.data)
+    #
+    # elif request.method == 'PUT':
+    #     serializer = FieldDataSerializer(fd, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'DELETE':
+        fd.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

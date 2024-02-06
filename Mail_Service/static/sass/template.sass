@@ -6,5 +6,84 @@
     min-width: 25%
 
 .temp-detail-right
-    min-width: 100%
+    min-width: 70%
     height: auto
+
+#id_fields
+    color: #867575
+    padding-bottom: 3rem
+    padding-top: 1rem
+
+.form-wrapper-temp-edit
+    display: flex
+    justify-content: space-evenly
+    
+
+.temp-edit-form
+    padding: 3rem
+    width: 35%
+    label[for="id_name"]
+        font-weight: 600
+        color: #867575
+        font-size: 1.7rem
+        padding-bottom: 1rem
+    input[type="checkbox"]
+        margin-right: 2rem
+
+#id_name
+    display: block
+    margin: 1rem 0
+    padding: .5rem
+    width: 20rem
+    height: 4rem
+    font-size: 1.7rem
+    color: #867575  
+    font-weight: 600
+    border: 10px solid
+    border-image-slice: 1
+    border-width: .3rem
+    border-image-source: linear-gradient(to left, #07a9b2, #3585e8)
+    
+
+#id_fields_helptext
+    color: #3585e8
+    font-weight: 600
+
+.btn-nav
+    cursor: pointer
+    text-decoration: none
+    color: #867575  
+    font-weight: 600
+    border: 10px solid
+    border-image-slice: 1
+    border-width: .3rem
+    border-image-source: linear-gradient(to left, #07a9b2, #3585e8)
+    background: #fff
+    padding: 1rem 3rem
+    transition: all .4s ease-in-out
+    &:hover, &:active
+        color: #1B9CFF
+        font-weight: 900
+    
+
+.edit-form-img
+    &__image
+        // transition: transform .4s ease-in-out
+        &:hover
+            animation: rotation 10s linear infinite
+            // transform: scale(.5, .5)
+
+.back-btn
+    position: absolute
+    left: 0
+    top: 0
+    transition: all .2s ease-in-out
+    &:hover
+        background: rgba(#867575, .1)
+    &__btn
+        text-decoration: none
+        font-size: 3.5rem
+        color: #4966FF
+        &:hover
+            color: #2041e6
+   

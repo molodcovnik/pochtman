@@ -1,12 +1,14 @@
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, UpdateView
+from django.views import View
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
+from django.views.generic.detail import SingleObjectMixin
 from jinja2 import Template
 from .forms import CommentForm, TemplatesForm
-from .models import Comment, Field, TemplateForm
+from .models import Comment, Field, TemplateForm, FieldData
 from dataclasses import dataclass
 
 
@@ -97,3 +99,59 @@ class TemplateEdit(UpdateView):
         self.object.author = self.request.user
         self.object.save()
         return super().form_valid(form)
+
+
+class TemplateDelete(DeleteView):
+    model = TemplateForm
+    template_name = 'services/temp_delete.html'
+    success_url = reverse_lazy('templates')
+    context_object_name = 'template'
+
+
+class NotificationListPerson(ListView):
+    model = FieldData
+    template_name = 'services/notifications.html'
+    context_object_name = 'notifications'
+    lookup_url_kwarg = 'pk' # извлечение нужного нам пк из урл
+
+    def get_queryset(self):
+        temp_id = self.kwargs['pk'] # пк из урл присвоение ему переменной
+        qs = FieldData.objects.filter(template__author=self.request.user, template__id=temp_id)
+        uids = set(qs.values_list('uid', flat=True))
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        temp_id = self.kwargs['pk']  # пк из урл присвоение ему переменной
+        template = TemplateForm.objects.get(id=temp_id)
+        context["count_fields"] = template.fields.all().count()
+        context["fields"] = template.fields.all()
+
+        return context
+
+
+class NotificationDetail(View):
+    def get(self, request, **kwargs):
+        uid = kwargs["uid"]
+        qs = FieldData.objects.filter(uid=uid)
+        context = {
+            "fields": qs,
+            "uid": uid,
+        }
+        return render(request, "services/notification_detail.html", context)
+
+
+def delete_template_data(request, uid):
+    print(uid)
+    context = {}
+
+    # fetch the object related to passed id
+    fd = FieldData.objects.filter(uid=uid)
+    if request.method == "POST":
+        # delete object
+        fd.delete()
+        # after deleting redirect to
+        # home page
+        return HttpResponseRedirect("")
+
+    return render(request, "delete_view.html", context)

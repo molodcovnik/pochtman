@@ -1,0 +1,17 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% block title %}Уведомления{% endblock title %}
+
+{% block content %}
+<div class="main-delete-data">
+    <!-- Create a Form -->
+    <form method="POST">
+        <!-- Security token by Django -->
+        {% csrf_token %}
+        Are you want to delete this item ?
+        <input type="submit" value="Yes" />
+        <a href="/">Cancel </a>
+    </form>
+</div>
+{% endblock content %}

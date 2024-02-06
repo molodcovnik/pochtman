@@ -8,6 +8,7 @@ const jsBlock = document.querySelector('.js-code-content')
 const cssDiv = document.querySelector('.css-result');
 const htmlDiv = document.querySelector('.html-code-content')
 
+
 // const navBlock = `
 // <div class="navigation padding-top-2rem">
 //     <ul class="navigation__menu">
@@ -202,6 +203,7 @@ async function createForm(formName, fieldsSelected, userId, token){
                 htmlDiv.insertAdjacentHTML('beforeend', code);
                 cssDiv.insertAdjacentHTML('afterbegin', cssCodeGen(lastTempData.name));
                 jsBlock.insertAdjacentHTML('beforeend', jsCode);
+
                 
             })
             .catch(error =>  {

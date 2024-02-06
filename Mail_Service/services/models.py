@@ -64,3 +64,6 @@ class FieldData(models.Model):
     field = models.ForeignKey(Field, on_delete=models.CASCADE)
     template = models.ForeignKey(TemplateForm, on_delete=models.CASCADE)
     uid = models.IntegerField()
+
+    def get_absolute_url(self):
+        return reverse('notification_detail', args=[str(self.uid)])

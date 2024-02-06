@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from services.models import Form, Field, TemplateForm
+from services.models import Form, Field, TemplateForm, FieldData
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 
@@ -45,3 +45,9 @@ class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Token
         fields = ("user", "key", "created",)
+
+
+class FieldDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FieldData
+        fields = ("id", "data", "field", "template", "uid", )
