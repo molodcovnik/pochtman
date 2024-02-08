@@ -15,10 +15,14 @@
     padding-bottom: 5rem  
     &__header
         padding: 0.5rem 1rem
-        font-size: 1.8rem
+        font-size: 1.6rem
         font-weight: 500
         background-color: rgba(0,0,0,.03)
         border-bottom: 1px solid rgba(0,0,0,.125)
+        &_temp-id
+            font-size: 1.2rem
+            font-weight: 600
+            color: #e40d0d
     &__body
         padding-left: .5rem
         color: #6b5f5f
@@ -42,6 +46,18 @@
         bottom: 0
         display: flex
         text-align: center
+    &__notification
+        position: absolute
+        bottom: .5rem
+        z-index: 22
+        content: ""
+        width: 1rem
+        height: 1rem
+        background: red
+        border-radius: 50%
+        display: none
+
+      
     &__button
         transition: transform .2s ease-in-out
         &:hover

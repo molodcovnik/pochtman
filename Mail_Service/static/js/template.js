@@ -5,8 +5,11 @@ const tempName = document.querySelector('.temp-card__header').textContent;
 const currentTempId = document.querySelector('.temp-card').getAttribute('data-temp-id');
 let token = document.querySelector(".temp-detail-left");
 let csrf = token.getAttribute("data-csrf");
+let template = document.querySelector('.temp-card');
+let tempId = template.getAttribute('data-temp-id');
 
 loadTempCode(currentTempId);
+addNotification(tempId);
 
 function cssCodeGen(tempName) {
     var name = tempName.replace(/ /g, "_");
@@ -129,4 +132,30 @@ function loaderBlockTemplate() {
     const resultsWrapper = document.querySelector('.temp-detail-right');
     resultsWrapper.insertAdjacentHTML("beforeend", `<div class="loader-css margin-top-10rem"><p class="loader"></p></div>`);
     
+}
+
+
+async function getNotifications(tempId) {
+    return await fetch(`http://127.0.0.1:8000/api/notifications/${tempId}/count`, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          }
+      });
+};
+
+async function addNotification(tempId) {
+    let tempFetch = await getNotifications(tempId);
+    let tempFetchData = await tempFetch.json();
+    let templateId = tempFetchData.id;
+    let templateCount = tempFetchData.count;
+
+    let template = document.getElementById(`${templateId}`);
+    console.log(template);
+    let tempNotification = template.querySelector('.temp-card__notification');
+    if (templateCount > 0) {
+        tempNotification.style.display = 'block';
+    } else {
+        tempNotification.style.display = 'none';
+    }
 }

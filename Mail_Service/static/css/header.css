@@ -61,8 +61,20 @@
     color:#4DACF2 !important;
 }
 
-.navbar__username {
-    /* text-align: center; */
+.navbar__user {
+  position: relative;
+}
+.navbar__notification {
+  position: absolute;
+  content: "";
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: red;
+  top: 1rem;
+  right: 1rem;
+  display: none;
+  cursor: pointer;
 }
 .navbar__actions_button-quit {
     outline: none; /* Для синий ободки */

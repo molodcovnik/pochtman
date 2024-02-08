@@ -726,10 +726,15 @@ code {
 }
 .temp-card__header {
   padding: 0.5rem 1rem;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 500;
   background-color: rgba(0, 0, 0, 0.03);
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+.temp-card__header_temp-id {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #e40d0d;
 }
 .temp-card__body {
   padding-left: 0.5rem;
@@ -756,6 +761,17 @@ code {
   bottom: 0;
   display: flex;
   text-align: center;
+}
+.temp-card__notification {
+  position: absolute;
+  bottom: 0.5rem;
+  z-index: 22;
+  content: "";
+  width: 1rem;
+  height: 1rem;
+  background: red;
+  border-radius: 50%;
+  display: none;
 }
 .temp-card__button {
   transition: transform 0.2s ease-in-out;
@@ -881,7 +897,7 @@ code {
 
 .grid-cell-head {
   border: 1px solid #000000;
-  background: #d5d1d1;
+  background: rgba(53, 133, 232, 0.5);
   padding: 0.7rem 0.5rem;
 }
 
@@ -889,6 +905,9 @@ code {
   cursor: pointer;
   border: 1px solid #000000;
   padding-left: 0.5rem;
+}
+.grid-cell_unreaded {
+  background: #91eaa5;
 }
 .grid-cell:hover {
   background: #cec9c9;

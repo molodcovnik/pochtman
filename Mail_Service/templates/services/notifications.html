@@ -23,7 +23,7 @@
 
 <div class="wrapper-grid-table" style="grid-template-columns: repeat({{ count_fields }}, 1fr);">
     {% for notification in notifications %}
-        <div class="grid-cell" data-uid="{{notification.uid}}">{{notification.data}}</div>
+        <div class="grid-cell {% if notification.read_status == False %}grid-cell_unreaded{% endif %}" data-readed="{% if notification.read_status == False %}unreaded{% endif %}" data-uid="{{notification.uid}}">{{notification.data}}</div>
     {% endfor %}
 </div>
 <script src="{% static 'js/notifications.js'%}"></script>

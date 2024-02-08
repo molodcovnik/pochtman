@@ -116,8 +116,8 @@ class NotificationListPerson(ListView):
 
     def get_queryset(self):
         temp_id = self.kwargs['pk'] # пк из урл присвоение ему переменной
-        qs = FieldData.objects.filter(template__author=self.request.user, template__id=temp_id)
-        uids = set(qs.values_list('uid', flat=True))
+        qs = FieldData.objects.filter(template__author=self.request.user, template__id=temp_id).order_by('-time_add')
+        # uids = set(qs.values_list('uid', flat=True))
         return qs
 
     def get_context_data(self, **kwargs):

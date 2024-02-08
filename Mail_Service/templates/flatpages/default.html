@@ -41,6 +41,7 @@
                             <a href="{% url 'constructor' %}">Конструктор форм</a>
                             <a href="{% url 'templates' %}">Мои формы</a>
                             <a href="#">Уведомления</a>
+                            <a href="#">Статистика</a>
                         </div>
                     </div>
                     <div class="dropdown">
@@ -61,6 +62,7 @@
                         </div>
                         <div class="navbar__user">
                             <a href="{% url 'profile' %}" class="navbar__username" data-user-id="{{ request.user.id }}"><img src="{% static 'images/icon-user.png' %}" alt="User image" title="Перейти в профиль"></a>
+                            <div class="navbar__notification" onclick="window.location.pathname =  '/templates/'" title="Уведомления"></div>
                         </div>
                         <div class="navbar__actions">
                             <!-- <a href="{% url 'logout' %}"><img src="{% static 'images/logout.png' %}" alt="Quit" title="Выйти"></a> -->

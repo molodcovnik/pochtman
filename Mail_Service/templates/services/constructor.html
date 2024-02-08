@@ -10,7 +10,7 @@
     <h2 class="head__description margin-top-3rem"><p>Собирайте свои формы на свой вкус.</p><p>Получайте код и вставляйте его к себе на сайт!</p></h2>
     <button class="btn create-form-btn margin-top-3rem">Создать свою форму</button>
     <div class="back-btn">
-        <a href="#" class="back-btn__btn" title="Назад" onclick="history.back();">&#8592;</a>
+        <a href="{% url 'index' %}" class="back-btn__btn" title="Назад">&#8592;</a>
     </div>
 </section>
 <section class="constructor">
@@ -35,17 +35,17 @@
     </div>
     <div class="results-wrapper">
         <div class="html-code-content hidden">
-            <p>index.html</p>
+            <p class="file_name">index.html</p>
             
         </div>
         <div class="css-code-content hidden">
-            <p>style.css</p>
+            <p class="file_name">style.css</p>
             <pre class="css-result">
                 
             </pre>
         </div>
         <div class="js-code-content hidden">
-            <p>index.js</p>
+            <p class="file_name">index.js</p>
             
         </div>
     </div>

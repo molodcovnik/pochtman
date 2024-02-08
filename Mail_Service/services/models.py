@@ -62,8 +62,10 @@ class TemplateForm(models.Model):
 class FieldData(models.Model):
     data = models.TextField(max_length=2048)
     field = models.ForeignKey(Field, on_delete=models.CASCADE)
-    template = models.ForeignKey(TemplateForm, on_delete=models.CASCADE)
+    template = models.ForeignKey(TemplateForm, related_name="data",  on_delete=models.CASCADE)
     uid = models.IntegerField()
+    time_add = models.DateTimeField(null=True, blank=True)
+    read_status = models.BooleanField(null=True, default=False)
 
     def get_absolute_url(self):
         return reverse('notification_detail', args=[str(self.uid)])

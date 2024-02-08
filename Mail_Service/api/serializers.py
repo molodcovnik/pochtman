@@ -51,3 +51,9 @@ class FieldDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = FieldData
         fields = ("id", "data", "field", "template", "uid", )
+
+class NotifySerializerSerializer(serializers.Serializer):
+    read_status = serializers.BooleanField()
+    total = serializers.IntegerField()
+
+

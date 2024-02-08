@@ -7,6 +7,7 @@ const codeBlock = document.querySelector('.code-result');
 const jsBlock = document.querySelector('.js-code-content')
 const cssDiv = document.querySelector('.css-result');
 const htmlDiv = document.querySelector('.html-code-content')
+const resWrapper = document.querySelector('.results-wrapper');
 
 
 // const navBlock = `
@@ -203,7 +204,7 @@ async function createForm(formName, fieldsSelected, userId, token){
                 htmlDiv.insertAdjacentHTML('beforeend', code);
                 cssDiv.insertAdjacentHTML('afterbegin', cssCodeGen(lastTempData.name));
                 jsBlock.insertAdjacentHTML('beforeend', jsCode);
-
+                resWrapper.insertAdjacentHTML('afterend', '<div class="wrapper-btn center margin-top-3rem margin-bottom-3rem"><button class="navigation__btn" onclick="goToTemplates()">Мои формы</button></div>' )
                 
             })
             .catch(error =>  {
@@ -269,3 +270,6 @@ function loaderBlock() {
     
 }
 
+function goToTemplates() {
+    window.location.pathname = '/templates';
+}

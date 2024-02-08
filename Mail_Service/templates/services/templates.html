@@ -7,21 +7,22 @@
 <section class="head margin-bottom-3rem">
     <h1 class="head__title margin-top-5rem">Мои формы</h1>
     <div class="back-btn">
-        <a href="#" class="back-btn__btn" title="Назад" onclick="history.back();">&#8592;</a>
+        <a href="{% url 'index' %}" class="back-btn__btn" title="Назад">&#8592;</a>
     </div>
 </section>
 {% if templates %}
 <div class="temp-cards-wrapper margin-bottom-3rem">
     <div class="temp-cards">
     {% for template in templates %}
-    <div class="temp-card box-shadow-grey">
-        <div class="temp-card__header">{{template.name|title}}</div>
+    <div class="temp-card box-shadow-grey" id="{{ template.id }}" data-tempId="{{ template.id }}">
+        <div class="temp-card__header">{{template.name|title | truncatechars:15 }} <span class="temp-card__header_temp-id">#{{template.id}}</span></div>
         <div class="temp-card__body">
             <h5 class="temp-card__title">Поля формы:</h5>
             {% if template.fields %}
                 {% for field in template.fields.all %}
                 <p class="temp-card__text"><span class="temp-card__text-underline">{{field.field_name}}</span>: <span class="temp-card__text-bold">{{field.field_type}}</span></p>
                 {% endfor %}
+                <div class="temp-card__notification"></div>
                 <div class="temp-card__buttons">
                     <a href="{% url 'notification_temp' template.id %}" class="temp-card__button"><img src="{% static 'images/bell.png' %}" alt="read" title="Уведомления"></a>
                     <a href="{% url 'template_detail' template.id %}" class="temp-card__button"><img src="{% static 'images/detail.png' %}" alt="read" title="Детали"></a>
@@ -39,5 +40,5 @@
 {% else %}
 <h2>No templates</h2>
 {% endif %}
-<script src="{% static '#' %}"></script>
+<script src="{% static 'js/templates.js'%}"></script>
 {% endblock content %}

@@ -7,9 +7,10 @@
 <div class="head margin-bottom-3rem">
     <h1 class="head__title margin-top-5rem">Детальная информация</h1>
     <div class="back-btn">
-        <a href="#" class="back-btn__btn" title="Назад" onclick="history.back();">&#8592;</a>
+        <a href="{% url 'notification_temp' request.resolver_match.kwargs.pk %}" class="back-btn__btn" title="Назад">&#8592;</a>
     </div>
 </div>
+
 {% if fields %}
     <div class="field-card" data-uid="{{request.resolver_match.kwargs.uid}}" data-csrf="{{csrf_token}}" data-id="{{request.resolver_match.kwargs.pk}}">
         <table class="field-card-table">

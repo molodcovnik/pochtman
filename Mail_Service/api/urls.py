@@ -1,6 +1,7 @@
 from django.urls import path
 from api.views import FormsViews, FormViews, FieldsViews, TemplatesView, TemplateViews, LastTemplateView, FieldViews, \
-    SendMessageViews, TokenView, field_data_detail
+    SendMessageViews, TokenView, field_data_delete, change_status_field_data, NotificationUpdates, \
+    NotificationUpdatesCurrentTemplate
 
 urlpatterns = [
     path('forms/', FormsViews.as_view()),
@@ -12,5 +13,8 @@ urlpatterns = [
     path('templates/<int:pk>/', TemplateViews.as_view()),
     path('send_data/', SendMessageViews.as_view()),
     path('token/', TokenView.as_view()),
-    path('notifications/delete', field_data_detail),
+    path('notifications/delete', field_data_delete),
+    path('notifications/status', change_status_field_data),
+    path('notifications/count', NotificationUpdates.as_view()),
+    path('notifications/<int:pk>/count', NotificationUpdatesCurrentTemplate.as_view()),
 ]

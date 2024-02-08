@@ -3,6 +3,16 @@ const notificationsDiv = document.querySelector(".composition__item_real-time-no
 const staticDiv = document.querySelector(".composition__item_static");
 const safetyDiv = document.querySelector(".composition__item_safety");
 const telegramDiv = document.querySelector(".composition__item_tg");
+let authorUser = document.querySelector(".navbar__username");
+let authorId = authorUser.getAttribute("data-user-id");
+
+getNotifications(authorId);
+// запрос на новые уведомления
+
+// let timerId = setTimeout(function notificationUpdates() {
+//  getNotifications(authorId);
+//  timerId = setTimeout(notificationUpdates, 5000);
+// }, 5000);
 
 integrationDiv.addEventListener("click", function(e) {
     window.scrollTo({ top: 700, behavior: 'smooth'});
@@ -198,3 +208,27 @@ function moveBasedOnMouse(e) {
   document.removeEventListener('mouseup', moveBasedOnMouse);
   carouselContent.removeEventListener('mousemove', slightMove);
 }
+
+async function getNotifications(userId) {
+    let response = await fetch("http://127.0.0.1:8000/api/notifications/count", {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authentication': userId,
+          }
+      });
+      let result = await response.json();
+      let total = result.count;
+      console.log(total);
+      await addNotifyBlock(total);
+
+};
+
+async function addNotifyBlock(total) {
+  const notifyPoint = document.querySelector('.navbar__notification');
+  if (total === 0) {
+      notifyPoint.style.display = 'none';
+  } else {
+      notifyPoint.style.display = 'block';
+  }
+};

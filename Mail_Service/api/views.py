@@ -1,8 +1,10 @@
+import datetime
+import json
 import random
 import re
-import time
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
+from django.core.serializers import serialize
 from django.db.models import Count
 from django.http import Http404, JsonResponse
 from django.shortcuts import render
@@ -16,7 +18,7 @@ from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 
 from api.serializers import FormSerializer, FieldSerializer, TemplatesSerializer, LastTemplateSerializer, \
-    TokenSerializer, FieldDataSerializer
+    TokenSerializer, FieldDataSerializer, NotifySerializerSerializer
 from services.models import Form, Field, TemplateForm, FieldData
 
 
@@ -43,10 +45,24 @@ class FieldViews(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class NotificationUpdates(APIView):
+    def get(self, request, format=None):
+        user = User.objects.get(id=self.request.headers["Authentication"])
+        try:
+            count = FieldData.objects.filter(template__author=user, read_status=False).count()
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        data = {
+            'count': count,
+             }
+        return Response(data)
+
+
 class LastTemplateView(APIView):
 
     def get(self, request, format=None):
-        user = User.objects.get(id=self. request.headers["Authentication"])
+        user = User.objects.get(id=self.request.headers["Authentication"])
         print(user)
         try:
             form = TemplateForm.objects.filter(author=self.request.user).last()
@@ -219,6 +235,8 @@ class SendMessageViews(APIView):
         temp_id = self.request.data["tempId"]
         template = TemplateForm.objects.get(id=temp_id)
         uid = random_code()
+        time_add = datetime.datetime.now()
+        print(time_add)
         data = (self.request.data).copy()
         data.pop('tempId')
         keys = list(data.keys())
@@ -231,7 +249,7 @@ class SendMessageViews(APIView):
                 raise Http404
             if item[0] == f.field_name.lower():
                 print('is')
-                field_data = FieldData.objects.create(template=template, field=f, uid=uid, data=str(item[1]))
+                field_data = FieldData.objects.create(template=template, field=f, uid=uid, data=str(item[1]), time_add=time_add)
                 field_data.save()
             else:
                 print('none')
@@ -270,7 +288,7 @@ class FieldDataViewSet(viewsets.ModelViewSet):
         return Response(self.serializer_class(delete_fields, many=True).data)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def field_data_detail(request):
+def field_data_delete(request):
     """
     Retrieve, update or delete a code snippet.
     """
@@ -280,17 +298,36 @@ def field_data_detail(request):
     except FieldData.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    # if request.method == 'GET':
-    #     serializer = FieldDataSerializer(fd)
-    #     return Response(serializer.data)
-    #
-    # elif request.method == 'PUT':
-    #     serializer = FieldDataSerializer(fd, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     if request.method == 'DELETE':
         fd.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def change_status_field_data(request):
+    try:
+        uid = request.data["uid"]
+        fd = FieldData.objects.filter(uid=uid)
+        for f in fd:
+            f.read_status = True
+            f.save()
+    except FieldData.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response(status=status.HTTP_201_CREATED)
+
+
+# temp = TemplateForm.objects.get(id=355)
+# count = temp.data.filter(read_status=False).count()
+
+class NotificationUpdatesCurrentTemplate(APIView):
+    def get(self, request, pk, format=None):
+        try:
+            temp = TemplateForm.objects.get(id=pk)
+            count = temp.data.filter(read_status=False).count()
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        data = {
+            'id': pk,
+            'count': count
+             }
+        return Response(data)
