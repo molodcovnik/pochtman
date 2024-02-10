@@ -22,6 +22,9 @@
                 </tr>
             {% endfor %}
         </table>
+        <div class="wrapper-time center ">
+            <p><span class="wrapper-time__text">Время получения:</span> <span class="wrapper-time__time">{{time_obj.time_add | date:'H:i d.m.Y'}}</span></p>
+        </div>
         <form action="" method="POST" class="form-delete-temp-data padding-top-5rem">
             {% csrf_token %}
             <div class="wrapper-btn center">

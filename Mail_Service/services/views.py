@@ -129,14 +129,17 @@ class NotificationListPerson(ListView):
 
         return context
 
+#### test view for date
 
 class NotificationDetail(View):
     def get(self, request, **kwargs):
         uid = kwargs["uid"]
         qs = FieldData.objects.filter(uid=uid)
+        last_obj = FieldData.objects.filter(uid=uid).last()
         context = {
             "fields": qs,
             "uid": uid,
+            "time_obj": last_obj
         }
         return render(request, "services/notification_detail.html", context)
 

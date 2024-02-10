@@ -67,5 +67,8 @@ class FieldData(models.Model):
     time_add = models.DateTimeField(null=True, blank=True)
     read_status = models.BooleanField(null=True, default=False)
 
+    def __str__(self):
+        return f'{self.data},{self.uid},{self.time_add}'
+
     def get_absolute_url(self):
         return reverse('notification_detail', args=[str(self.uid)])

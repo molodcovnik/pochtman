@@ -936,4 +936,11 @@ code {
   background: #d5d1d1;
 }
 
+.wrapper-time {
+  padding-top: 1rem;
+}
+.wrapper-time__time {
+  color: #858282;
+}
+
 /*# sourceMappingURL=styles_sass.css.map */

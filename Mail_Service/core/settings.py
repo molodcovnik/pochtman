@@ -142,7 +142,7 @@ USE_I18N = True
 
 
 # поменять перед деплоем
-USE_TZ = False
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
