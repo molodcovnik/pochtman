@@ -1,12 +1,18 @@
 const jsBlock = document.querySelector('.js-code-content');
 const cssDiv = document.querySelector('.css-result');
 const htmlDiv = document.querySelector('.html-code-content');
-const tempName = document.querySelector('.temp-card__header').textContent;
+const tempName = document.querySelector('#temp-card__template-name').textContent;
 const currentTempId = document.querySelector('.temp-card').getAttribute('data-temp-id');
 let token = document.querySelector(".temp-detail-left");
 let csrf = token.getAttribute("data-csrf");
 let template = document.querySelector('.temp-card');
 let tempId = template.getAttribute('data-temp-id');
+const message = document.querySelector(".messages__success_updated");
+
+
+if (message) {
+    message.classList.add('hidden-animate');
+}
 
 loadTempCode(currentTempId);
 addNotification(tempId);
@@ -151,7 +157,6 @@ async function addNotification(tempId) {
     let templateCount = tempFetchData.count;
 
     let template = document.getElementById(`${templateId}`);
-    console.log(template);
     let tempNotification = template.querySelector('.temp-card__notification');
     if (templateCount > 0) {
         tempNotification.style.display = 'block';
@@ -159,3 +164,87 @@ async function addNotification(tempId) {
         tempNotification.style.display = 'none';
     }
 }
+const getSaveBtn = (name) => {
+    let saveBtnHTML = `<div class="contact-form__action" ><img class="contact-form__action-save contact-form__action-save_${name}" src="https://static.thenounproject.com/png/2853302-200.png" alt=""></div>`;
+    return saveBtnHTML;
+}
+
+const getInputForm = (name) => { 
+    // let placeholderTg = `placeholder="@user_123"`;
+    // let placeholderEmail = ;
+    let placeholder = name === "telegram" ? `placeholder="@user_123"` : `placeholder="example@mail.ru"`
+
+    let inputFormHTML = `<div class="form-edit-temp-contact">
+    <form action="" method="post" id="edit-${name}-contact">
+        <label for="user-${name}"></label>
+        <input type="text" name="user-${name}" id="user-${name}" ${placeholder}>
+    </form>
+    </div>`;
+    return inputFormHTML;
+}
+
+function editBtnClicked(service_name) {
+    let card = document.querySelector(`.contact-form__${service_name}`);
+    
+    console.log(service_name);
+    document.querySelector(`.contact-form__action-edit_${service_name}`).style.display = 'none';
+    let saveBtn = getSaveBtn(service_name);
+    let formInputContact = getInputForm(service_name);
+    let contactData = document.querySelector(`.contact-form__current-contact_${service_name}`);
+    document.querySelector(`.contact-form__action_${service_name}`).insertAdjacentHTML('beforeend', saveBtn);
+    contactData.remove();
+    document.querySelector(`.contact-form__contact_${service_name}`).insertAdjacentHTML("afterbegin", formInputContact);
+    let cardInput = card.querySelector(`#user-${service_name}`);
+    cardInput.focus();
+    
+    card.querySelector(`.contact-form__action-save_${service_name}`).addEventListener("click", async (e) => {
+        try {
+            await fetchUpdateAuthorContacts(cardInput.value, service_name);
+            window.location.reload();
+        } catch (e) {
+            document.querySelector('.main-container').insertAdjacentHTML("afterbegin", `<ul class="messages"><li class="messages__error error">Ошибка валидации. Поле не может быть пустым или более 64 символов.</li></ul>`);
+            cardInput.setAttribute('readonly', 'true');
+            document.querySelector('.messages__error').addEventListener('click', () => {
+                document.querySelector('.messages').remove();
+                cardInput.removeAttribute('readonly');
+                cardInput.focus();
+            })
+        }
+
+    })
+
+}
+
+document.querySelector('.contact-form__action-edit_email').addEventListener('click', (e) => {
+    editBtnClicked(e.target.dataset.name);
+})
+
+
+document.querySelector('.contact-form__action-edit_telegram').addEventListener('click', (e) => {
+    editBtnClicked(e.target.dataset.name);
+})
+
+async function fetchUpdateAuthorContacts(value, service_name) {
+    let data_tg = {
+        telegram_author: value
+    }
+
+    let data_email = {
+        email_author: value
+    }
+
+    let response = await fetch(`http://127.0.0.1:8000/api/templates/${currentTempId}/${service_name}/`, {
+        method: 'PATCH',
+        body: JSON.stringify(service_name === 'telegram' ? data_tg : data_email),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrf
+        }})
+
+        if (response.status == 202) {
+            let json = await response.json();
+            return json;
+          }
+        
+        throw new Error(response.ErrorMessage);
+};

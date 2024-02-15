@@ -23,5 +23,6 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('', include('services.urls')),
     path('users/', include('users.urls')),
+    path("users/", include("allauth.urls")),
     path("__debug__/", include("debug_toolbar.urls")),
 ]

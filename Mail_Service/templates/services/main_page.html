@@ -22,7 +22,7 @@
                 <h2 class="composition__text"><p>Интеграция с</p><p>Телеграмм</p></h2>
             </div>
             <div class="composition__item composition__item_safety">
-                <h2 class="p composition__text"><p>Безопасность и</p><p>конфиденциальность</p></h2>
+                <h2 class="composition__text"><p>Безопасность и</p><p>конфиденциальность</p></h2>
             </div>
         
         </div>
@@ -30,10 +30,10 @@
     {% if not request.user.is_authenticated %}
         <div class="not-auth-users-wrap margin-top-5rem padding-bottom-5rem">
             <div class="wrapper-btn center">
-                <a href="{% url 'login' %}" class="btn">Войти</a>
+                <a href="{% url 'account_login' %}" class="btn">Войти</a>
             </div>
             <div class="wrapper-btn center">
-                <a href="{% url 'register' %}" class="btn border-green">Регистрация</a>
+                <a href="{% url 'account_signup' %}" class="btn border-green">Регистрация</a>
             </div>
         </div>
         {% else %}
@@ -76,51 +76,54 @@
         </div>
     </section>
     <section class="feedBack padding-top-5rem">
-            <h2 class="feedBack__title">Отзывы наших клиентов</h2>
+        <h2 class="feedBack__title">Отзывы наших клиентов</h2>
         <div class="carousel">
             <div class="nav nav-left">
-              <div class="ion-chevron-left carousel-arrow-icon-left"></div>
+                <div class="ion-chevron-left carousel-arrow-icon-left"></div>
             </div>
       
-              <div class="carousel-content">
+            <div class="carousel-content">
                 {% if comments %}
-                {% for comment in comments %}
-                <div class="slide">
-                    <div class="slide__item">
-                        <div class="slide__item_inner">
-                            <div class="slide__date">{{comment.get_date}} г.</div>
-                            <div class="hr"></div>
-                            <div class="slide__text margin-top-2rem">
-                                <p>{{comment.text}}</p>
+                    {% for comment in comments %}
+                        <div class="slide">
+                            <div class="slide__item">
+                                <div class="slide__item_inner">
+                                    <div class="slide__date">{{comment.get_date}} г.</div>
+                                    <div class="hr"></div>
+                                    <div class="slide__text margin-top-2rem">
+                                        <p>{{comment.text}}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                {% endfor%}
+                    {% endfor%}
                 {% else %}
-                <p>Нет отзывов</p>
+                    <p>Нет отзывов</p>
                 {% endif %}
-                
-    
-              </div>
-      
-            <div class="nav nav-right">
-              <div class="ion-chevron-right carousel-arrow-icon-right"></div>
             </div>
-          </div>
-    </section>
 
+            <div class="nav nav-right">
+                <div class="ion-chevron-right carousel-arrow-icon-right"></div>
+            </div>
+        </div>
+    </section>
     {% if request.user.is_authenticated %}
     <section class="form-feedBack">
         <div class="form-wrapper">
             <form class="form-feedback-main-page" method="post" action="">
                 {% csrf_token %}
                 <div class="form__fieldWrapper">
-                    {{ form.text.errors }}
+                    {% if not form.text.errors %}
+                        {{ form.text.errors }}
+                    {% endif %}
                     <label class="form__label" for="{{ form.text.id_for_label }}">Оставьте свой отзыв о нашем приложении.</label>
-                    {{ form.text }}
+
+                        {{ form.text }}
+                    {% comment %}
+                    <textarea type="text" name="{{ form.text.text }}" id="{{ form.text.id_for_label }}"></textarea>
+                    {% endcomment %}
                 </div>
-                <div class="wrapper-btn center margin-top-3px">
+                <div class="wrapper-btn center margin-top-3rem">
                     <button type="submit" class="btn btn_green-bg">Оставить отзыв</button>
                 </div>
             </form>
@@ -130,7 +133,7 @@
     {% endif %}
         {% if not request.user.is_authenticated %}
             <div class="wrapper-btn center padding-bottom-5rem">
-                <a href="{% url 'login' %}" class="btn">Войти</a>
+                <a href="{% url 'account_login' %}" class="btn">Войти</a>
             </div>
         {% else %}
             <div class="wrapper-btn center padding-bottom-5rem">

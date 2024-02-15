@@ -1,9 +1,11 @@
+from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.views import View
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.views.generic.detail import SingleObjectMixin
 from jinja2 import Template
@@ -24,12 +26,14 @@ def index(request):
         if form.is_valid():
             comment = Comment.objects.create(text=form.cleaned_data['text'])
             comment.save()
-            return render(request, "services/main_page.html", context)
+            return redirect(request.path)
+            # return render(request, "services/main_page.html", context)
         else:
             return render(request, "services/main_page.html", context)
     else:
         return render(request, "services/main_page.html", context)
-    
+
+
 def document_view(request):
     @dataclass
     class User:
@@ -89,15 +93,19 @@ class TemplateDetail(DetailView):
         return context
 
 
-class TemplateEdit(UpdateView):
+class TemplateEdit(SuccessMessageMixin, UpdateView):
     form_class = TemplatesForm
     model = TemplateForm
     template_name = 'services/template_edit.html'
+    success_message = "Шаблон формы успешно изменен!"
+    extra_tags = "messages__success_updated"
+
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.author = self.request.user
         self.object.save()
+        messages.success(self.request, self.success_message, extra_tags=self.extra_tags)
         return super().form_valid(form)
 
 
@@ -153,8 +161,6 @@ def delete_template_data(request, uid):
     if request.method == "POST":
         # delete object
         fd.delete()
-        # after deleting redirect to
-        # home page
         return HttpResponseRedirect("")
 
     return render(request, "delete_view.html", context)

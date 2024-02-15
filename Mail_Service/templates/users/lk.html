@@ -5,7 +5,7 @@
 
 {% block content %}
 <h1>{{title}}</h1>
-
+<p class="profile-csrf" data-csrf={{csrf_token}}>{{request.user.email}}</p>
 <div class="api">
     {% if token %}
     <button class="api__create-api-key-btn">View API key</button>

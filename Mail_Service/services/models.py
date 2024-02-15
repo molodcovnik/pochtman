@@ -51,9 +51,11 @@ class TemplateForm(models.Model):
     name = models.CharField(max_length=64, unique=True)
     fields = models.ManyToManyField(Field, related_name='forms')
     author = models.ForeignKey(User, related_name='templates', on_delete=models.CASCADE)
+    email_author = models.CharField(blank=True, null=True, max_length=64)
+    telegram_author = models.CharField(blank=True, null=True, max_length=64)
 
     def __str__(self):
-        return f'{self.name} {self.fields} {self.author}'
+        return f'{self.name} {self.fields} {self.author} {self.telegram_author} {self.email_author}'
 
     def get_absolute_url(self):
         return reverse('template_detail', args=[str(self.id)])

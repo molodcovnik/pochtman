@@ -1,0 +1,35 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% block title %}Главная{% endblock title %}
+
+{% block content %}
+<div class="login">
+    <div class="head">
+        <h4 class="head__title">Авторизация на сайте</h4>
+    </div>
+    <div class="side-image">
+    </div>
+
+    <div class="form-wrapper">
+        <form method="post" class="form" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form__fieldWrapper">
+                {{ form.username.errors }}
+                <label class="form__label" for="{{ form.username.id_for_label }}">Логин</label>
+                {{ form.username }}
+            </div>
+            
+            <div class="form__fieldWrapper">
+                {{ form.password.errors }}
+                <label class="form__label" for="{{ form.password.id_for_label }}">Пароль</label>
+                {{ form.password }}
+            </div>
+            <div class="wrapper-btn center margin-top-3rem">
+                <button type="submit" class="btn">Войти</button>
+            </div>            
+        </form>
+    </div>
+</div>
+{% endblock content %}
+sass --watch  static/sass/styles.sass static/css/styles_sass.css

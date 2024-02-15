@@ -1,9 +1,20 @@
 {% extends 'flatpages/default.html' %}
 {% load static %}
 
-{% block title %}{{title}}{% endblock title %}
+{% block title %}Детали шаблона{% endblock title %}
 
 {% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        {% if 'messages__success_updated' in message.extra_tags %}
+            <li {% if message.tags %} class=" {{ message.tags }} " {% endif %}>
+                {{message}}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endif %}
 <div class="head margin-bottom-3rem">
     <h1 class="head__title margin-top-5rem">Подробности формы</h1>
     <h2 class="head__description margin-top-2rem">{{template.name| capfirst}}</h2>
@@ -11,10 +22,10 @@
         <a href="{% url 'templates' %}" class="back-btn__btn" title="Назад">&#8592;</a>
     </div>
 </div>
-<div class="temp-detail">
+<div class="temp-detail padding-bottom-5rem">
     <div class="temp-detail-left" data-csrf={{csrf_token}}>
         <div class="temp-card box-shadow-grey" id="{{ template.id }}" data-temp-id="{{ template.id }}">
-            <div class="temp-card__header">{{ template.name|title| truncatechars:15}}<span class="temp-card__header_temp-id">#{{template.id}}</span></div>
+            <div class="temp-card__header"><span id="temp-card__template-name">{{ template.name|title| truncatechars:15}}</span><span class="temp-card__header_temp-id">#{{template.id}}</span></div>
             <div class="temp-card__body">
                 <h5 class="temp-card__title">Поля формы:</h5>
                 {% if template.fields %}
@@ -32,9 +43,62 @@
                 {% endif %}
             </div>
         </div>
+        {% comment %}
         <a href="{% url 'templates' %}" class="btn margin-top-5rem">Назад</a>
+        {% endcomment %}
+
+        <div class="contacts-form margin-top-5rem">
+            <h2 class="contacts-form__title">Контакты формы:</h2>
+
+            <div class="contact-form contact-form__email box-shadow-grey margin-top-2rem">
+                <div class="temp-card__header">
+                    <p class="contact-form__title">Email</p>
+                </div>
+                <div class="contact-form__contact contact-form__contact_email">
+                    <p class="contact-form__current-contact contact-form__current-contact_email">
+                        {% if template.email_author != None %}
+                            {{template.email_author | truncatechars:64 }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="contact-form__actions margin-top-2rem padding-bottom-1rem">
+                    <div class="contact-form__action contact-form__action_email" >
+                        <img class="contact-form__action-edit contact-form__action-edit_email" data-name="email" src="{% static 'images/edit2.png' %}" alt="Редактировать" title="Редактировать">
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form contact-form__telegram box-shadow-grey margin-top-2rem">
+                <div class="temp-card__header">
+                    <p class="contact-form__title">Telegram</p>
+                </div>
+                
+                <div class="contact-form__contact contact-form__contact_telegram">
+                    <p class="contact-form__current-contact contact-form__current-contact_telegram">
+                        {% if template.telegram_author != None %}
+                            {{template.telegram_author}}
+                        {% endif%}
+                    </p>
+                </div>
+                
+                <div class="contact-form__actions margin-top-2rem padding-bottom-1rem">
+                    
+                    <div class="contact-form__action contact-form__action_telegram" >
+                        <img class="contact-form__action-edit contact-form__action-edit_telegram" data-name="telegram" src="{% static 'images/edit2.png' %}" alt="Редактировать" title="Редактировать">
+                    </div>
+                    {% comment %}
+                    <div class="contact-form__action" >
+                        <img class="contact-form__action-save contact-form__action-save_telegram" src="https://static.thenounproject.com/png/2853302-200.png" alt="">
+                    </div>
+                    {% endcomment %}
+
+                </div>
+            </div>
+            <p class="contacts-form__text-info">По этим контактам Вам будут приходить уведомления.</p>
+        </div>
+        
     </div>
-    <div class="temp-detail-right">
+    <div class="temp-detail-right padding-bottom-5rem">
         <div class="navigation">
         <ul class="navigation__menu navigation__menu_not-center">
             <li class="navigation__item"><button class="navigation__btn border html-btn-load" data-name="html">HTML</button></li>

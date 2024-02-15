@@ -44,6 +44,9 @@
 .padding-bottom-5rem
     padding-bottom: 5rem
 
+.padding-bottom-1rem
+    padding-bottom: 1rem
+
 .margin-bottom-3rem
     margin-bottom: 3rem
 
@@ -81,7 +84,7 @@
     gap: 1rem
     color: #bab2b2
     &__item
-        flex: 0 0 15rem
+        flex: 0 0 18rem
         display: flex
         align-items: flex-end
         justify-content: center
@@ -106,6 +109,7 @@
             &:hover
                 color: #fff
         &:nth-of-type(5)
+            // width: 15rem
             background: radial-gradient(circle, rgba(255,255,255,0.1) 59%, rgba(95, 28, 95, 0.9) 100%), url("/static/images/kandinsky-beautiful-girl-3-anime.png") no-repeat 50% / cover
             &:hover
                 color: #fff
@@ -380,3 +384,23 @@ code
 .code-html
 
 .css-code
+
+.messages
+    cursor: pointer
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+    list-style: none
+    text-align: center
+    &__success
+        padding: 2rem 5rem
+        border-radius: 1rem
+    &__success_updated
+        padding: 2rem 5rem
+        border-radius: 1rem
+        background: rgba(#5fdf50, .6)
+    &__error
+        padding: 2rem 5rem
+        border-radius: 1rem
+        background: rgba(#dd2727, .6)

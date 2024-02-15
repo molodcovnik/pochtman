@@ -20,11 +20,16 @@
 {% else %}
 <p>Шаблон формы не закончен, отредактируйте его</p>
 {% endif %}
-
-<div class="wrapper-grid-table" style="grid-template-columns: repeat({{ count_fields }}, 1fr);">
-    {% for notification in notifications %}
-        <div class="grid-cell {% if notification.read_status == False %}grid-cell_unreaded{% endif %}" data-readed="{% if notification.read_status == False %}unreaded{% endif %}" data-uid="{{notification.uid}}">{{notification.data}}</div>
-    {% endfor %}
-</div>
+{% if notifications%}
+    <div class="wrapper-grid-table" style="grid-template-columns: repeat({{ count_fields }}, 1fr);">
+        {% for notification in notifications %}
+            <div class="grid-cell {% if notification.read_status == False %}grid-cell_unreaded{% endif %}" data-readed="{% if notification.read_status == False %}unreaded{% endif %}" data-uid="{{notification.uid}}">{% if notification.data == "True" %}Да{% elif notification.data == "False" %}Нет{%else%}{{notification.data}}{% endif %}</div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="center margin-top-5rem">
+        <h3 class="none-notifications">Пока не одну вашу форму не заполнили...</h3>
+    </div>
+{% endif %}
 <script src="{% static 'js/notifications.js'%}"></script>
 {% endblock content %}

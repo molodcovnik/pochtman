@@ -1,0 +1,26 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+{% load allauth i18n %}
+{% block title %}Sign Out{% endblock title %}
+{% block content %}
+<section class="head">
+    <h1 class="head__title margin-top-5rem">Выход</h1>
+</section>
+<div class="center">
+    <p class="margin-top-2rem auth-description">Вы действительно хотите выйти?</p>
+</div>
+
+    {% url 'account_logout' as action_url %}
+    <form action="{% url 'account_logout' %}" method="post">
+        {% csrf_token %}
+            {% if redirect_field_value %}
+                <input type="hidden"
+                       name="{{ redirect_field_name }}"
+                       value="{{ redirect_field_value }}" />
+            {% endif %}
+            <div class="wrapper-btn-auth center margin-top-2rem">
+                <button type="submit" class="navigation__btn">Выйти</button>
+            </div>
+    </form>
+    
+{% endblock content %}

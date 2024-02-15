@@ -1,0 +1,76 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+{% load allauth account %}
+{% block title %}Login{% endblock title %}
+
+{% block content %}
+<section class="head">
+    <h1 class="head__title margin-top-5rem">Вход</h1>
+</section>
+
+<div class="center">
+<p class="margin-top-2rem auth-description">Если вы еще не создали аккаунт, то пожалуйста
+<a href="{{ signup_url }}">зарегистрируйтесь</a> сначала.</p>
+
+    <form class="login-form" method="POST" action="{% url 'account_login' %}">
+      {% csrf_token %}
+        <div class="form__fieldWrapper">
+
+            <label class="form__label" for="{{ form.login.id_for_label }}">Эл. почта</label>
+            {{ form.login }}
+        </div>
+        <div class="form__fieldWrapper">
+
+            <label class="form__label" for="{{ form.password.id_for_label }}">Пароль</label>
+            {{ form.password }}
+        </div>
+        
+        
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+        <div class="margin-top-2rem">
+            <a class="button-forgot-password" href="{% url 'account_reset_password' %}">Забыли пароль?</a>
+        </div>
+        <div class="wrapper-btn-auth center margin-top-2rem">
+            <button class="navigation__btn" type="submit">Вход</button>
+        </div>
+    </form>
+</div>
+<div class="allauth-login">
+    <div class="allauth-login-head padding-top-2rem">
+        <p class="head__title allauth-login-head-second-title center margin-bottom-3rem">Войти через другие сервисы: </p>
+    </div>
+    {% if SOCIALACCOUNT_ENABLED %}
+        {% load allauth socialaccount %}
+        {% get_providers as socialaccount_providers %}
+        {% if socialaccount_providers %}
+
+
+            <div class="socialaccount-list">
+                {% for provider in socialaccount_providers %}
+                    {% if provider.id == "openid" %}
+                        {% for brand in provider.get_brands %}
+                        <div class="brand">
+                            <a title="{{brand_name}}"
+                               class="socialaccount_provider {{provider.id}} {{brand.id}}"
+                               href="{% provider_login_url provider.id openid=brand.openid_url process=process %}">
+                                {{brand.name}}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="provider">
+                        <a title="{{provider.name}}" class="socialaccount_provider {{provider.id}}"
+                           href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">
+                           <img src="/static/images/{{provider.id }}.png" alt="{{provider.id}}">
+                           <p>{{provider.id| title}}</p>
+                        </a>
+                        
+                    </div>
+                {% endfor %}
+                </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock content %}

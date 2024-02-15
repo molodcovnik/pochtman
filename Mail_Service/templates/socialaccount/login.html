@@ -1,0 +1,36 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% load i18n %}
+{% load allauth %}
+{% block title %}Sign In{% endblock title %}
+
+{% block content %}
+<section class="auth-redirect-login">
+    {% if process == "connect" %}
+        {% element h1 %}
+            {% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}
+        {% endelement %}
+        <p>
+            {% blocktrans with provider.name as provider %}Вы собираетесь войти в систему, используя стороннюю учетную запись из {{ provider }}.{% endblocktrans %}
+        </p>
+    {% else %}
+        <h1 class="head__title center margin-top-5rem">
+            {% blocktrans with provider.name as provider %}Войти через {{ provider }}{% endblocktrans %}
+        </h1>
+        <div class="center margin-top-2rem">
+            <img src="/static/images/{{provider.id }}.png" alt="{{provider.id}}">
+        </div>
+        <p class="margin-top-2rem auth-description center">
+            {% blocktrans with provider.name as provider %}Вы собираетесь войти в систему, используя стороннюю учетную запись из {{ provider }}.{% endblocktrans %}
+        </p>
+    {% endif %}
+    
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="wrapper-btn-auth center margin-top-2rem">
+            <button type="submit" class="navigation__btn">Продолжить</button>
+        </div>
+    </form>
+</section>
+{% endblock content %}

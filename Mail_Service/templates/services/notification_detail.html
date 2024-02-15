@@ -18,7 +18,7 @@
             
                 <tr class="field-card-table__row">
                     <td class="field-card-table__cell field-card-table__cell_type-field">{{field.field.field_name | truncatechars:15}}:</td>
-                    <td class="field-card-table__cell field-card-table__cell_data">{{field.data}}</td>
+                    <td class="field-card-table__cell field-card-table__cell_data">{% if field.data == "True" %}Да{% elif field.data == "False" %}Нет{%else%}{{field.data}}{% endif %}</td>
                 </tr>
             {% endfor %}
         </table>

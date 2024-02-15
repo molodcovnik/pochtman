@@ -1,3 +1,13 @@
+@mixin input-contact
+    width: 80%
+    height: 2.5rem
+    border-radius: 1rem
+    border: 1px solid #6b5f5f
+    color: #6b5f5f
+    padding: 0 1rem
+    border: 1px #0d6efd solid
+    outline: none
+    
 .temp-detail
     width: 100%
     display: flex
@@ -86,4 +96,71 @@
         color: #4966FF
         &:hover
             color: #2041e6
-   
+
+.contacts-form
+    width: 21rem
+    &__text-info
+        margin-top: 1rem
+        font-size: 1.2rem
+        font-weight: 500
+        color: #e40d0d
+        line-height: .95
+        &:before
+            content: "*"
+    &__title
+        font-size: 1.8rem
+        font-weight: 600
+        background: linear-gradient(198deg, rgba(255,255,255,1) 0%, rgb(7, 169, 178) 30%, rgb(53, 133, 232) 93%)
+        background-clip: text
+        -webkit-background-clip: text
+        color: transparent
+
+.contact-form
+    border: 1px #0d6efd solid
+    height: auto
+    text-align: center
+    &__contact
+    
+    &__title
+    &__telegram
+    &__email
+    &__current-contact
+        font-size: 1.4rem
+        word-wrap: break-word
+        padding: .5rem
+        color: #6b5f5f
+        &_email
+
+        &_telegram
+    &__actions
+        
+    &__action
+        height: 2rem
+        width: 2rem
+        margin: 0 auto
+        cursor: pointer
+        transition: all .2s ease-in-out
+        &:hover
+            transform: scale(1.2)
+    &__action-save
+        height: 2rem
+        width: 2rem
+        
+.form-edit-temp-contact
+    padding-top: 1rem
+
+
+#user-email
+    @include input-contact
+
+#user-telegram
+    @include input-contact
+
+.hidden-animate
+    animation: cssHiddenAnimation 0s ease-in 1s forwards
+    animation-fill-mode: forwards
+
+@keyframes cssHiddenAnimation
+    to
+        opacity: 0
+    

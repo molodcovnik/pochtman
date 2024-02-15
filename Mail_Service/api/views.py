@@ -18,7 +18,7 @@ from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 
 from api.serializers import FormSerializer, FieldSerializer, TemplatesSerializer, LastTemplateSerializer, \
-    TokenSerializer, FieldDataSerializer, NotifySerializerSerializer
+    TokenSerializer, FieldDataSerializer, NotifySerializerSerializer, UserEmailSerializer, EmailAuthorSerializer, TelegramAuthorSerializer
 from services.models import Form, Field, TemplateForm, FieldData
 
 
@@ -47,8 +47,8 @@ class FieldViews(APIView):
 
 class NotificationUpdates(APIView):
     def get(self, request, format=None):
-        user = User.objects.get(id=self.request.headers["Authentication"])
         try:
+            user = User.objects.get(id=self.request.headers["Authentication"])
             count = FieldData.objects.filter(template__author=user, read_status=False).count()
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -115,12 +115,12 @@ form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async<
     <pre>
     <code class="code-result">
 <span class="h-tag">&lt;div</span> <span class="h-atr">class=</span><span class="h-str">&quot;{{temp_name}}&quot;</span><span class="h-tag">&gt;</span>
-    <span class="h-tag">&lt;form</span> <span class="h-atr">action=</span><span class="h-str">"#"</span> <span class="h-atr">class=</span><span class="h-str">"form"</span><span class="h-tag">></span>{% for field in fields %}
+    <span class="h-tag">&lt;form</span> <span class="h-atr">action=</span><span class="h-str">"#"</span> <span class="h-atr">class=</span><span class="h-str">"form"</span><span class="h-atr"> method=</span><span class="h-str">"post"</span><span class="h-tag">&gt;</span>{% for field in fields %}
         <span class="h-tag">&lt;div</span> <span class="h-atr">class=</span><span class="h-str">"field-wrapper {{field.field_name | lower}}"</span><span class="h-tag">></span>
             <span class="h-tag">&lt;label</span> <span class="h-atr">for=</span><span class="h-str">"{{field.field_name|lower}}"</span> <span class="h-atr">class=</span><span class="h-str">"form__label"</span><span class="h-tag">></span>{{field.field_name}}<span class="h-tag">&lt;/label&gt;</span>{% if field.field_type == "EMAIL" %}
             <span class="h-tag">&lt;input</span> <span class="h-atr">type=</span><span class="h-str">"email"</span> <span class="h-atr">id=</span><span class="h-str">"{{field.field_name|lower}}"</span> <span class="h-atr">class=</span><span class="h-str">&quot;form__input&quot;</span> <span class="h-atr">name=</span><span class="h-str">"{{field.field_name|lower}}"</span><span class="h-tag">&gt;</span>{% elif field.field_type == "DATE" %}
             <span class="h-tag">&lt;input</span> <span class="h-atr">type=</span><span class="h-str">"date"</span> <span class="h-atr">id=</span><span class="h-str">"{{field.field_name|lower}}"</span> <span class="h-atr">class=</span><span class="h-str">&quot;form__input&quot;</span> <span class="h-atr">name=</span><span class="h-str">"{{field.field_name|lower}}"</span><span class="h-tag">&gt;</span>{% elif field.field_type == "BOOLEAN" %}
-            <span class="h-tag">&lt;input</span> <span class="h-atr">type=</span><span class="h-str">"radio"</span> <span class="h-atr">id=</span><span class="h-str">"{{field.field_name|lower}}"</span> <span class="h-atr">class=</span><span class="h-str">&quot;form__input&quot;</span> <span class="h-atr">name=</span><span class="h-str">"{{field.field_name|lower}}"</span><span class="h-tag">&gt;</span>{% else %}
+            <span class="h-tag">&lt;input</span> <span class="h-atr">type=</span><span class="h-str">"checkbox"</span> <span class="h-atr">id=</span><span class="h-str">"{{field.field_name|lower}}"</span> <span class="h-atr">class=</span><span class="h-str">&quot;form__input&quot;</span> <span class="h-atr">name=</span><span class="h-str">"{{field.field_name|lower}}"</span><span class="h-tag">&gt;</span>{% else %}
             <span class="h-tag">&lt;input</span> <span class="h-atr">type=</span><span class="h-str">"text"</span> <span class="h-atr">id=</span><span class="h-str">"{{field.field_name|lower}}"</span> <span class="h-atr">class=</span><span class="h-str">&quot;form__input&quot;</span> <span class="h-atr">name=</span><span class="h-str">"{{field.field_name|lower}}"</span><span class="h-tag">&gt;</span>{% endif %}
         <span class="h-tag">&lt;/div&gt;</span>{% endfor %}
         <span class="h-tag">&lt;div</span> <span class="h-atr">class=</span><span class="h-str">&quot;send-btn&quot;</span><span class="h-tag">&gt;</span>
@@ -331,3 +331,54 @@ class NotificationUpdatesCurrentTemplate(APIView):
             'count': count
              }
         return Response(data)
+
+
+class UserEmailView(APIView):
+    def get(self, request, format=None):
+        user_mail = User.objects.get(id=self.request.headers["userId"])
+        serializer = UserEmailSerializer(user_mail, )
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request):
+        user = User.objects.get(id=self.request.data["userId"])
+        serializer = UserEmailSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TemplateFormEmailView(APIView):
+    def get(self, request, pk, format=None):
+        try:
+            template = TemplateForm.objects.get(id=pk)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = EmailAuthorSerializer(template, )
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, pk):
+        template = TemplateForm.objects.get(id=pk)
+        serializer = EmailAuthorSerializer(template, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TemplateFormTelegramView(APIView):
+    def get(self, request, pk, format=None):
+        try:
+            template = TemplateForm.objects.get(id=pk)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = TelegramAuthorSerializer(template, )
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, pk):
+        template = TemplateForm.objects.get(id=pk)
+        serializer = TelegramAuthorSerializer(template, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

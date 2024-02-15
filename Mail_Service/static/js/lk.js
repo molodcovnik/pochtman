@@ -1,4 +1,11 @@
 const createAPIKeyBtn = document.querySelector('.api__create-api-key-btn');
+const editEmailProfile = document.querySelector('.field_wrapper_profile__img');
+const emailInputProfile = document.querySelector('.field_wrapper_profile__input');
+const csrfDiv = document.querySelector('.profile-csrf');
+let token = csrfDiv.getAttribute("data-csrf");
+const userNameDiv = document.querySelector('.navbar__username');
+let userId = userNameDiv.getAttribute("data-user-id");
+
 createAPIKeyBtn.addEventListener('click', () => {
     fetchTokenJSON();
     
@@ -45,3 +52,45 @@ async function fetchTokenJSON() {
     // console.log(data);
 
 }
+
+editEmailProfile.addEventListener("click", async (e) => {
+    emailInputProfile.removeAttribute('readonly');
+    document.querySelector('.fields_wrapper_profile').insertAdjacentHTML('beforeend',`<div class="field_wrapper_profile" ><img class="field_wrapper_profile__img field_wrapper_profile__img_save" src="https://static.thenounproject.com/png/2853302-200.png" alt=""></div>`)
+    editEmailProfile.style.display = 'none';
+    emailInputProfile.focus();
+    let email = await fetchUserEmail();
+    let email_user = await email.json();
+    console.log(email_user.email);
+    document.querySelector('.field_wrapper_profile__img_save').addEventListener('click', async (e) => {
+        // console.log(emailInputProfile.value);
+        await fetchPutUserEmail(emailInputProfile.value);
+        document.querySelector('.field_wrapper_profile__img_save').style.display = 'none';
+        editEmailProfile.style.display = 'block';
+        window.location.reload();
+    });
+})
+
+async function fetchUserEmail() {
+    return await fetch('http://127.0.0.1:8000/api/users_email/', {
+        headers: {
+            'Content-Type': 'application/json',
+            'userId': userId
+            }
+        })
+}
+
+async function fetchPutUserEmail(value) {
+    await fetch("http://127.0.0.1:8000/api/users_email/", {
+        method: 'PATCH',
+        body: JSON.stringify({
+            userId: userId,
+            email: value
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': token
+        }})
+        .then((response) => {
+            console.log(response);
+            return response.json()
+        })};

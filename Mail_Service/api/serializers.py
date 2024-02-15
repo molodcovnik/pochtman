@@ -10,6 +10,41 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "first_name", "last_name", "email",)
 
 
+class UserEmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("email",)
+
+
+class EmailAuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TemplateForm
+        fields = ("email_author",)
+
+    def validate(self, data):
+        """
+        Check that the start is before the stop.
+        """
+        if data['email_author'] == "":
+            raise serializers.ValidationError("Email cannot be empty.")
+        return data
+
+
+
+class TelegramAuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TemplateForm
+        fields = ("telegram_author",)
+
+    def validate(self, data):
+        """
+        Check that the start is before the stop.
+        """
+        if data['telegram_author'] == "":
+            raise serializers.ValidationError("Telegram cannot be empty.")
+        return data
+
+
 class FormSerializer(serializers.ModelSerializer):
     # client = UserSerializer()
 

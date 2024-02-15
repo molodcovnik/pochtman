@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect
 
 from services.models import TemplateForm
-from .forms import UserRegisterForm, UserLoginForm
+from .forms import UserRegisterForm, UserLoginForm, SignUpForm
 from .mixins import UserIsNotAuthenticated
 from rest_framework.authtoken.models import Token
 
@@ -122,3 +122,22 @@ def get_personal_account(request):
         "token": token
     }
     return render(request, "users/lk.html", context)
+
+
+class SignUp(CreateView):
+    model = User
+    form_class = SignUpForm
+    success_url = '/'
+    template_name = 'registration/signup.html'
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        email = form.data['email']
+        # user.is_active = False
+        user_email = User.objects.filter(email=email)
+        if user_email.exists():
+            return redirect('account_login')
+        else:
+            user.username = email
+            user.save()
+            return redirect('index')

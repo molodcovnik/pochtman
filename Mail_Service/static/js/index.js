@@ -14,6 +14,8 @@ getNotifications(authorId);
 //  timerId = setTimeout(notificationUpdates, 5000);
 // }, 5000);
 
+
+
 integrationDiv.addEventListener("click", function(e) {
     window.scrollTo({ top: 700, behavior: 'smooth'});
 });
