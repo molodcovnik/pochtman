@@ -60,3 +60,51 @@
     font-weight: 500
     letter-spacing: 0.1rem
     color: #867575
+
+.wrapper-grid-table
+    width: 100%
+    border: 1px solid #ccc
+    margin: 0 auto
+
+#table-results
+    width: 100%
+    border-collapse: collapse
+    border: 1px solid black
+
+.table-row
+    cursor: pointer
+    height: 3rem
+    border-bottom: .1rem solid #000
+    padding-left: 1rem
+    &:hover
+        background: #c8c2c2
+    
+    &__head
+        text-align: left
+        height: 45px
+        color: #fff
+        background: #767373
+        & :first-child
+            padding-left: 1rem !important          
+
+.table-cell
+    &__time
+        padding-left: 1rem
+
+
+
+
+.action-notification
+    cursor: pointer
+    
+    &__remove-notification
+        &:hover
+            transform: scale(1.1, 1.1)
+
+    &__view-notification
+        margin-right: 2rem
+        &:hover
+            transform: scale(1.1, 1.1)
+
+.unreaded
+    background: rgba(#b3b5b3, .8 )

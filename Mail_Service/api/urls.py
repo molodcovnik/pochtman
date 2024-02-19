@@ -1,7 +1,8 @@
 from django.urls import path
 from api.views import FormsViews, FormViews, FieldsViews, TemplatesView, TemplateViews, LastTemplateView, FieldViews, \
     SendMessageViews, TokenView, field_data_delete, change_status_field_data, NotificationUpdates, \
-    NotificationUpdatesCurrentTemplate, UserEmailView, TemplateFormEmailView, TemplateFormTelegramView
+    NotificationUpdatesCurrentTemplate, UserEmailView, TemplateFormEmailView, TemplateFormTelegramView, \
+    NotificationsView, TemplatesReadOnlyView
 
 urlpatterns = [
     path('users_email/', UserEmailView.as_view()),
@@ -12,6 +13,7 @@ urlpatterns = [
     path('templates/', TemplatesView.as_view()),
     path('last_template/', LastTemplateView.as_view()),
     path('templates/<int:pk>/', TemplateViews.as_view()),
+    path('templates/<int:pk>/fields/', TemplatesReadOnlyView.as_view()),
     path('templates/<int:pk>/email/', TemplateFormEmailView.as_view()),
     path('templates/<int:pk>/telegram/', TemplateFormTelegramView.as_view()),
     path('send_data/', SendMessageViews.as_view()),
@@ -19,5 +21,6 @@ urlpatterns = [
     path('notifications/delete', field_data_delete),
     path('notifications/status', change_status_field_data),
     path('notifications/count', NotificationUpdates.as_view()),
+    path('notifications/<int:pk>/', NotificationsView.as_view()),
     path('notifications/<int:pk>/count', NotificationUpdatesCurrentTemplate.as_view()),
 ]

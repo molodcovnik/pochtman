@@ -1,6 +1,5 @@
 {% extends 'flatpages/default.html' %}
 {% load static %}
-
 {% block title %}Уведомления{% endblock title %}
 
 {% block content %}
@@ -10,7 +9,9 @@
     <div class="back-btn">
         <a href="{% url 'templates' %}" class="back-btn__btn" title="Назад">&#8592;</a>
     </div>
+    <div class="hidden csrf_token" data-csrf="{{ csrf_token }}"></div>
 </div>
+{% comment %}
 {% if fields %}
 <div class="wrapper-grid-table-head" style="grid-template-columns: repeat({{ count_fields }}, 1fr);">
     {% for field in fields %}
@@ -31,5 +32,15 @@
         <h3 class="none-notifications">Пока не одну вашу форму не заполнили...</h3>
     </div>
 {% endif %}
+{% endcomment %}
+<div class="wrapper-grid-table">
+    <table id="table-results">
+        <tr>
+            <th></th>
+        </tr>
+        
+    </table>
+</div>
+<div class="padding-top-5rem"></div>
 <script src="{% static 'js/notifications.js'%}"></script>
 {% endblock content %}

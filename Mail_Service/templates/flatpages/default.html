@@ -7,6 +7,7 @@
     <title>{% block title %}{% endblock title %}</title>
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800;900&family=Montserrat:wght@300;500;700&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
     <div class="wrapper">
@@ -61,8 +62,13 @@
                             <p>{% if user.email %}{{ user.email | truncatechars:10}}{% else %}{{user.username | truncatechars:15}}{% endif %}</p>
                         </div>
                         <div class="navbar__user">
-                            <a href="{% url 'profile' %}" class="navbar__username" data-user-id="{{ request.user.id }}"><img src="{% static 'images/icon-user.png' %}" alt="User image" title="Перейти в профиль"></a>
-                            <div class="navbar__notification" onclick="window.location.pathname =  '/templates/'" title="Уведомления"></div>
+                            <a href="{% url 'profile' %}" class="navbar__username" data-user-id="{{ request.user.id }}">
+                                {% if request.user.first_name and request.user.last_name %}
+                                <img src="https://ui-avatars.com/api/?name={{request.user.first_name}}+{{request.user.last_name}}&background=0e1015&color=2E8ED9&font-size=0.4&bold=true&rounded=true" alt="User image" title="Перейти в профиль" style="border: #6DCCF8 3px solid;border-radius:50%;"></a>
+                                {% else %}
+                                    <img src="{% static 'images/icon-user.png' %}" alt="User image" title="Перейти в профиль"></a>
+                                {% endif %}
+                            <div class="navbar__notification" onclick="window.location.pathname =  '/templates/'" title="Уведомления"><p class="navbar__notification_count"></p></div>
                         </div>
                         <div class="navbar__actions">
                              <a href="{% url 'account_logout' %}"><img src="{% static 'images/logout.png' %}" alt="Quit" title="Выйти"></a>

@@ -67,6 +67,13 @@ class TemplatesSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "fields", "author", )
 
 
+class TemplatesFieldsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TemplateForm
+        fields = ("id", "name", "fields", )
+        depth = 1
+
+
 class LastTemplateSerializer(serializers.ModelSerializer):
     fields = serializers.PrimaryKeyRelatedField(queryset=Field.objects.all(), many=True)
 
@@ -87,8 +94,14 @@ class FieldDataSerializer(serializers.ModelSerializer):
         model = FieldData
         fields = ("id", "data", "field", "template", "uid", )
 
+
+class FieldDataNotificationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FieldData
+        fields = ("id", "data", "field", "template", "uid", "time_add", "read_status", )
+
+
 class NotifySerializerSerializer(serializers.Serializer):
     read_status = serializers.BooleanField()
     total = serializers.IntegerField()
-
 

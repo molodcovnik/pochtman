@@ -230,7 +230,9 @@ async function addNotifyBlock(total) {
   const notifyPoint = document.querySelector('.navbar__notification');
   if (total === 0) {
       notifyPoint.style.display = 'none';
+      document.querySelector('.navbar__notification_count').textContent = "";
   } else {
       notifyPoint.style.display = 'block';
+      document.querySelector('.navbar__notification_count').textContent = total;
   }
 };

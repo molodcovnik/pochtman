@@ -16,9 +16,11 @@ from rest_framework.response import Response
 from rest_framework import status, permissions, viewsets
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
 from api.serializers import FormSerializer, FieldSerializer, TemplatesSerializer, LastTemplateSerializer, \
-    TokenSerializer, FieldDataSerializer, NotifySerializerSerializer, UserEmailSerializer, EmailAuthorSerializer, TelegramAuthorSerializer
+    TokenSerializer, FieldDataSerializer, NotifySerializerSerializer, UserEmailSerializer, EmailAuthorSerializer, \
+    TelegramAuthorSerializer, FieldDataNotificationsSerializer, TemplatesFieldsSerializer
 from services.models import Form, Field, TemplateForm, FieldData
 
 
@@ -48,13 +50,18 @@ class FieldViews(APIView):
 class NotificationUpdates(APIView):
     def get(self, request, format=None):
         try:
+            uniq_uid = []
             user = User.objects.get(id=self.request.headers["Authentication"])
-            count = FieldData.objects.filter(template__author=user, read_status=False).count()
+            templates = FieldData.objects.filter(template__author=user, read_status=False)
+            for temp in templates:
+                uniq_uid.append(temp.uid)
+
+            notifications_count = len(set(uniq_uid))
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         data = {
-            'count': count,
+            'count': notifications_count,
              }
         return Response(data)
 
@@ -179,6 +186,21 @@ class TemplateViews(APIView):
         temp = self.get_object(pk)
         temp.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class TemplatesReadOnlyView(APIView):
+    def get_object(self, pk):
+        try:
+            return TemplateForm.objects.get(pk=pk)
+        except TemplateForm.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        temp = self.get_object(pk)
+        serializer = TemplatesFieldsSerializer(temp, )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class FormsViews(APIView):
     def get(self, request, format=None):
@@ -382,3 +404,10 @@ class TemplateFormTelegramView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class NotificationsView(APIView):
+    def get(self, request, pk, format=None):
+        qs = FieldData.objects.filter(template__pk=pk).order_by("uid").order_by("-time_add")
+        serializer = FieldDataNotificationsSerializer(qs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

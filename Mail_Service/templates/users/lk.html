@@ -4,6 +4,11 @@
 {% block title %}{{title}}{% endblock title %}
 
 {% block content %}
+{{ statics | json_script:"statics" }}
+{{ notifications_read_count | json_script:"notifications_read_count" }}
+{{ notifications_unread_count | json_script:"notifications_unread_count" }}
+
+
 <h1>{{title}}</h1>
 <p class="profile-csrf" data-csrf={{csrf_token}}>{{request.user.email}}</p>
 <div class="api">
@@ -14,6 +19,90 @@
     {% endif%}
     
 </div>
+{% if templates_count %}
+<div>
+    Всего форм: {{ templates_count }}
+</div>
+{% endif %}
+{% if notifications_count %}
+<div>
+    Получено заполненных форм: {{ notifications_count }}
+
+</div>
+{% endif %}
+{% if notifications_read_count %}
+<div>
+    Прочитаных форм {{notifications_read_count}}
+</div>
+{% endif %}
+{% if notifications_unread_count %}
+<div>
+    Непрочитаных форм {{ notifications_unread_count }}
+</div>
+{% endif %}
+<div class="statics__days">
+    <div id="curve_chart" style="width: 900px; height: 600px"></div>    
+    <div id="donutchart" style="width: 900px; height: 600px;"></div>
+</div>
 
 <script src="{% static 'js/lk.js' %}"></script>
+<script type="text/javascript">
+    let static = {{ statics }};
+    let readed = {{notifications_read_count}};
+    let unreaded = {{notifications_unread_count}};
+    console.log(static);
+    // let staticsArray = Array.from(static);
+    // console.log(static);
+
+    let arr = [["День", "Всего", "Прочитано", "Не прочитано"],]
+    static.forEach(field => {
+        let created = field.created_day;
+        let date = new Date(created);
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        let formattedDate = day + "." + month + "." + year;
+        let total = field.total;
+        let readed = field.read;
+        let unreaded = field.unread;
+        let newArr = [formattedDate, total, readed, unreaded]
+        arr.push(newArr);
+    });
+
+
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart2);
+
+    function drawChart2() {
+      var data = google.visualization.arrayToDataTable(arr);
+
+      var options = {
+        title: 'Company Performance',
+        curveType: 'function',
+        legend: { position: 'bottom' }
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+      chart.draw(data, options);
+    }
+
+    google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart3);
+      function drawChart3() {
+        var data = google.visualization.arrayToDataTable([
+          ['Read', 'Unread'],
+          ['Прочитано', readed],
+          ['Не прочитано', unreaded]
+        ]);
+
+        var options = {
+          title: 'My Daily Activities',
+          pieHole: 0.4,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(data, options);
+      }
+  </script>
 {% endblock content %}

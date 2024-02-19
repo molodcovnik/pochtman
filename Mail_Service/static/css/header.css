@@ -40,14 +40,20 @@
     font-family: 'Poppins', sans-serif;
 }
 
+.navbar__auth a {
+  padding: 0 !important;
+  margin: 1.4rem;
+}
 .navbar__auth-username {
     font-weight: 600;
 }
 .navbar__user img {
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 3.8rem;
+    height: 3.8rem;
     vertical-align: text-top;
     cursor: pointer;
+    /* border-radius: 50%;
+    border: .3rem solid #4DADEE */
 }
 
 .navbar__actions img {
@@ -66,9 +72,10 @@
 }
 .navbar__notification {
   position: absolute;
+  text-align: center;
   content: "";
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   background: red;
   top: 1rem;
@@ -76,6 +83,16 @@
   display: none;
   cursor: pointer;
 }
+
+.navbar__notification_count {
+  font-size: 1.2rem;
+  color: #d8d5d5;
+  width: 1.9rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .navbar__actions_button-quit {
     outline: none; /* Для синий ободки */
     border: 0;
