@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{% block title %}{% endblock title %}</title>
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800;900&family=Montserrat:wght@300;500;700&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
@@ -18,22 +19,23 @@
                         <a href="{% url 'index' %}"><img src="{% static 'images/icon-mail.png'%}" alt=""></a>
                     </div>
                     <div class="logo-name">
-                        Почтмен
+                        <a class="logo-name-link" href="{% url 'index' %}"><p class="logo-name">Почтмен</p></a>
                     </div>
                 </div>
                 <div class="navbar__menu">
                     <a href="{% url 'index' %}">Главная</a>
-                    <a href="">Отзывы</a>
+                    {% url 'index' as the_url %}
+                    {% if request.get_full_path == the_url %}<a class="about-pochtman-link">О cервисе</a>{% endif %}
                     <div class="dropdown">
                         <button class="dropbtn">Документация
                             <i class="fa fa-caret-down"></i>
                         </button>
                         <div class="dropdown-content">
-                            <a href="{% url 'docs' %}">Начало</a>
-                            <a href="#">Link 2</a>
-                            <a href="#">Link 3</a>
+                            <a href="{% url 'docs' %}">Старт</a>
+                            <a href="{% url 'docs_video' %}">Видео-пример</a>
                         </div>
                     </div>
+                    {% if request.user.is_authenticated %}
                     <div class="dropdown">
                         <button class="dropbtn">Личный кабинет
                             <i class="fa fa-caret-down"></i>
@@ -41,20 +43,10 @@
                         <div class="dropdown-content">
                             <a href="{% url 'constructor' %}">Конструктор форм</a>
                             <a href="{% url 'templates' %}">Мои формы</a>
-                            <a href="#">Уведомления</a>
-                            <a href="#">Статистика</a>
+                            <a href="{% url 'statics' %}">Статистика</a>
                         </div>
                     </div>
-                    <div class="dropdown">
-                        <button class="dropbtn">API
-                            <i class="fa fa-caret-down"></i>
-                        </button>
-                        <div class="dropdown-content">
-                            <a href="#">Link 1</a>
-                            <a href="#">Link 2</a>
-                            <a href="#">Link 3</a>
-                        </div>
-                    </div>
+                    {% endif %}
                 </div>
                 <div class="navbar__auth">
                     {% if user.is_authenticated %}

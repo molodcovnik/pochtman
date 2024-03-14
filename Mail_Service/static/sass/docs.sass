@@ -1,0 +1,45 @@
+@mixin doc-mixin
+    width: 90%
+    color: #6b5f5f
+    margin: 0 auto
+
+    
+    
+.api-block
+    &__link
+        color: #36a0e2
+
+.preparation-docs
+    @include doc-mixin
+    &__desc
+        font-size: 1.6rem
+        font-weight: normal
+    
+.creating-form-docs
+    @include doc-mixin
+    &__desc
+        font-size: 1.6rem
+        font-weight: normal
+
+
+.creating-form-instruction-list
+
+    &__item
+        margin-left: 5rem
+        &:not(:last-child)
+            padding-bottom: 1rem    
+        
+
+.integration-docs
+    @include doc-mixin
+    &__title
+
+.integration-instruction-list
+    &__item
+        margin-left: 5rem
+        &:not(:last-child)
+            padding-bottom: 1rem   
+
+.danger
+    color: #e40d0d
+    font-size: 1.4rem

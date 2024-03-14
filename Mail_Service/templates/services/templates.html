@@ -15,7 +15,7 @@
     <div class="temp-cards">
     {% for template in templates %}
     <div class="temp-card box-shadow-grey" id="{{ template.id }}" data-tempId="{{ template.id }}">
-        <div class="temp-card__header">{{template.name|title | truncatechars:15 }} <span class="temp-card__header_temp-id">#{{template.id}}</span></div>
+        <div class="temp-card__header"><a class="temp-card__header_link" href="{% url 'template_detail' template.id %}">{{template.name|title | truncatechars:15 }}</a> <span class="temp-card__header_temp-id">#{{template.id}}</span></div>
         <div class="temp-card__body">
             <h5 class="temp-card__title">Поля формы:</h5>
             {% if template.fields %}

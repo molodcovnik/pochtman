@@ -2,25 +2,31 @@ import datetime
 import json
 import random
 import re
+
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.core.serializers import serialize
 from django.db.models import Count
 from django.http import Http404, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from jinja2 import Template
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action, api_view
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status, permissions, viewsets
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
+from api.models import TelegramUser
 from api.serializers import FormSerializer, FieldSerializer, TemplatesSerializer, LastTemplateSerializer, \
     TokenSerializer, FieldDataSerializer, NotifySerializerSerializer, UserEmailSerializer, EmailAuthorSerializer, \
-    TelegramAuthorSerializer, FieldDataNotificationsSerializer, TemplatesFieldsSerializer
+    TelegramAuthorSerializer, FieldDataNotificationsSerializer, TemplatesFieldsSerializer, TelegramUserSerializer
 from services.models import Form, Field, TemplateForm, FieldData
 
 
@@ -83,11 +89,7 @@ class LastTemplateView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        data = self.request.data
-        print(data)
         template_id = self.request.data["templateId"]
-        print(template_id)
-        # time.sleep(2)
         temp = TemplateForm.objects.get(id=template_id)
         t_name = temp.name
         temp_name = t_name.replace(" ", "_")
@@ -102,14 +104,15 @@ form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async<
     <span class="js-keyword">const</span> {{field.field_name|lower}} = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'#{{field.field_name|lower}}'</span>).value;{% endif %}{% endfor %}
     
     <span class="js-keyword">const</span> data = {
-        <span class="js-body-str">"tempId"</span>: <span class="js-keyword">{Your_tempID}</span>, <span class="js-body-com">// "tempId": 123,</span>{% for field in fields %}
+        <span class="js-body-str">"tempId"</span>: <span>{{template_id}}</span>, <span class="js-body-com">// "tempId": 123,</span>{% for field in fields %}
         <span class="js-body-str">"{{field.field_name|lower}}"</span>: {{field.field_name|lower}},{% endfor %}
     };
                                
     <span class="js-keyword">let</span> response = <span class="js-keyword">await</span> <span class="js-function">fetch</span>(<span class="js-body-str">'http://127.0.0.1:8000/api/send_data/'</span>, {
         method: <span class="js-body-str">'POST'</span>,
         headers: {
-            <span class="js-body-str">'Content-Type'</span>: <span class="js-body-str">'application/json'</span>
+            <span class="js-body-str">'Content-Type'</span>: <span class="js-body-str">'application/json'</span>,
+            <span class="js-body-str">'Authorization'</span>: <span class="js-body-str">'Token ' + 'Ваш токен'</span>
         },
         body: JSON.<span class="js-function">stringify</span>(data),
       });
@@ -138,7 +141,7 @@ form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async<
 </code>
 </pre>""")
         code = template.render(temp_name=temp_name, fields=fields)
-        js_code = js_template.render(fields=fields)
+        js_code = js_template.render(fields=fields, template_id=template_id)
 
         data = {
             "code": code,
@@ -249,19 +252,41 @@ def random_code():
     random.seed()
     return random.randint(1000, 999999999)
 
+
 class SendMessageViews(APIView):
+    authentication_classes = (TokenAuthentication, )
+
     def get(self, request, format=None):
         return Response(status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
-        temp_id = self.request.data["tempId"]
-        template = TemplateForm.objects.get(id=temp_id)
+        temp_id = self.request.data.get("tempId")
+        template = get_object_or_404(TemplateForm, id=temp_id)
+        try:
+            user_id = self.request.user.id
+            user = User.objects.get(id=user_id)
+        except:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        if template.author != user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         uid = random_code()
-        time_add = datetime.datetime.now()
-        print(time_add)
+        time_add = datetime.datetime.now(datetime.timezone.utc)
         data = (self.request.data).copy()
         data.pop('tempId')
         keys = list(data.keys())
+        fields = template.fields.all()
+        field_list = list(fields.values_list("field_name", flat=True))
+        f_list = [item.lower() for item in field_list]
+        if f_list != keys:
+            return Response(data={"Error": "Not Acceptable",
+                                  "Detail": "The template fields and the resulting template keys do not match"},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        if len(keys) > template.fields.all().count():
+            return Response(data={"Error": "Not Acceptable",
+                                  "Detail": "The resulting number of fields does not match the template."},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
         items = list(data.items())
         for item in items:
             field = Field.objects.filter(field_name=item[0].title()).values_list('id', flat=True)
@@ -270,16 +295,12 @@ class SendMessageViews(APIView):
             except:
                 raise Http404
             if item[0] == f.field_name.lower():
-                print('is')
                 field_data = FieldData.objects.create(template=template, field=f, uid=uid, data=str(item[1]), time_add=time_add)
                 field_data.save()
             else:
-                print('none')
+                return Response(data={"Error": "Errors in the fields name."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-        data = {
-            "ok": "ok"
-        }
-        return Response(data, status=status.HTTP_201_CREATED)
+        return Response(data={"Received": "Form accepted."}, status=status.HTTP_201_CREATED)
 
 
 class TokenView(APIView):
@@ -291,11 +312,19 @@ class TokenView(APIView):
             serializer = TokenSerializer(token, )
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
-            token = Token.objects.create(user=User.objects.get(id=self.request.user.id))
+            token = Token.objects.create(user=user)
             token.save()
             serializer = TokenSerializer(token, )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
+@login_required
+def get_update_token(request):
+    user = request.user
+    t = Token.objects.filter(user=user)
+    new_key = t[0].generate_key()
+    t.update(key=new_key)
+    return redirect('profile')
 
 class FieldDataViewSet(viewsets.ModelViewSet):
     queryset = FieldData.objects.all()
@@ -308,6 +337,7 @@ class FieldDataViewSet(viewsets.ModelViewSet):
 
         delete_fields.delete()
         return Response(self.serializer_class(delete_fields, many=True).data)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def field_data_delete(request):
@@ -336,9 +366,6 @@ def change_status_field_data(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
     return Response(status=status.HTTP_201_CREATED)
 
-
-# temp = TemplateForm.objects.get(id=355)
-# count = temp.data.filter(read_status=False).count()
 
 class NotificationUpdatesCurrentTemplate(APIView):
     def get(self, request, pk, format=None):
@@ -411,3 +438,61 @@ class NotificationsView(APIView):
         qs = FieldData.objects.filter(template__pk=pk).order_by("uid").order_by("-time_add")
         serializer = FieldDataNotificationsSerializer(qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class TelegramUsersView(APIView):
+    authentication_classes = (TokenAuthentication,)
+
+    def get(self, request, format=None):
+        if self.request.user.is_superuser:
+            data = TelegramUser.objects.all()
+            serializer = TelegramUserSerializer(data, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(data={"Error": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+
+    def post(self, request, format=None):
+        if self.request.user.is_superuser:
+            serializer = TelegramUserSerializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={"Error": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+
+
+class TelegramUserView(APIView):
+    authentication_classes = (TokenAuthentication,)
+
+    def get_object(self, user_id):
+        try:
+            return TelegramUser.objects.get(user_id=user_id)
+        except TelegramUser.DoesNotExist:
+            raise Http404
+
+    def get(self, request, user_id, format=None):
+        if self.request.user.is_superuser:
+            tg_user = self.get_object(user_id)
+            serializer = TelegramUserSerializer(tg_user, )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(data={"Error": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+
+    def delete(self, request, user_id, format=None):
+        tg_user = self.get_object(user_id)
+        tg_user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+#
+# <div class="{{temp_name}}">
+#     <form action="#" class="form" method="post">{% for field in fields %}
+#         <div class="field-wrapper {{field.field_name | lower}}">
+#             <label for="{{field.field_name|lower}}" class="form__label">{{field.field_name}}</label>{% if field.field_type == "EMAIL" %}
+#             <input type="email" id="{{field.field_name|lower}}" class="form__input" name="{{field.field_name|lower}}">{% elif field.field_type == "DATE" %}
+#             <input type="date" id="{{field.field_name|lower}}" class="form__input" name="{{field.field_name|lower}}">{% elif field.field_type == "BOOLEAN" %}
+#             <input type="checkbox" id="{{field.field_name|lower}}" class="form__input" name="{{field.field_name|lower}}">{% else %}
+#             <input type="text" id="{{field.field_name|lower}}" class="form__input" name="{{field.field_name|lower}}">{% endif %}
+#         </div>{% endfor %}
+#         <div class="send-btn">
+#             <button class="btn" type="submit">Отправить</button>
+#         </div>
+#     </form>
+# </div>

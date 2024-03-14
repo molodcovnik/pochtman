@@ -12,6 +12,8 @@ font-family: 'Poppins', sans-serif;
 html, body{
     font-size: 62.5%;
     height: 100%;
+    scroll-behavior: smooth;
+
 }
 body {
     font-size: 1.6rem;
@@ -52,3 +54,10 @@ body {
     font-weight: 600;
     font-size: 1.7rem
 }
+
+/* @media screen and (max-width: 600px) {
+      html {
+        font-size: 40.0%;
+        color: red;
+      }  
+} */

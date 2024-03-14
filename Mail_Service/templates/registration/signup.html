@@ -1,11 +1,48 @@
 {% extends "flatpages/default.html" %}
-
+{% load static %}
 {% block content %}
+<div class="head">
+    <h1 class="head__title margin-top-5rem">Регистрация на сайте</h1>
+</div>
+<div class="center">
+    <div class="wrapp-image">
+        <img class="wrapp-image__img" src="{% static 'images/remove_bg.png' %}" alt="">
+    </div>
+    <form method="post" class="signup-form" action="{% url 'signup' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+            <div class="form__fieldWrapper">
+                {{ form.email.errors }}
+                <label class="form__label" for="{{ form.email.id_for_label }}">Эл. почта</label>
+                {{ form.email }}
+            </div>
+            <div class="form__fieldWrapper">
+                {{ form.password1.errors }}
+                <label class="form__label" for="{{ form.password1.id_for_label }}">Пароль</label>
+                {{ form.password1 }}
+            </div>
+            <div class="form__fieldWrapper">
+                {{ form.password2.errors }}
+                <label class="form__label" for="{{ form.password2.id_for_label }}">Повторите пароль</label>
+                {{ form.password2 }}
+            </div>
 
-<form method="post">
-{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Sing up">
-</form>
+            <div class="form__fieldWrapper">
+                {{ form.first_name.errors }}
+                <label class="form__label" for="{{ form.first_name.id_for_label }}">Имя</label>
+                {{ form.first_name }}
+            </div>
+            <div class="form__fieldWrapper_last_name">
+                {{ form.last_name.errors }}
+                <label class="form__label" for="{{ form.last_name.id_for_label }}">Фамилия</label>
+                {{ form.last_name }}
+            </div>
+        <div class="wrapper-btn-auth center margin-top-5rem signup-form__btn">
+            <button type="submit" class="navigation__btn">Зарегистрироваться</button>
+        </div>
+        
+    </form>
+</div>
+
 
 {% endblock %}

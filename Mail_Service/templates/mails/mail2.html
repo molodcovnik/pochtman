@@ -1,28 +1,38 @@
-<head></head>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>HTML Template</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
 <body>
 <div style="width: 100%; background: #e74c3c; padding: 0 0 5px;">
-    <a href="http://site.com"
+    <a href="{{url}}"
        style="display: block; text-align: center; width: 100%; color: #fff; font-size: 24px; text-decoration: none;" target="_blank">
-        <img src="http://site.com/images/logo.png" alt="logo">
+        <img src="{{url}}/static/images/icon-mail.png" alt="logo" width="50" height="50">
     </a>
 </div>
 
-<p>{{temp_name}}</p>
-<table>
-    <tr>
-        <th>Имя поля</th>
-        <th>Значение поля</th>
+<p>{{temp_name | capfirst }}</p>
+<a href="{{notification_link}}">Ссылка на уведомление</a>
+<div class="table-wrapper">
+<center>
+<table class="table" style="max-width: 600px; width: 100%;" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ededed">
+    <tr class="table-head" height="50" bgcolor="#1C58F0">
+        <th class="head-name">Имя поля</th>
+        <th class="head-value">Значение поля</th>
     </tr>
 
    {% for field in fields %}
-       <tr>
-           <td>{{field.0}}</td>
+       <tr class="table-row" align="center" height="50">
+           <td class="table-row-name">{{field.0}}</td>
            {% if field.1 == 'True' %}
-                <td>Да</td>
+                <td class="table-row-value">Да</td>
            {% elif field.1 == 'False' %}
-                <td>Нет</td>
+                <td class="table-row-value">Нет</td>
            {% else %}
-                <td>{{field.1}}</td>
+                <td class="table-row-value">{{field.1}}</td>
            {% endif%}
 
        </tr>
@@ -30,5 +40,7 @@
 
 
 </table>
+</center>
+</div>
 </body>
 </html>

@@ -19,7 +19,7 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect
 
 from services.models import TemplateForm, FieldData
-from .forms import UserRegisterForm, UserLoginForm, SignUpForm
+from .forms import UserRegisterForm, UserLoginForm, SignUpForm, UserEditForm, ProfileEditForm
 from .mixins import UserIsNotAuthenticated
 from rest_framework.authtoken.models import Token
 
@@ -146,30 +146,7 @@ def get_count_for_status(templates):
     return count
 
 def get_personal_account(request):
-    uniq_uid = []
-    received_form_sum = (FieldData.objects.filter(template__author=request.user)
-                         .aggregate(Count("uid", distinct=True)).get("uid__count"))
-    templates = TemplateForm.objects.filter(author=request.user)
-    # read_forms = FieldData.objects.filter(template__author=request.user, read_status=True)
-    # unread_forms = FieldData.objects.filter(template__author=request.user, read_status=False)
-    # notifications_count = get_count(templates)
-    # notifications_read_count = get_count_for_status(read_forms)
-    notifications_read_count = (FieldData.objects.filter(template__author=request.user, read_status=True)
-                                .aggregate(Count("uid", distinct=True)))
-    # notifications_unread_count = get_count_for_status(unread_forms)
-    notifications_unread_count = (FieldData.objects.filter(template__author=request.user, read_status=False)
-                                  .aggregate(Count("uid", distinct=True)))
 
-    # statics = (FieldData.objects.filter(template__author=request.user)
-    #   .annotate(created_day=TruncDay('time_add')).values('created_day')
-    #   .annotate(count=Count('uid', distinct=True)))
-    qs = (FieldData.objects.filter(template__author=request.user)
-        .annotate(created_day=TruncDay('time_add')).values('created_day')
-        .annotate(total=Count('uid', distinct=True))
-        .annotate(read=Count('uid', distinct=True, filter=Q(read_status=True)))
-        .annotate(unread=Count('uid', distinct=True, filter=Q(read_status=False)))
-        )
-    print(qs)
     try:
         token = Token.objects.get(user=request.user)
     except Token.DoesNotExist:
@@ -178,15 +155,26 @@ def get_personal_account(request):
     context = {
         "title": "Личный кабинет",
         "token": token,
-        "templates_count": templates.count(),
-        # "notifications_count": notifications_count,
-        "notifications_count": received_form_sum,
-        "notifications_read_count": mark_safe(json.dumps(notifications_read_count["uid__count"])),
-        "notifications_unread_count": mark_safe(json.dumps(notifications_unread_count["uid__count"])),
-        "statics": mark_safe(json.dumps(list(qs.values("created_day", "total", "read", "unread")), default=json_serial)),
     }
 
     return render(request, "users/lk.html", context)
+
+def edit_profile(request):
+    if request.method == 'POST':
+        user_form = UserEditForm(instance=request.user, data=request.POST)
+        profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('profile')
+    else:
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(instance=request.user.profile)
+        return render(request,
+                      'users/edit_profile.html',
+                      {'user_form': user_form, 'profile_form': profile_form})
+
+
 #
 # qs = (FieldData.objects.filter(template__author=admin)
 #       .annotate(created_day=TruncDay('time_add')).values('created_day')
@@ -217,3 +205,29 @@ class SignUp(CreateView):
             user.username = email
             user.save()
             return redirect('index')
+
+
+
+   # uniq_uid = []
+    # received_form_sum = (FieldData.objects.filter(template__author=request.user)
+    #                      .aggregate(Count("uid", distinct=True)).get("uid__count"))
+    # templates = TemplateForm.objects.filter(author=request.user)
+    # read_forms = FieldData.objects.filter(template__author=request.user, read_status=True)
+    # unread_forms = FieldData.objects.filter(template__author=request.user, read_status=False)
+    # notifications_count = get_count(templates)
+    # notifications_read_count = get_count_for_status(read_forms)
+    # notifications_read_count = (FieldData.objects.filter(template__author=request.user, read_status=True)
+    #                             .aggregate(Count("uid", distinct=True)))
+    # notifications_unread_count = get_count_for_status(unread_forms)
+    # notifications_unread_count = (FieldData.objects.filter(template__author=request.user, read_status=False)
+    #                               .aggregate(Count("uid", distinct=True)))
+
+    # statics = (FieldData.objects.filter(template__author=request.user)
+    #   .annotate(created_day=TruncDay('time_add')).values('created_day')
+    #   .annotate(count=Count('uid', distinct=True)))
+    # qs = (FieldData.objects.filter(template__author=request.user)
+    #     .annotate(created_day=TruncDay('time_add')).values('created_day')
+    #     .annotate(total=Count('uid', distinct=True))
+    #     .annotate(read=Count('uid', distinct=True, filter=Q(read_status=True)))
+    #     .annotate(unread=Count('uid', distinct=True, filter=Q(read_status=False)))
+    #     )

@@ -1,18 +1,152 @@
-<head></head>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>New Mail</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<style>
+		body {
+			width: 100% !important;
+			-webkit-text-size-adjust: 100%;
+			-ms-text-size-adjust: 100%;
+			margin: 0;
+			padding: 0;
+			line-height: 100%;
+		}
+    </style>
+</head>
 <body>
-<div style="width: 100%; background: #e74c3c; padding: 0 0 5px;">
-    <a href="http://site.com"
-       style="display: block; text-align: center; width: 100%; color: #fff; font-size: 24px; text-decoration: none;" target="_blank">
-        <img src="http://site.com/images/logo.png" alt="logo">
-    </a>
-</div>
-<p style="color: grey; font-size: 16px;">Автор письма:
-    <span style="color: #222; font-weight: 500;">{{ name }}</span></p>
-<p style="color: grey; font-size: 16px;">E-mail автора: <span style="color: #222; font-weight: 500;">
-    <a href="mailto:{{ email }}">{{ email }}</a></span></p>
-<div style="background: #f9f9f9; padding: 20px;">
-    <h1 style="text-align: center; font-size: 22px; font-weight: 600;">{{ title }}</h1>
-    <p style="font-size: 16px; line-height: 1.5; text-align: justify">{{ message }}</p>
-</div>
+    <table cellpadding="0" cellspacing="0" width="100%" bgcolor="#bab2b2">
+        <tr>
+            <td>
+                <table cellpadding="0" cellspacing="0" width="800" bgcolor="#ffffff" align="center">
+                    <tr>
+                        <td height="10"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table cellpadding="0" cellspacing="0" width="400">
+                                <tr align="center">
+                                    <td><a href="{{url}}" target="_blank"><img src="https://github.com/molodcovnik/pochtman/blob/main/Mail_Service/static/images/icon-mail.png?raw=true" alt="" width="80" height="80"></a></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table cellpadding="0" cellspacing="0" width="400">
+                                <tr align="center">
+                                    <td style="font-weight: bold;font-size: 28px; letter-spacing:2px; color: #51AEF3;">Почтмен</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="5"></td>
+                    </tr>   
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table cellpadding="0" cellspacing="0" width="800" bgcolor="#fff" align="center">
+                    <tr>
+                        <td height="50"></td>
+                    </tr>
+                    
+                    <tr align="center">
+                        <td style="color:#5d5959;font-size: 24px;">По вашей форме <strong>{{temp_name | capfirst }}</strong> поступила новая заявка!</td>
+                    </tr>
+                    <tr>
+                        <td height="50"></td>
+                    </tr>
+                    <tr align="center">
+                        <td style="color:#5d5959;font-size: 20px;font-weight: bold;">Детальная информация заявки:</td>
+                    </tr>
+                    <tr>
+                        <td height="50"></td>
+                    </tr>
+                    <tr align="center">
+                        <td>
+                            <table class="table" style="max-width: 600px; width: 100%; border-collapse: collapse; " cellpadding="0" cellspacing="0" width="100%">
+                                <tr class="table-head" height="50" bgcolor="#51aef3">
+                                    <th class="head-name" style="border-radius: 20px 0 0 20px;">Имя поля</th>
+                                    <th class="head-value" style="border-radius: 0 20px 20px 0;">Значение поля</th>
+                                </tr>
+                                
+
+                                {% for field in fields %}
+                                <tr class="table-row" align="center" height="50">
+                                    <td class="table-row-name" style="border-bottom: 2px solid #51aef3;"><strong>{{field.0}}</strong></td>
+                                    {% if field.1 == 'True' %}
+                                        <td class="table-row-value" style="border-bottom: 2px solid #51aef3;">Да</td>
+                                    {% elif field.1 == 'False' %}
+                                        <td class="table-row-value" style="border-bottom: 2px solid #51aef3;">Нет</td>
+                                    {% else %}
+                                        <td class="table-row-value" style="border-bottom: 2px solid #51aef3;">{{field.1}}</td>
+                                    {% endif%}
+
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="50"></td>
+                    </tr>
+                    <tr align="center">
+                        <td style="color:#5d5959;font-size: 18px;">Мы рекомендуем связаться с клиентом в ближайшее время,</td>
+                    </tr>
+                    <tr>
+                        <td height="8"></td>
+                    </tr>
+                    <tr align="center">
+                        <td style="color:#5d5959;font-size: 18px;">для обсуждения деталей запроса.</td>
+                    </tr>
+                    
+                    <tr>
+                        <td height="15"></td>
+                    </tr>
+                    <tr align="center">
+                        <td style="color:#5d5959;font-size: 18px;">С уважением, ваша команда Почтмен!</td>
+                    </tr>
+                    <tr>
+                        <td height="60"></td>
+                    </tr>
+                    <tr align="center">
+                        <td><a href="{{notification_link}}" class="view-btn" style="padding: 10px 20px;border-radius:20px;color:#ffffff;border:none;outline:none;background:linear-gradient(122deg, #fa5560 0.01%, #b14bf4 49.9%, #4d91ff 100%);text-decoration: none;">Смотреть уведомление</a></td>
+                    </tr>
+                    <tr>
+                        <td height="120"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table cellpadding="0" cellspacing="0" width="800" height="50" bgcolor="#0E1015" align="center">
+                                <tr style="color:#ffffff" >
+                                    <td>
+                                        <table  cellpadding="0" cellspacing="0" width="400">
+                                            <tr align="center">
+                                                <td>Почтмен - легкий способ обработки форм и уведомлений.</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table cellpadding="0" cellspacing="0" width="400">
+                                            <tr align="center">
+                                                <td width="50"><a href="#" style="text-decoration: none;color:#ffffff">www.pochtmen.ru</a></td>
+                                                <td width="50"><a href="mailto:pochtmen@mail.ru" style="text-decoration: none;color:#ffffff">Служба поддержки</a></td>
+                                                <td width="50"><a href="https://telegram.me/groupname" style="text-decoration: none;color:#ffffff">Telegram</a></td>
+                                                
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        
+    </table>
 </body>
 </html>

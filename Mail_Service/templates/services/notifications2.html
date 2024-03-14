@@ -1,0 +1,27 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+{% block title %}Уведомления{% endblock title %}
+
+{% block content %}
+
+{% regroup notifications by time as newlist %}
+<table id="table-results">
+    <tr>
+      <th>Time</th>
+      {% for field in fields %}
+        <th>{{field.field_name}}</th>
+      {% endfor %}
+    </tr>
+
+{% for x in newlist %}
+  <tr>
+    <td>{{x.grouper}}</td>
+  {% for y in x.list %}
+    <td align="center">{{ y.text}}</td>
+  {% endfor %}
+  </tr>
+{% endfor %}
+</table>
+
+<script src="{% static 'js/notifications.js'%}"></script>
+{% endblock content %}

@@ -4,122 +4,54 @@
 {% block title %}Документация{% endblock title %}
 
 {% block content %}
-<div class="navigation padding-top-2rem">
-    <ul class="navigation__menu">
-        <li class="navigation__item"><button class="navigation__btn">HTML</button></li>
-        <li class="navigation__item"><button class="navigation__btn">CSS</button></li>
-        <li class="navigation__item"><button class="navigation__btn">JS</button></li>
-    </ul>
-</div>
-<section class="code-section ">
-    <pre>
-        <code class="code-html">
-            {{code}}
-        </code>
-    </pre>
+<section class="head padding-bottom-5rem">
+    <h2 class="head__description margin-top-5rem">Добро пожаловать в документацию и инструкцию по использованию Почтмен!</h2>
+    <div class="back-btn">
+        <a href="{% url 'index' %}" class="back-btn__btn" title="Назад">&#8592;</a>
+    </div>
 </section>
 
- 
-<div>
-    <p>style.css</p>
-<pre>
-    <code class="css-result">
-<span class="keyword">.temp_name</span><span class="rules"> {
-    <span class="rule"><span class="rule__keyword">width:</span><span class="value">500px;</span></span>
-    <span class="rule"><span class="rule__keyword">height:</span><span class="value">300px;</span></span>
-    <span class="rule"><span class="rule__keyword">border:</span><span class="value">1px solid #80a9ec;</span></span>
-    <span class="rule"><span class="rule__keyword">border-radius:</span><span class="value">8px;</span></span>
-}
-</span>
-<span class="keyword">.form</span><span class="rules"> {
-    <span class="rule"><span class="rule__keyword">width:</span><span class="value">80%;</span></span>
-    <span class="rule"><span class="rule__keyword">height:</span><span class="value">inherit;</span></span>
-    <span class="rule"><span class="rule__keyword">margin:</span><span class="value">0 auto;</span></span>
-}
-</span>
+<div class="api-block">
+    <h3 class="api-block__title margin-top-2rem">Быстрый старт
+    </h3>
+    <p class="api-block__desc margin-top-2rem">API Почтмен позволяет принимать формы с ваших сайтов, приложений, ботов.</p>
 
-<span class="keyword">.form__label</span><span class="rules">
-    <span class="rule"><span class="rule__keyword">display:</span><span class="value">block;</span></span>
-    <span class="rule"><span class="rule__keyword">text-align:</span><span class="value">center;</span></span>
-    <span class="rule"><span class="rule__keyword">font-size:</span><span class="value">20px;</span></span>
-    <span class="rule"><span class="rule__keyword">margin-top:</span><span class="value">30px;</span></span>
-    <span class="rule"><span class="rule__keyword">font-weight:</span><span class="value">bold;</span></span>
-</span>
-
-<span class="keyword">.form__input</span><span class="rules">
-    <span class="rule"><span class="rule__keyword">height:</span><span class="value">35px;</span></span>
-    <span class="rule"><span class="rule__keyword">width:</span><span class="value">250px;</span></span>
-    <span class="rule"><span class="rule__keyword">border:</span><span class="value">2px solid #1C58F0;</span></span>
-    <span class="rule"><span class="rule__keyword">border-radius:</span><span class="value">7px;</span></span>
-    <span class="rule"><span class="rule__keyword">padding-left:</span><span class="value">10px;</span></span>
-    <span class="rule"><span class="rule__keyword">font-size:</span><span class="value">18px;</span></span>
-    <span class="rule"><span class="rule__keyword">margin-top:</span><span class="value">30px;</span></span>
-</span>
-
-<span class="keyword">.field-wrapper</span><span class="rules">
-    <span class="rule"><span class="rule__keyword">width:</span><span class="value">100%;</span></span>
-    <span class="rule"><span class="rule__keyword">text-align:</span><span class="value">center;</span></span>
-</span>
-
-<span class="keyword">.send-btn</span><span class="rules">
-    <span class="rule"><span class="rule__keyword">margin-top:</span><span class="value">50px;</span></span>
-    <span class="rule"><span class="rule__keyword">display:</span><span class="value">block;</span></span>
-    <span class="rule"><span class="rule__keyword">text-align:</span><span class="value">center;</span></span>
-</span>
-
-<span class="keyword">.btn</span><span class="rules">
-    <span class="rule"><span class="rule__keyword">padding:</span><span class="value">10px 30px;</span></span>
-    <span class="rule"><span class="rule__keyword">outline:</span><span class="value">none;</span></span>
-    <span class="rule"><span class="rule__keyword">border:</span><span class="value">2px solid #1C58F0;</span></span>
-    <span class="rule"><span class="rule__keyword">border-radius:</span><span class="value">7px;</span></span>
-    <span class="rule"><span class="rule__keyword">background:</span><span class="value">#fff;</span></span>
-    <span class="rule"><span class="rule__keyword">cursor:</span><span class="value">pointer;</span></span>
-</span>
-
-<span class="keyword">.btn:hover</span><span class="rules">
-    <span class="rule"><span class="rule__keyword">background:</span><span class="value">#e0dede;</span></span>
-</span>
-    </code>
-
-</pre>
+    <p class="api-block__desc margin-top-2rem">Используйте ваш API ключ для доступа к нашему API из ваших приложений или веб-сайтов. Следуйте инструкциям в документации API для получения доступа к доступным функциям и методам. API-ключ Вы можете получить на странице <a class="api-block__link" href="{% url 'profile' %}">профиля</a>.</p>
+    <div class="hr margin-top-2rem"></div>
+</div>
+<div class="preparation-docs">
+    <h3 class="preparation-docs__title margin-top-2rem">Подготовка</h3>
+    <p class="preparation-docs__desc margin-top-2rem">Чтобы начать работать с Почтмен, вам нужно зарегистрироваться и получить доступ к личному кабинету. Для аутентификации запросов в API вам потребуется секретный ключ и идентификатор формы из <a class="api-block__link" href="{% url 'templates' %}">личного кабинета</a>.
+    </p>
+    <div class="hr margin-top-2rem"></div>
+</div>
+<div class="creating-form-docs">
+    <h3 class="creating-form-docs__title margin-top-2rem">Создание и настройка формы</h3>
+    <p class="creating-form-docs__desc margin-top-2rem">
+        Используйте наш интуитивно понятный <a class="api-block__link" href="{% url 'constructor' %}">конструктор</a> форм для создания и настройки форм в соответствии с вашими потребностями.
+    </p>
+    <ul class="creating-form-instruction-list margin-top-2rem">
+        <li class="creating-form-instruction-list__item">Дать название форме</li>
+        <li class="creating-form-instruction-list__item">Выбрать необходимые поля</li>
+        <li class="creating-form-instruction-list__item">Сохранить форму</li>
+        <li class="creating-form-instruction-list__item">Укажите email в деталях формы, для получения уведомлений</li>
+        <li class="creating-form-instruction-list__item">Подпишитесь на нашего <a class="api-block__link" href="#">бота</a> который рассылает уведомления</li>
+        <li class="creating-form-instruction-list__item">Укажите в деталях формы ваше имя пользователя в Телеграм</li>
+    </ul>
+    <div class="hr margin-top-2rem"></div>
+</div>
+<div class="integration-docs padding-bottom-5rem">
+    <h3 class="integration-docs__title margin-top-2rem">Интеграция формы</h3>
+    <ul class="integration-instruction-list margin-top-2rem">
+        <li class="integration-instruction-list__item">После настройки формы получите HTML код , вставьте его к себе на сайт</li>
+        <li class="integration-instruction-list__item">JS-код вставьте к себе на сайт внутрь тега <span class="api-block__link">&lt;script&gt;&lt;/script&gt;</span> </li>
+        <li class="integration-instruction-list__item">В JS-коде вставьте ваш API-ключ в headers</li>
+    </ul>
+    <p class="danger margin-top-2rem">В JS-коде не меняйте расположение полей, как наше приложение поставило поля так и оставьте их, чтобы не ломать их отображение в нашем приложении. В HTML-коде форму можно изменять как угодно, за исключением id-полей.</p>
+    <p class="margin-top-2rem">Готово! Ваш бекэнд готов к работе.</p>
+    <p>Теперь вы сможете получать уведомления о полученых формах с Вашего сайта на почту, в Телеграм и отслеживать их в реальном времени на нашем сайте!</p>
 </div>
 
-<div class="js-code-content">
-    <pre>
-        <code class="js-code">
-<span class="js-keyword">const</span> btnForm = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'.btn-brown'</span>);
-<span class="js-keyword">const</span> form = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'.form'</span>);
 
-btnForm.<span class="js-function">addEventListener</span>(<span class="js-body-str">'click'</span>, (e) => {
-    e.<span class="js-function">preventDefault</span>();
-    <span class="js-keyword">const</span> name = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'#name'</span>).value;
-    <span class="js-keyword">const</span> email = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'#email'</span>).value;
-  
-    <span class="js-function">asyncPostCall</span>(name, email);
-});
 
-<span class="js-keyword">const</span> <span class="js-function">asyncPostCall</span> = <span class="js-keyword">async</span> (name, email) => {
-
-    <span class="js-keyword">try</span> {
-        <span class="js-keyword">const</span> response = <span class="js-keyword">await</span> <span class="js-function">fetch</span>(<span class="js-body-str">'http://127.0.0.1:8000/api/forms/'</span>, {
-         method: <span class="js-body-str">'POST'</span>,
-         headers: {
-           <span class="js-body-str">'Content-Type'</span>: <span class="js-body-str">'application/json'</span>
-           },
-           body: JSON.<span class="js-function">stringify</span>({
-              <span class="js-body-str">"name"</span>: name,
-              <span class="js-body-str">"last_name"</span>: name,
-              <span class="js-body-str">"email"</span>: email,
-              <span class="js-body-str">"client"</span>: 8
-           }),
-         });
-
-         <span class="js-keyword">const</span> data = <span class="js-keyword">await</span> response.<span class="js-function">json</span>();
-        } <span class="js-keyword">catch</span>(error) {
-          console.<span class="js-function">log</span>(error);
-        } 
-    }
-        </code>
-    </pre>
-</div>
 {% endblock content %}

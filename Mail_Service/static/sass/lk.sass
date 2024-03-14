@@ -1,27 +1,84 @@
-.lk-forms
-   
-
-
-.lk-form
-            
-.fields_wrapper_profile
-    border: 1px solid #000  
+@import 'template'
+    
+.wrapper-content
     display: flex
-    align-items: center
-.field_wrapper_profile
-    &__input
-        width: 20rem
-        height: 4rem
+    &__left
+        min-width: 30%
+        height: 50rem
+        &_img-wrap
+            height: auto
+            text-align: center
+    &__right
+        min-width: 70%
+        height: 50rem
+
+.wrapp-image
+    position: absolute
+    left: 0
+    top: 50%
+    transform: translate(0, -50%)
     &__img
-        cursor: pointer
-        margin-left: 4rem
-        height: 2.5rem
-        width: 2.5rem
-        transition: all .5s ease-in-out
-        &:hover
-            transform: scale(1.1)
+        width: 50rem
+        height: 40rem
+    &__img-one
+        width: 20rem
+        height: 40rem
+        margin-left: 20rem
 
-.statics__days
-    display: flex
+.lk
+    &__items
+        list-style: none
+    &__item
+        overflow: hidden
+        text-align: center
+        display: inline-block
+        min-width: 80%
+        margin: 1rem auto
+        margin-left: 10%
+        font-size: 1.6rem 
+        display: flex
+        flex-direction: column
+        justify-content: center
+        @include input-signup
+
+.updade-lk
+    text-decoration: none
+    padding: .5rem 2rem !important
+    border-radius: 2rem !important
+
+.api-block
+    width: 90%
+    color: #6b5f5f
+    margin: 0 auto
+    &__title
+
+    &__desc
+        font-size: 1.6rem
+        font-weight: normal
+.api
+    width: 90%
+    margin: 0 auto
+    &__create-api-key-btn
+        font-size: 1.6rem
+        width: 18rem !important
+        padding: .5rem 1.5rem !important
+        border-radius: 2rem !important
+
+.hidden-api-key
+    font-size: 1.6rem
+    width: 18rem !important
+    padding: .5rem 1.5rem !important
+    border-radius: 2rem !important
+    @include input-btn
+    
+.update-api-key
+    color: #e40d0d
+    font-size: 1.4rem
+    margin-left: 1rem
+    &::before
+        content: '*'
 
 
+.reset-password-btn
+    @include input-btn
+    width: 20rem !important

@@ -2,6 +2,15 @@ from rest_framework import serializers
 from services.models import Form, Field, TemplateForm, FieldData
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from .models import TelegramUser
+
+
+class TelegramUserSerializer(serializers.ModelSerializer):
+    get_fullname = serializers.ReadOnlyField()
+
+    class Meta:
+        model = TelegramUser
+        fields = ('user_id', 'username', 'first_name', 'last_name', 'get_fullname', )
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -87,6 +96,10 @@ class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Token
         fields = ("user", "key", "created",)
+
+    def update(self, instance, validated_data):
+        instance.save()
+        return instance
 
 
 class FieldDataSerializer(serializers.ModelSerializer):

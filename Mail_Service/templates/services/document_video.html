@@ -1,0 +1,19 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% block title %}Документация{% endblock title %}
+
+{% block content %}
+<section class="head">
+    <h2 class="head__description margin-top-5rem">Посмотрите видео-инструкцию по использованию Почтмен!</h2>
+    <div class="back-btn">
+        <a href="{% url 'index' %}" class="back-btn__btn" title="Назад">&#8592;</a>
+    </div>
+</section>
+<div class="center padding-bottom-5rem">
+    <video width='700' height="500" controls autoplay>
+        <source src="{% static 'videos/demonstration_app_video_youtube.mp4' %}" type='video/mp4'>
+        Your browser does not support the video tag.
+    </video>
+</div>
+{% endblock content %}

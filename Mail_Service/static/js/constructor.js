@@ -114,13 +114,13 @@ async function fetchFieldsJSON() {
     
     })
     
-    document.querySelector('.constructor__form-name').insertAdjacentHTML('afterbegin', `<input id="input-name-template" class="constructor__input-form-name margin-top-3rem border margin-bottom-3rem" type="text" placeholder="Название формы">`);
+    document.querySelector('.constructor__form-name').insertAdjacentHTML('afterbegin', `<label for="input-name-template" class="" style="display:block;color:#e40d0d;">Сначала введите название формы</label><input id="input-name-template" class="constructor__input-form-name margin-top-2rem border" type="text" placeholder="Название формы"><p style="color:#e40d0d;" class="margin-bottom-3rem margin-top-2rem">Далее выберете необходимые поля</p>`);
     const inputFormName = document.querySelector('.constructor__input-form-name');
     const selectedFields = document.querySelector('.selected-fields');
     inputFormName.addEventListener("change", async (e) => {
         let newFormName = e.target.value;
         let selectedFieldsTitle = `<div class="selected-fields__title"><h3>${newFormName}</h3></div>`;
-        let btnSendData = `<div class="wrapper-btn center margin-top-2rem selected-fields__btn-send-data"><button class="btn-not-anim selected-fields__send-data selected-fields__send-data-create-form">Создать</button></div>`;
+        let btnSendData = `<div class="wrapper-btn center margin-top-2rem selected-fields__btn-send-data"><button class="btn-not-anim selected-fields__send-data selected-fields__send-data-create-form">Создать</button><div><p style="color:#e40d0d;margin-top: 2rem;">И последнее, сохраните форму!</p></div></div>`;
         selectedFields.insertAdjacentHTML("afterbegin", selectedFieldsTitle);
         selectedFields.insertAdjacentHTML("beforeend", btnSendData);
         let userName = document.querySelector('.navbar__auth-username').textContent;

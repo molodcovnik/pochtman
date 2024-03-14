@@ -39,10 +39,11 @@
         {% else %}
         <div class="not-auth-users-wrap margin-top-5rem padding-bottom-5rem">
             <div class="wrapper-btn center">
-                <a href="#" class="btn">Личный кабинет</a>
+                <a href="{% url 'profile' %}" class="btn">Личный кабинет</a>
             </div>
         </div>
     {% endif %}
+    
     <section class="advantage">
         <div class="advantage__wrapper">
             <div class="advantage__text margin-left-10rem"><p class="advantage__desc">Наше API разработано так, чтобы сделать сбор данных простым, даже для новичков. За несколько минут вы будете собирать информацию с вашего веб-сайта.</p></div>
@@ -75,7 +76,33 @@
             </div>
         </div>
     </section>
-    <section class="feedBack padding-top-5rem">
+    <section class="about-service center" id="about-pochtman">
+        <h2 class="about-service__title">Почтмен - упрощенная система управления формами для малых веб-сайтов</h2>
+        <p class="about-service__description margin-top-3rem">Почтмен - это интуитивно понятное и легко настраиваемое приложение, разработанное для владельцев малых веб-сайтов. Наше приложение позволяет вам создавать и управлять формами обратной связи без необходимости написания собственного бэкенда. Мы сделали процесс создания форм простым и доступным даже для тех, кто не имеет опыта в веб-разработке.</p>
+    </section>
+    <div class="center">
+        <h3 class="about-service__title margin-top-5rem">Ключевые возможности:</h3>
+    </div>
+    <section class="key-features margin-top-5rem">
+        <div class="features box-shadow">
+            <div class="features__header">Быстрое создание форм:</div>
+            <div class="features__desc  margin-top-2rem">Используйте наш интуитивный интерфейс для создания профессионально выглядящих форм обратной связи всего за несколько минут. Просто добавьте необходимые поля и настройте параметры, и ваша форма будет готова к использованию.</div>
+        </div>
+        <div class="features box-shadow">
+            <div class="features__header">Готовые HTML, CSS и JS коды:</div>
+            <div class="features__desc  margin-top-2rem">Мы предоставляем вам готовый HTML код для вставки формы на ваш веб-сайт. Кроме того, мы также предоставляем JS код для отправки данных формы на наш сервер, что обеспечивает удобство и безопасность.</div>
+        </div>
+        <div class="features box-shadow">
+            <div class="features__header">Управление формами:</div>
+            <div class="features__desc  margin-top-2rem">Легко управляйте созданными формами через наш пользовательский интерфейс. Вы можете просматривать отправленные данные, настраивать уведомления и многое другое.</div>
+        </div>
+        <div class="features box-shadow">
+            <div class="features__header">Уведомления в реальном времени:</div>
+            <div class="features__desc  margin-top-2rem">Получайте уведомления о новых отправленных формах в реальном времени через электронную почту и даже в мессенджере Telegram, чтобы никогда не пропустить важную обратную связь от ваших пользователей.</div>
+        </div>
+
+    </section>
+    <section class="feedBack padding-top-5rem margin-top-5rem">
         <h2 class="feedBack__title">Отзывы наших клиентов</h2>
         <div class="carousel">
             <div class="nav nav-left">
@@ -117,8 +144,9 @@
                         {{ form.text.errors }}
                     {% endif %}
                     <label class="form__label" for="{{ form.text.id_for_label }}">Оставьте свой отзыв о нашем приложении.</label>
-
-                        {{ form.text }}
+                        <div class="margin-top-3rem">
+                            {{ form.text }}
+                        </div>
                     {% comment %}
                     <textarea type="text" name="{{ form.text.text }}" id="{{ form.text.id_for_label }}"></textarea>
                     {% endcomment %}
@@ -137,7 +165,7 @@
             </div>
         {% else %}
             <div class="wrapper-btn center padding-bottom-5rem">
-                <a href="#" class="btn">Добавить новый сайт</a>
+                <a href="{% url 'constructor' %}" class="btn">Создать новую форму</a>
             </div>
         {% endif %}
 

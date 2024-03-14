@@ -1,0 +1,115 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% block title %}Статистика{% endblock title %}
+
+{% block content %}
+{{ statics | json_script:"statics" }}
+{{ notifications_read_count | json_script:"notifications_read_count" }}
+{{ notifications_unread_count | json_script:"notifications_unread_count" }}
+
+<section class="head margin-bottom-3rem">
+    <h1 class="head__title margin-top-5rem">Статистика и аналитика Ваших форм.</h1>
+    <h2 class="head__description margin-top-2rem"><p>Получите информацию об обратной связи Ваших клиентов.</p><p>При помощи наших инструментов, анализируйте свои продажи и улучшайте свои результаты!</p></h2>
+    <div class="back-btn">
+        <a href="{% url 'index' %}" class="back-btn__btn" title="Назад">&#8592;</a>
+    </div>
+</section>
+<div class="wrapper-statics padding-bottom-5rem">
+  <div class="loader-css margin-top-5rem"><span class="loader margin-top-5rem"></span></div>
+    {% if temp_count %}
+    <h3 class="statics-total box-shadow-grey">Всего форм: <span class="statics-total__number">{{temp_count}}</span></h3>
+    {% endif %}
+    {% if statics %}
+    <div class="inner-statics margin-top-2rem">
+        <div class="static static_day">
+            <div class="static__interval">
+                <div id="curve_chart" style="width: 100%; height: 50rem;"></div>
+                <div id="donutchart" style="width: 100%; height: 50rem;"></div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="center">
+        <h2 class="head__description margin-top-2rem">Статистика еще не сформирована</h2>
+    </div>
+    {% endif %}
+</div>
+<script src="{% static 'js/statics.js'%}"></script>
+<script type="text/javascript">
+    let static = {{ statics }};
+    let readed = {{notifications_read_count}};
+    let unreaded = {{notifications_unread_count}};
+    let loaderCss = document.querySelector('.loader-css');
+
+    function arrayPreparation (data, timeInterval) {
+        let arr = [[timeInterval, "Всего", "Прочитано", "Не прочитано"],]
+        data.forEach(field => {
+            let created = field.created_day;
+            let date = new Date(created);
+            let day = ('0' + date.getDate()).slice(-2);
+            let month = ('0' + (date.getMonth() + 1)).slice(-2);
+            let year = date.getFullYear();
+            let formattedDate = day + "." + month + "." + year;
+            let total = field.total;
+            let readed = field.read;
+            let unreaded = field.unread;
+            let newArr = [formattedDate, total, readed, unreaded]
+            arr.push(newArr);
+        });
+        return arr;
+    }
+    let arr = arrayPreparation(static, "День");
+    // console.log(arr);
+   
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart2);
+
+    function drawChart2() {
+      if (arr.length > 1) {
+        loaderCss.remove();
+        var data = google.visualization.arrayToDataTable(arr);
+        var options = {
+          title: 'Обработанные формы за последние 30 дней',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        
+        chart.draw(data, options)}
+      else {
+        document.querySelector('.inner-statics').remove();
+        document.querySelector('.head__description').remove();
+        loaderCss.remove();
+        document.querySelector('.wrapper-statics').insertAdjacentHTML('beforeend', `
+        <div class="no-statics center">
+          <h3 class="head__description margin-top-2rem">Статистика пока отсутствует по Вашим формам.</h3>
+          <p class="no-statics-desc margin-top-5rem">Скорее всего у Вас еще нет не одной созданой формы или по ним нет обратной связи.</p>
+          <p class="no-statics-desc">В дальнейшем статистика появится...</p>
+        </div>
+        `);
+      }
+      
+    }
+
+    google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart3);
+      function drawChart3() {
+        if (readed !== 0 && unreaded !== 0) {
+        var data = google.visualization.arrayToDataTable([
+          ['Read', 'Unread'],
+          ['Прочитано', readed],
+          ['Не прочитано', unreaded]
+        ]);
+
+        var options = {
+          title: 'Статистика по формам за все время',
+          pieHole: 0.4,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(data, options);}
+      }
+</script>
+{% endblock content %}

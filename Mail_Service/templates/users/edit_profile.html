@@ -1,0 +1,25 @@
+{% extends 'flatpages/default.html' %}
+{% load static %}
+
+{% block title %}Редактировать профиль{% endblock title %}
+
+{% block content %}
+
+<div class="head margin-bottom-3rem">
+    <h1 class="head__title margin-top-5rem">Редактировать профиль</h1>
+    <div class="back-btn">
+        <a href="{% url 'profile' %}" class="back-btn__btn" title="Назад">&#8592;</a>
+    </div>
+</div>
+    <div class="center">
+        <form class="edit-profile" method="post" enctype="multipart/form-data">
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+            {% csrf_token %}
+            <div class="margin-top-3rem">
+                <input class="save-update-profile" type="submit" value="Сохранить изменения">
+            </div>
+        </form>
+    </div>
+   
+{% endblock content %}

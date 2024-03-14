@@ -2,11 +2,38 @@
     width: 80%
     height: 2.5rem
     border-radius: 1rem
-    border: 1px solid #6b5f5f
     color: #6b5f5f
     padding: 0 1rem
     border: 1px #0d6efd solid
     outline: none
+
+@mixin input-signup
+    width: 40%
+    height: 3.5rem
+    border-radius: 1rem
+    color: #6b5f5f
+    padding: 0 1rem
+    border: 1px #0d6efd solid
+    outline: none
+
+@mixin input-btn
+    width: 20%
+    height: 3.5rem
+    border-radius: 1rem
+    color: #fff
+
+    padding: 0 1rem
+    // border: 1px #096cd0 solid
+    border: none
+    outline: none
+    background: linear-gradient(122deg, rgb(250, 85, 96) 0.01%, rgb(177, 75, 244) 49.9%, rgb(77, 145, 255) 100%)
+    cursor: pointer
+
+    // transition: all .5s linear
+    &:hover
+        // font-weight: 600
+        border: .2rem solid #4d91ff
+        // background: rgba(#096cd0, .8)
     
 .temp-detail
     width: 100%
@@ -98,7 +125,7 @@
             color: #2041e6
 
 .contacts-form
-    width: 21rem
+    width: 24rem
     &__text-info
         margin-top: 1rem
         font-size: 1.2rem
@@ -127,7 +154,10 @@
     &__current-contact
         font-size: 1.4rem
         word-wrap: break-word
-        padding: .5rem
+        white-space: nowrap
+        overflow: scroll
+        padding: 0.5rem 0.5rem 2rem
+
         color: #6b5f5f
         &_email
 
@@ -153,8 +183,15 @@
 #user-email
     @include input-contact
 
+
 #user-telegram
     @include input-contact
+
+#id_email, #id_password1, #id_password2, #id_first_name, #id_last_name, #id_telegram_username
+    @include input-signup
+
+.save-update-profile
+    @include input-btn
 
 .hidden-animate
     animation: cssHiddenAnimation 0s ease-in 1s forwards

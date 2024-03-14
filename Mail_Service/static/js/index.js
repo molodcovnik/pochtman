@@ -3,6 +3,7 @@ const notificationsDiv = document.querySelector(".composition__item_real-time-no
 const staticDiv = document.querySelector(".composition__item_static");
 const safetyDiv = document.querySelector(".composition__item_safety");
 const telegramDiv = document.querySelector(".composition__item_tg");
+const aboutPochtmen = document.querySelector(".about-pochtman-link");
 let authorUser = document.querySelector(".navbar__username");
 let authorId = authorUser.getAttribute("data-user-id");
 
@@ -34,6 +35,10 @@ staticDiv.addEventListener("click", function(e) {
 
 safetyDiv.addEventListener("click", function(e) {
     window.scrollTo({ top: 2050, behavior: 'smooth'});
+});
+
+aboutPochtmen.addEventListener("click", function(e) {
+  window.scrollTo({ top: 2650, behavior: 'smooth'});
 });
 
 

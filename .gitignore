@@ -17,3 +17,5 @@ Mail_Service/.env
 ENV/
 
 .vscode/
+
+*.rdb
