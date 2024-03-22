@@ -1,3 +1,4 @@
+const baseUrl = "http://127.0.0.1:8000/api";
 const jsBlock = document.querySelector('.js-code-content');
 const cssDiv = document.querySelector('.css-result');
 const htmlDiv = document.querySelector('.html-code-content');
@@ -9,10 +10,20 @@ let template = document.querySelector('.temp-card');
 let tempId = template.getAttribute('data-temp-id');
 const message = document.querySelector(".messages__success_updated");
 
+// getCheckTgUserDB(tempId);
+
+// запрос на новые уведомления
+
+let timerId = setTimeout(function checkingTgUser() {
+    getCheckTgUserDB(tempId);
+    timerId = setTimeout(checkingTgUser, 10000);
+}, 1500);
 
 if (message) {
     message.classList.add('hidden-animate');
 }
+
+
 
 loadTempCode(currentTempId);
 addNotification(tempId);
@@ -84,7 +95,7 @@ function cssCodeGen(tempName) {
 
 async function loadTempCode(currentTempId) {
     loaderBlockTemplate();
-    await fetch("http://127.0.0.1:8000/api/last_template/", {
+    await fetch(`${baseUrl}/last_template/`, {
         method: 'POST',
         body: JSON.stringify({
             templateId: currentTempId
@@ -142,7 +153,7 @@ function loaderBlockTemplate() {
 
 
 async function getNotifications(tempId) {
-    return await fetch(`http://127.0.0.1:8000/api/notifications/${tempId}/count`, {
+    return await fetch(`${baseUrl}/notifications/${tempId}/count`, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
@@ -233,7 +244,7 @@ async function fetchUpdateAuthorContacts(value, service_name) {
         email_author: value
     }
 
-    let response = await fetch(`http://127.0.0.1:8000/api/templates/${currentTempId}/${service_name}/`, {
+    let response = await fetch(`${baseUrl}/templates/${currentTempId}/${service_name}/`, {
         method: 'PATCH',
         body: JSON.stringify(service_name === 'telegram' ? data_tg : data_email),
         headers: {
@@ -247,4 +258,36 @@ async function fetchUpdateAuthorContacts(value, service_name) {
           }
         
         throw new Error(response.ErrorMessage);
+};
+
+
+async function getCheckTgUserDB(tempId) {
+    const checkTg = document.querySelector('.contact-form__check-telegram');
+    let tg_response = await fetch(`${baseUrl}/templates/${tempId}/telegram/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            }
+    });
+    let tg_result = await tg_response.json();
+    if (!tg_result.telegram_author) {
+        checkTg.remove();
+    } else {
+        let response = await fetch(`${baseUrl}/templates/${tempId}/check_telegram/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                }
+            });
+        let result = await response.json();
+        let isTgUser = result.tg_user;
+        
+        if (isTgUser) {
+            checkTg.style.color = '#67e712';
+            checkTg.style.opacity = '1';
+        } else {
+            checkTg.style.color = '#e16c6c';
+            checkTg.style.opacity = '1';
+        }
+        }
 };

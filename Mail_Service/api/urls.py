@@ -2,7 +2,8 @@ from django.urls import path
 from api.views import FormsViews, FormViews, FieldsViews, TemplatesView, TemplateViews, LastTemplateView, FieldViews, \
     SendMessageViews, TokenView, field_data_delete, change_status_field_data, NotificationUpdates, \
     NotificationUpdatesCurrentTemplate, UserEmailView, TemplateFormEmailView, TemplateFormTelegramView, \
-    NotificationsView, TemplatesReadOnlyView, get_update_token, TelegramUsersView, TelegramUserView
+    NotificationsView, TemplatesReadOnlyView, get_update_token, TelegramUsersView, TelegramUserView, \
+    TelegramUserCheckView
 
 urlpatterns = [
     path('users_email/', UserEmailView.as_view()),
@@ -16,6 +17,7 @@ urlpatterns = [
     path('templates/<int:pk>/fields/', TemplatesReadOnlyView.as_view()),
     path('templates/<int:pk>/email/', TemplateFormEmailView.as_view()),
     path('templates/<int:pk>/telegram/', TemplateFormTelegramView.as_view()),
+    path('templates/<int:pk>/check_telegram/', TelegramUserCheckView.as_view()),
     path('send_data/', SendMessageViews.as_view()),
     path('token/', TokenView.as_view()),
     path('token/update/', get_update_token, name='update_token'),

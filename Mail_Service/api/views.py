@@ -26,7 +26,8 @@ from rest_framework.viewsets import ModelViewSet
 from api.models import TelegramUser
 from api.serializers import FormSerializer, FieldSerializer, TemplatesSerializer, LastTemplateSerializer, \
     TokenSerializer, FieldDataSerializer, NotifySerializerSerializer, UserEmailSerializer, EmailAuthorSerializer, \
-    TelegramAuthorSerializer, FieldDataNotificationsSerializer, TemplatesFieldsSerializer, TelegramUserSerializer
+    TelegramAuthorSerializer, FieldDataNotificationsSerializer, TemplatesFieldsSerializer, TelegramUserSerializer, \
+    CheckTelegramSerializer
 from services.models import Form, Field, TemplateForm, FieldData
 
 
@@ -431,6 +432,15 @@ class TemplateFormTelegramView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TelegramUserCheckView(APIView):
+    def get(self, request, pk, format=None):
+        template = TemplateForm.objects.get(id=pk)
+        tg_form_form = template.telegram_author
+        tg_user = TelegramUser.objects.filter(username=tg_form_form).values("username")
+        serializer = CheckTelegramSerializer(tg_user, )
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class NotificationsView(APIView):

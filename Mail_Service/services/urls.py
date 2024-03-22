@@ -15,7 +15,4 @@ urlpatterns = [
     path('constructor/', login_required(get_constructor_form), name="constructor"),
     path('docs/', document_view, name="docs"),
     path('docs/video', document_video_view, name="docs_video"),
-    # path('notifications/', NotificationList.as_view(), name="notifications"),
-
-    
 ]

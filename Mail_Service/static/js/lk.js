@@ -1,3 +1,4 @@
+const baseUrl = "http://127.0.0.1:8000/api";
 const createAPIKeyBtn = document.querySelector('.api__create-api-key-btn');
 const hiddenBtn = document.querySelector('.hidden-api-key');
 const csrfDiv = document.querySelector('.profile-csrf');
@@ -47,7 +48,7 @@ Vary: Accept
 }
 
 async function fetchTokenJSON() {
-    const response = await fetch('http://127.0.0.1:8000/api/token/');
+    const response = await fetch(`${baseUrl}/token/`);
 
     if (!response.ok) {
         const message = `An error has occured: ${response.status}`;

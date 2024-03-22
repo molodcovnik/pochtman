@@ -9,9 +9,10 @@ class TelegramUser(models.Model):
 
     class Meta:
         unique_together = ("user_id", "username", )
+
     def __str__(self):
         return f'{self.user_id} {self.username} {self.first_name} {self.last_name}'
 
     @property
     def get_fullname(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.first_name} {self.last_name}' if self.last_name else f'{self.first_name}'

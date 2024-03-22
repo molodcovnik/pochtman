@@ -53,6 +53,17 @@ class TelegramAuthorSerializer(serializers.ModelSerializer):
         return data
 
 
+class CheckTelegramSerializer(serializers.ModelSerializer):
+    tg_user = serializers.SerializerMethodField()
+    class Meta:
+        model = TelegramUser
+        fields = ("tg_user",)
+
+    @staticmethod
+    def get_tg_user(obj):
+        return True if obj else False
+
+
 class FormSerializer(serializers.ModelSerializer):
     # client = UserSerializer()
 
@@ -116,4 +127,3 @@ class FieldDataNotificationsSerializer(serializers.ModelSerializer):
 class NotifySerializerSerializer(serializers.Serializer):
     read_status = serializers.BooleanField()
     total = serializers.IntegerField()
-

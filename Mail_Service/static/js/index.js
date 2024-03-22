@@ -1,3 +1,4 @@
+const baseUrl = "http://127.0.0.1:8000/api";
 const integrationDiv = document.querySelector(".composition__item_simple-integration");
 const notificationsDiv = document.querySelector(".composition__item_real-time-notifications");
 const staticDiv = document.querySelector(".composition__item_static");
@@ -7,13 +8,13 @@ const aboutPochtmen = document.querySelector(".about-pochtman-link");
 let authorUser = document.querySelector(".navbar__username");
 let authorId = authorUser.getAttribute("data-user-id");
 
-getNotifications(authorId);
+// getNotifications(authorId);
 // запрос на новые уведомления
 
-// let timerId = setTimeout(function notificationUpdates() {
-//  getNotifications(authorId);
-//  timerId = setTimeout(notificationUpdates, 5000);
-// }, 5000);
+let timeId = setTimeout(function notificationUpdates() {
+    getNotifications(authorId);
+    timeId = setTimeout(notificationUpdates, 15000);
+}, 1000);
 
 
 
@@ -217,7 +218,7 @@ function moveBasedOnMouse(e) {
 }
 
 async function getNotifications(userId) {
-    let response = await fetch("http://127.0.0.1:8000/api/notifications/count", {
+    let response = await fetch(`${baseUrl}/notifications/count`, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',

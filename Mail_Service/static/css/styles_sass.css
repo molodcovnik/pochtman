@@ -1031,6 +1031,23 @@ code {
   height: auto;
   text-align: center;
 }
+.contact-form__contact {
+  display: flex;
+  justify-content: center;
+}
+.contact-form__check-telegram {
+  cursor: pointer;
+  margin-top: 0.2rem;
+  font-size: 2.5rem;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+}
+.contact-form__check-telegram:hover {
+  transform: scale(1.2);
+}
 .contact-form__current-contact {
   font-size: 1.4rem;
   word-wrap: break-word;
@@ -1038,6 +1055,10 @@ code {
   overflow: scroll;
   padding: 0.5rem 0.5rem 2rem;
   color: #6b5f5f;
+}
+.contact-form__current-contact_telegram {
+  display: inline-block;
+  margin-right: 2rem;
 }
 @media (max-width: 650px) {
   .contact-form__actions {
@@ -1554,6 +1575,23 @@ code {
   height: auto;
   text-align: center;
 }
+.contact-form__contact {
+  display: flex;
+  justify-content: center;
+}
+.contact-form__check-telegram {
+  cursor: pointer;
+  margin-top: 0.2rem;
+  font-size: 2.5rem;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+}
+.contact-form__check-telegram:hover {
+  transform: scale(1.2);
+}
 .contact-form__current-contact {
   font-size: 1.4rem;
   word-wrap: break-word;
@@ -1561,6 +1599,10 @@ code {
   overflow: scroll;
   padding: 0.5rem 0.5rem 2rem;
   color: #6b5f5f;
+}
+.contact-form__current-contact_telegram {
+  display: inline-block;
+  margin-right: 2rem;
 }
 @media (max-width: 650px) {
   .contact-form__actions {

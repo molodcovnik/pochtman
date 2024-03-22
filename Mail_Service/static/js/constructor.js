@@ -1,3 +1,4 @@
+const baseUrl = "http://127.0.0.1:8000/api";
 const createBtn = document.querySelector('.create-form-btn');
 const constructorDiv = document.querySelector('.constructor');
 const constructorResults = document.querySelector('.constructor-results');
@@ -88,7 +89,7 @@ createBtn.addEventListener('click', (e) => {
 });
 
 async function fetchFieldsJSON() {
-    const response = await fetch('http://127.0.0.1:8000/api/fields/');
+    const response = await fetch(`${baseUrl}/fields/`);
 
     if (!response.ok) {
         const message = `An error has occured: ${response.status}`;
@@ -155,7 +156,7 @@ async function createForm(formName, fieldsSelected, userId, token){
     
     try {
         
-        const response = await fetch('http://127.0.0.1:8000/api/templates/', {
+        const response = await fetch(`${baseUrl}/templates/`, {
          method: 'POST',
          headers: {
            'Content-Type': 'application/json',
@@ -176,7 +177,7 @@ async function createForm(formName, fieldsSelected, userId, token){
         //  localStorage.setItem("templateId", templateId);
          let lastTemp =  await getLastTempId(userId);
          let lastTempData =  await lastTemp.json();
-         await fetch("http://127.0.0.1:8000/api/last_template/", {
+         await fetch(`${baseUrl}/last_template/`, {
                 method: 'POST',
                 body: JSON.stringify({
                     templateId: lastTempData.id
@@ -218,7 +219,7 @@ async function createForm(formName, fieldsSelected, userId, token){
     }
 
 async function getLastTempId(userId) {
-    return await fetch("http://127.0.0.1:8000/api/last_template", {
+    return await fetch(`${baseUrl}/api/last_template`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

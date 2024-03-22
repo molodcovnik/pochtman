@@ -1,38 +1,5 @@
-// const gridCells = document.querySelector('.wrapper-grid-table');
-
-// gridCells.addEventListener('mouseover', (e) => {
-//     let uid = e.target.getAttribute('data-uid');
-//     // let cellsUid = document.querySelectorAll(`[data-uid="${uid}"]`);
-//     let cellsUid = [].map.call(document.querySelectorAll(`[data-uid="${uid}"]`), function(el) {
-//         el.style.backgroundColor = '#e9dfdf';
-//         return el;
-//     })
-
-// });
-
-// gridCells.addEventListener('mouseout', (e) => {
-//     let uid = e.target.getAttribute('data-uid');
-//     let readed = e.target.getAttribute('data-readed');
-//     // let cellsUid = document.querySelectorAll(`[data-uid="${uid}"]`);
-//     let cellsUid = [].map.call(document.querySelectorAll(`[data-uid="${uid}"]`), function(el) {
-//         if (readed === "unreaded") {
-//             el.style.backgroundColor = '#91eaa5';
-//             return el;
-//         } else {
-//             el.style.backgroundColor = '#fff';
-//             return el;
-//         }
-        
-//     })
-
-// });
-
-// gridCells.addEventListener('dblclick', (e) => {
-//     let uid = e.target.getAttribute('data-uid');
-//     window.location.pathname = window.location.pathname + uid + '/';
-//     // console.log(window.location.pathname);
-// });
-
+const baseUrl = "http://127.0.0.1:8000/api";
+const domain = "http://127.0.0.1:8000";
 let gridCells = document.getElementById('table-results');
 let url = window.location.pathname;
 let url_array = url.split('/') // Split the string into an array with / as separator
@@ -118,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <tr class="${readStatus[0] ? "table-row readed" : "table-row unreaded"}" data-uid="${uid[0]}">
             <td class="table-cell__time">${formattedDate}</td>
             ${dataItem.map(item => `<td class="table-cell__data">${item === 'True' ? 'Да' : item === 'False' ? 'Нет' : item}</td>`).join("")}
-            <td class="td-buttons"><a onclick="window.location.pathname = window.location.pathname + ${uid[0]} + '/';"><img class="action-notification action-notification__view-notification" src="http://127.0.0.1:8000/static/images/detail.png" alt="Читать"></a><a onclick="deleteNotification(${uid[0]});"><img class="action-notification action-notification__remove-notification" src="http://127.0.0.1:8000/static/images/remove.png" alt="Удалить?"></a></td>
+            <td class="td-buttons"><a onclick="window.location.pathname = window.location.pathname + ${uid[0]} + '/';"><img class="action-notification action-notification__view-notification" src="${domain}/static/images/detail.png" alt="Читать"></a><a onclick="deleteNotification(${uid[0]});"><img class="action-notification action-notification__remove-notification" src="${domain}/static/images/remove.png" alt="Удалить?"></a></td>
             <td class="col1"><input type="checkbox" class="check"></td>
         </tr>
         `
@@ -128,11 +95,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
 async function getNotification(pk) {
-    return await fetch(`http://127.0.0.1:8000/api/notifications/${pk}/`);
+    return await fetch(`${baseUrl}/notifications/${pk}/`);
     }
 
 async function getFieldsName(pk) {
-    return await fetch(`http://127.0.0.1:8000/api/templates/${pk}/fields/`);
+    return await fetch(`${baseUrl}/templates/${pk}/fields/`);
     }
 
 document.querySelector('.view-checks').addEventListener('click', (e) => {
@@ -147,7 +114,7 @@ async function deleteNotification(uid) {
     const data = {
         "uid": uid,
     };
-    let response = await fetch('http://127.0.0.1:8000/api/notifications/delete', {
+    let response = await fetch(`${baseUrl}/notifications/delete`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

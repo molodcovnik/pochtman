@@ -35,7 +35,6 @@ def index(request):
             comment = Comment.objects.create(text=form.cleaned_data['text'])
             comment.save()
             return redirect(request.path)
-            # return render(request, "services/main_page.html", context)
         else:
             return render(request, "services/main_page.html", context)
     else:
@@ -43,28 +42,7 @@ def index(request):
 
 
 def document_view(request):
-    @dataclass
-    class User:
-        username: str
-        url: str
-    
-    template = Template("""\n
-<title>{{ title }}</title>
-    <ul>
-        {% for user in users %}
-        <li><a href="{{ user.url }}">{{ user.username }}</a></li>
-        {% endfor %}
-    </ul>
-    """)
-    users = [
-        User('1', 'https://a.bc/user/1'),
-        User('2', 'https://a.bc/user/2'),
-        User('3', 'https://a.bc/user/3'),
-    ]
-    context = {
-        "code": template.render(title="Hello World!", users=users),
-    }
-    return render(request, "services/document_1.html", context)
+    return render(request, "services/document_1.html")
 
 
 def document_video_view(request):
@@ -167,11 +145,6 @@ class NotificationListPerson(ListView):
         if template.author != self.request.user:
             raise PermissionDenied
         qs = FieldData.objects.filter(template__author=self.request.user, template__id=temp_id).order_by('-time_add')
-        # uids = set(qs.values_list('uid', flat=True))
-        # temp = TemplateForm.objects.filter(id=temp_id)
-        # queryset = temp.annotate(uid=F("data__uid"), text=F("data__data")).values("uid", "text")
-        # queryset = temp.annotate(uid=F("data__uid"), text=F("data__data"), time=F("data__time_add"),
-        #                          status=F("data__read_status")).values("uid", "time", "text", "status")
         return qs
 
     def get_context_data(self, **kwargs):
@@ -204,10 +177,8 @@ def delete_template_data(request, uid):
     print(uid)
     context = {}
 
-    # fetch the object related to passed id
     fd = FieldData.objects.filter(uid=uid)
     if request.method == "POST":
-        # delete object
         fd.delete()
         return HttpResponseRedirect("")
 
