@@ -71,6 +71,16 @@
     border-collapse: collapse
     border: 1px solid black
 
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+
+    @include respond(phone)
+        font-size: 1.2rem
+    @include respond(mobile)
+
+    @include respond(big-screen)
+
 .table-row
     cursor: pointer
     height: 3rem

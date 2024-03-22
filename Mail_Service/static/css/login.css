@@ -75,3 +75,10 @@
 .auth-description {
     color: #797676;   
 }
+
+@media screen and (max-width: 950px) {
+    .socialaccount-list {
+        justify-content: center;
+        gap: 8rem;
+    }
+}

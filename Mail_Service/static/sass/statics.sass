@@ -6,6 +6,17 @@
     width: 100%
     &__interval
         display: flex
+        @include respond(tab-land)
+
+        @include respond(tab-port)
+            flex-direction: column
+            gap: 5rem
+        @include respond(phone)
+            flex-direction: column
+            gap: 5rem
+        @include respond(mobile)
+
+        @include respond(big-screen)
 
 .statics-total
     position: absolute

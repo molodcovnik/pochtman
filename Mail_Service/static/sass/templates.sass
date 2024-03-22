@@ -7,6 +7,17 @@
     display: flex
     gap: 5.8rem 
     flex-wrap: wrap
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+
+    @include respond(port870)
+
+    @include respond(phone)
+        justify-content: center
+    @include respond(mobile)
+        justify-content: center
+    @include respond(big-screen)
 .temp-card
     position: relative
     width: 24rem
@@ -29,6 +40,15 @@
     &__body
         padding-left: .5rem
         color: #6b5f5f
+        @include respond(tab-land)
+
+        @include respond(tab-port)
+            padding-bottom: 4rem
+        @include respond(phone)
+            flex-direction: column
+        @include respond(mobile)
+            
+        @include respond(big-screen)
     &__title
         font-size: 1.6rem
         font-weight: 500

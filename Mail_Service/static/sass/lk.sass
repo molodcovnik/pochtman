@@ -2,21 +2,61 @@
     
 .wrapper-content
     display: flex
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+        
+    @include respond(phone)
+        display: block
+
+    @include respond(mobile)
+
+    @include respond(big-screen)
     &__left
         min-width: 30%
         height: 50rem
+        @include respond(tab-land)
+
+        @include respond(tab-port)
+
+        @include respond(phone)
+            height: auto
+
+        @include respond(mobile)
+
+        @include respond(big-screen)
         &_img-wrap
             height: auto
             text-align: center
     &__right
         min-width: 70%
         height: 50rem
+        @include respond(tab-land)
+
+        @include respond(tab-port)
+
+        @include respond(phone)
+            // text-align: center
+            margin: 0 auto
+
+        @include respond(mobile)
+
+        @include respond(big-screen)
 
 .wrapp-image
     position: absolute
     left: 0
     top: 50%
     transform: translate(0, -50%)
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+        display: none
+    @include respond(phone)
+        
+    @include respond(mobile)
+
+    @include respond(big-screen)
     &__img
         width: 50rem
         height: 40rem
@@ -28,6 +68,7 @@
 .lk
     &__items
         list-style: none
+
     &__item
         overflow: hidden
         text-align: center
@@ -55,14 +96,50 @@
     &__desc
         font-size: 1.6rem
         font-weight: normal
+        @include respond(tab-land)
+
+        @include respond(tab-port)
+
+        @include respond(phone)
+            text-align: center
+            
+
+        @include respond(mobile)
+
+        @include respond(big-screen)
 .api
     width: 90%
     margin: 0 auto
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+
+    @include respond(phone)
+        // text-align: center
+        display: flex
+        flex-direction: column
+        justify-content: center
+        align-items: center
+
+    @include respond(mobile)
+
+    @include respond(big-screen)
     &__create-api-key-btn
         font-size: 1.6rem
         width: 18rem !important
         padding: .5rem 1.5rem !important
         border-radius: 2rem !important
+        @include respond(tab-land)
+
+        @include respond(tab-port)
+
+        @include respond(phone)
+            // text-align: center
+
+        @include respond(mobile)
+
+        @include respond(big-screen)
+
 
 .hidden-api-key
     font-size: 1.6rem
@@ -70,6 +147,17 @@
     padding: .5rem 1.5rem !important
     border-radius: 2rem !important
     @include input-btn
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+
+    @include respond(phone)
+        // text-align: center
+        // margin: 0 auto
+
+    @include respond(mobile)
+
+    @include respond(big-screen)
     
 .update-api-key
     color: #e40d0d

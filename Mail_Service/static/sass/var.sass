@@ -1,4 +1,58 @@
 $black: #0E1015
 $margin-center: 0 auto
 
+// @mixin phone
+//     @media (max-width: 600px)
+//         @content
 
+// @mixin tab-port
+//     @media (max-width: 900px)
+//         @content
+
+// @mixin tab-land
+//     @media (max-width: 1200px)
+//         @content
+
+// @mixin big-screen
+//     @media (min-width: 1800px)
+//         @content
+    
+
+
+@mixin respond($breakpoint)
+    @if $breakpoint == mobile
+        @media (max-width: 450px)
+            @content
+
+    @if $breakpoint == phone
+        @media (max-width: 650px)
+            @content
+
+    @if $breakpoint == port870
+        @media (max-width: 870px)
+            @content
+
+    @if $breakpoint == tab-port
+        @media (max-width: 950px)
+            @content
+
+    @if $breakpoint == tab-land
+        @media (max-width: 1200px)
+            @content
+
+    @if $breakpoint == big-screen
+        @media (min-width: 1800px)
+            @content
+
+
+
+@include respond(tab-land)
+
+@include respond(tab-port)
+@include respond(port870)
+
+@include respond(phone)
+
+@include respond(mobile)
+
+@include respond(big-screen)

@@ -43,3 +43,26 @@
 .danger
     color: #e40d0d
     font-size: 1.4rem
+
+.docs_videos
+    video
+        width: 70rem
+        height: 50rem
+        @include respond(tab-land)
+
+        @include respond(tab-port)
+        @include respond(port870)
+            max-width: 100% !important
+        @include respond(phone)
+            max-width: 100% !important
+
+        @include respond(mobile)
+
+        @include respond(big-screen)
+
+.pochtmen-contacts
+    &__list
+    &__item
+        margin-left: 5rem
+        &:not(:last-child)
+            padding-bottom: 1rem  

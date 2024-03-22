@@ -39,7 +39,6 @@ class EmailAuthorSerializer(serializers.ModelSerializer):
         return data
 
 
-
 class TelegramAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemplateForm

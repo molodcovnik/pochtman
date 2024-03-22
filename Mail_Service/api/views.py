@@ -477,9 +477,11 @@ class TelegramUserView(APIView):
         return Response(data={"Error": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
     def delete(self, request, user_id, format=None):
-        tg_user = self.get_object(user_id)
-        tg_user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if self.request.user.is_superuser:
+            tg_user = self.get_object(user_id)
+            tg_user.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"Error": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
 #
 # <div class="{{temp_name}}">

@@ -28,6 +28,17 @@
     outline: none
     background: linear-gradient(122deg, rgb(250, 85, 96) 0.01%, rgb(177, 75, 244) 49.9%, rgb(77, 145, 255) 100%)
     cursor: pointer
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+
+    @include respond(phone)
+        width: 50%
+
+    @include respond(mobile)
+
+    @include respond(big-screen)
+
 
     // transition: all .5s linear
     &:hover
@@ -39,12 +50,47 @@
     width: 100%
     display: flex
 
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+
+    @include respond(port870)
+        gap: 7rem
+
+    @include respond(phone)
+        flex-direction: column
+    @include respond(mobile)
+        
+    @include respond(big-screen)
+
 .temp-detail-left
     min-width: 25%
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+        padding-bottom: 4rem
+
+    @include respond(phone)
+        // margin: 0 auto
+        display: flex
+        justify-content: space-evenly
+        gap: 5rem
+    @include respond(mobile)
+        
+    @include respond(big-screen)
 
 .temp-detail-right
     min-width: 70%
     height: auto
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+
+    @include respond(phone)
+
+    @include respond(mobile)
+        
+    @include respond(big-screen)
 
 #id_fields
     color: #867575
@@ -59,6 +105,15 @@
 .temp-edit-form
     padding: 3rem
     width: 35%
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+
+    @include respond(phone)
+        width: 70%
+    @include respond(mobile)
+
+    @include respond(big-screen)
     label[for="id_name"]
         font-weight: 600
         color: #867575
@@ -104,6 +159,15 @@
     
 
 .edit-form-img
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+
+    @include respond(phone)
+        display: none
+    @include respond(mobile)
+
+    @include respond(big-screen)
     &__image
         // transition: transform .4s ease-in-out
         &:hover
@@ -115,6 +179,16 @@
     left: 0
     top: 0
     transition: all .2s ease-in-out
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+
+    @include respond(phone)
+        display: none
+
+    @include respond(mobile)
+
+    @include respond(big-screen)
     &:hover
         background: rgba(#867575, .1)
     &__btn
@@ -126,6 +200,16 @@
 
 .contacts-form
     width: 24rem
+    @include respond(tab-land)
+
+    @include respond(tab-port)
+
+    @include respond(phone)
+        margin-top: 0
+    @include respond(mobile)
+        
+    @include respond(big-screen)
+
     &__text-info
         margin-top: 1rem
         font-size: 1.2rem
@@ -163,7 +247,15 @@
 
         &_telegram
     &__actions
-        
+        @include respond(tab-land)
+
+        @include respond(tab-port)
+
+        @include respond(phone)
+            margin-bottom: 3rem
+        @include respond(mobile)
+            
+        @include respond(big-screen)
     &__action
         height: 2rem
         width: 2rem

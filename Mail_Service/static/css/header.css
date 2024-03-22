@@ -39,7 +39,10 @@
     justify-content: space-between;
     font-family: 'Poppins', sans-serif;
 }
-
+.navbar__auth-wrapper {
+  display: flex;
+  align-items: center;
+}
 .navbar__auth a {
   padding: 0 !important;
   margin: 1.4rem;
@@ -82,6 +85,10 @@
   right: 1rem;
   display: none;
   cursor: pointer;
+}
+
+.navbar__nonauth {
+  display: flex;
 }
 
 .navbar__notification_count {
@@ -208,10 +215,24 @@
   .sidenav a:hover {
     color: #f1f1f1;
   }
-  
-  
-  /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
-  @media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-    .sidenav a {font-size: 18px;}
+
+@media screen and (max-width: 920px) {
+  .navbar__nonauth {
+    opacity: 0;
+    width: 0;
   }
+  .navbar__menu {
+    opacity: 0;
+    width: 0;
+  }
+  .navbar__auth-wrapper {
+    opacity: 0;
+    width: 0;
+  }
+  
+}
+  
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}

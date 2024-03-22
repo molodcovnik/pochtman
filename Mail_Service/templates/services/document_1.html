@@ -16,19 +16,19 @@
     </h3>
     <p class="api-block__desc margin-top-2rem">API Почтмен позволяет принимать формы с ваших сайтов, приложений, ботов.</p>
 
-    <p class="api-block__desc margin-top-2rem">Используйте ваш API ключ для доступа к нашему API из ваших приложений или веб-сайтов. Следуйте инструкциям в документации API для получения доступа к доступным функциям и методам. API-ключ Вы можете получить на странице <a class="api-block__link" href="{% url 'profile' %}">профиля</a>.</p>
+    <p class="api-block__desc margin-top-2rem">Используйте ваш API ключ для доступа к нашему API из ваших приложений или веб-сайтов. Следуйте инструкциям в документации API для получения доступа к доступным функциям и методам. API-ключ Вы можете получить на странице {% if request.user.is_authenticated %}<a class="api-block__link" href="{% url 'profile' %}">профиля</a>{% else %}профиля{% endif %}.</p>
     <div class="hr margin-top-2rem"></div>
 </div>
 <div class="preparation-docs">
     <h3 class="preparation-docs__title margin-top-2rem">Подготовка</h3>
-    <p class="preparation-docs__desc margin-top-2rem">Чтобы начать работать с Почтмен, вам нужно зарегистрироваться и получить доступ к личному кабинету. Для аутентификации запросов в API вам потребуется секретный ключ и идентификатор формы из <a class="api-block__link" href="{% url 'templates' %}">личного кабинета</a>.
+    <p class="preparation-docs__desc margin-top-2rem">Чтобы начать работать с Почтмен, вам нужно зарегистрироваться и получить доступ к личному кабинету. Для аутентификации запросов в API вам потребуется секретный ключ и идентификатор формы из {% if request.user.is_authenticated %}<a class="api-block__link" href="{% url 'templates' %}">личного кабинета</a>{% else %}личного кабинета{% endif %}. Так же можете посмотреть наше короткое <a href="{% url 'docs_video' %}" class="api-block__link">видео</a> по использованию Почтмен.
     </p>
     <div class="hr margin-top-2rem"></div>
 </div>
 <div class="creating-form-docs">
     <h3 class="creating-form-docs__title margin-top-2rem">Создание и настройка формы</h3>
     <p class="creating-form-docs__desc margin-top-2rem">
-        Используйте наш интуитивно понятный <a class="api-block__link" href="{% url 'constructor' %}">конструктор</a> форм для создания и настройки форм в соответствии с вашими потребностями.
+        Используйте наш интуитивно понятный {% if request.user.is_authenticated %}<a class="api-block__link" href="{% url 'constructor' %}">конструктор</a>{% else %}конструктор{% endif %} форм для создания и настройки форм в соответствии с вашими потребностями.
     </p>
     <ul class="creating-form-instruction-list margin-top-2rem">
         <li class="creating-form-instruction-list__item">Дать название форме</li>
@@ -40,7 +40,7 @@
     </ul>
     <div class="hr margin-top-2rem"></div>
 </div>
-<div class="integration-docs padding-bottom-5rem">
+<div class="integration-docs">
     <h3 class="integration-docs__title margin-top-2rem">Интеграция формы</h3>
     <ul class="integration-instruction-list margin-top-2rem">
         <li class="integration-instruction-list__item">После настройки формы получите HTML код , вставьте его к себе на сайт</li>
@@ -48,10 +48,20 @@
         <li class="integration-instruction-list__item">В JS-коде вставьте ваш API-ключ в headers</li>
     </ul>
     <p class="danger margin-top-2rem">В JS-коде не меняйте расположение полей, как наше приложение поставило поля так и оставьте их, чтобы не ломать их отображение в нашем приложении. В HTML-коде форму можно изменять как угодно, за исключением id-полей.</p>
-    <p class="margin-top-2rem">Готово! Ваш бекэнд готов к работе.</p>
+    <p class="margin-top-2rem">Ваш бэкенд готов к работе!</p>
     <p>Теперь вы сможете получать уведомления о полученых формах с Вашего сайта на почту, в Телеграм и отслеживать их в реальном времени на нашем сайте!</p>
+    <div class="hr margin-top-2rem"></div>
 </div>
 
+<div class="preparation-docs padding-bottom-5rem">
+    <h3 class="preparation-docs__title margin-top-2rem">Наши контакты :</h3>
+    <p class="margin-top-2rem">В случае возникновения вопросов и сложностей при использовании сервиса, пишите нам на почту или нашему боту в Телеграм.</p>
+    
+    <ul class="pochtmen-contacts__list margin-top-2rem">
+        <li class="pochtmen-contacts__item"><a href="#" class="pochtmen-contacts__link api-block__link">pochtmen@mail.ru</a></li>
+        <li class="pochtmen-contacts__item"><a href="#" class="pochtmen-contacts__link api-block__link">@pochtmen_bot</a></li>
+    </ul>
 
+</div>
 
 {% endblock content %}
