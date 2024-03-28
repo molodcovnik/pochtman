@@ -1,4 +1,4 @@
-const baseUrl = "http://127.0.0.1:8000/api";
+const baseUrlTemp = "http://pochtmen.ru/api";
 const jsBlock = document.querySelector('.js-code-content');
 const cssDiv = document.querySelector('.css-result');
 const htmlDiv = document.querySelector('.html-code-content');
@@ -95,7 +95,7 @@ function cssCodeGen(tempName) {
 
 async function loadTempCode(currentTempId) {
     loaderBlockTemplate();
-    await fetch(`${baseUrl}/last_template/`, {
+    await fetch(`${baseUrlTemp}/last_template/`, {
         method: 'POST',
         body: JSON.stringify({
             templateId: currentTempId
@@ -153,7 +153,7 @@ function loaderBlockTemplate() {
 
 
 async function getNotifications(tempId) {
-    return await fetch(`${baseUrl}/notifications/${tempId}/count`, {
+    return await fetch(`${baseUrlTemp}/notifications/${tempId}/count`, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
@@ -244,7 +244,7 @@ async function fetchUpdateAuthorContacts(value, service_name) {
         email_author: value
     }
 
-    let response = await fetch(`${baseUrl}/templates/${currentTempId}/${service_name}/`, {
+    let response = await fetch(`${baseUrlTemp}/templates/${currentTempId}/${service_name}/`, {
         method: 'PATCH',
         body: JSON.stringify(service_name === 'telegram' ? data_tg : data_email),
         headers: {
@@ -263,7 +263,7 @@ async function fetchUpdateAuthorContacts(value, service_name) {
 
 async function getCheckTgUserDB(tempId) {
     const checkTg = document.querySelector('.contact-form__check-telegram');
-    let tg_response = await fetch(`${baseUrl}/templates/${tempId}/telegram/`, {
+    let tg_response = await fetch(`${baseUrlTemp}/templates/${tempId}/telegram/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -273,7 +273,7 @@ async function getCheckTgUserDB(tempId) {
     if (!tg_result.telegram_author) {
         checkTg.remove();
     } else {
-        let response = await fetch(`${baseUrl}/templates/${tempId}/check_telegram/`, {
+        let response = await fetch(`${baseUrlTemp}/templates/${tempId}/check_telegram/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

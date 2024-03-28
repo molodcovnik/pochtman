@@ -1,4 +1,4 @@
-const baseUrl = "http://127.0.0.1:8000/api";
+const baseUrlConst = "http://pochtmen.ru/api";
 const createBtn = document.querySelector('.create-form-btn');
 const constructorDiv = document.querySelector('.constructor');
 const constructorResults = document.querySelector('.constructor-results');
@@ -11,14 +11,6 @@ const htmlDiv = document.querySelector('.html-code-content')
 const resWrapper = document.querySelector('.results-wrapper');
 
 
-// const navBlock = `
-// <div class="navigation padding-top-2rem">
-//     <ul class="navigation__menu">
-//         <li class="navigation__item"><button onclick="navSelectHTML()" class="navigation__btn border">HTML</button></li>
-//         <li class="navigation__item"><button onclick="navSelectCSS()" class="navigation__btn border">CSS</button></li>
-//         <li class="navigation__item"><button onclick="navSelectJS()" class="navigation__btn border">JS</button></li>
-//     </ul>
-// </div>`;
 function cssCodeGen(tempName) {
     var name = tempName.replace(/ /g, "_");
     const blockCss = `
@@ -89,7 +81,7 @@ createBtn.addEventListener('click', (e) => {
 });
 
 async function fetchFieldsJSON() {
-    const response = await fetch(`${baseUrl}/fields/`);
+    const response = await fetch(`${baseUrlConst}/fields/`);
 
     if (!response.ok) {
         const message = `An error has occured: ${response.status}`;
@@ -156,7 +148,7 @@ async function createForm(formName, fieldsSelected, userId, token){
     
     try {
         
-        const response = await fetch(`${baseUrl}/templates/`, {
+        const response = await fetch(`${baseUrlConst}/templates/`, {
          method: 'POST',
          headers: {
            'Content-Type': 'application/json',
@@ -177,7 +169,7 @@ async function createForm(formName, fieldsSelected, userId, token){
         //  localStorage.setItem("templateId", templateId);
          let lastTemp =  await getLastTempId(userId);
          let lastTempData =  await lastTemp.json();
-         await fetch(`${baseUrl}/last_template/`, {
+         await fetch(`${baseUrlConst}/last_template/`, {
                 method: 'POST',
                 body: JSON.stringify({
                     templateId: lastTempData.id
@@ -205,7 +197,7 @@ async function createForm(formName, fieldsSelected, userId, token){
                 htmlDiv.insertAdjacentHTML('beforeend', code);
                 cssDiv.insertAdjacentHTML('afterbegin', cssCodeGen(lastTempData.name));
                 jsBlock.insertAdjacentHTML('beforeend', jsCode);
-                resWrapper.insertAdjacentHTML('afterend', '<div class="wrapper-btn center margin-top-3rem margin-bottom-3rem"><button class="navigation__btn" onclick="goToTemplates()">Мои формы</button></div>' )
+                resWrapper.insertAdjacentHTML('afterend', `<div class="wrapper-btn center margin-top-3rem margin-bottom-3rem"><button class="navigation__btn" onclick="window.location.pathname = '/templates';">Мои формы</button></div>`);
                 
             })
             .catch(error =>  {
@@ -219,7 +211,7 @@ async function createForm(formName, fieldsSelected, userId, token){
     }
 
 async function getLastTempId(userId) {
-    return await fetch(`${baseUrl}/api/last_template`, {
+    return await fetch(`${baseUrlConst}/last_template`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -271,6 +263,6 @@ function loaderBlock() {
     
 }
 
-function goToTemplates() {
-    window.location.pathname = '/templates';
-}
+// function goToTemplates() {
+//     window.location.pathname = '/templates';
+// }

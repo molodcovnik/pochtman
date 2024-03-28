@@ -26,9 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', 'localhost']
 
 
 # Application definition
@@ -54,19 +54,19 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
     "corsheaders",
-    "debug_toolbar",
+    # "debug_toolbar",
 
 ]
 
 SITE_ID = 1
 
-SITE_URL = 'http://127.0.0.1:8000'
+SITE_URL = 'http://www.pochtmen.ru'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -194,7 +194,7 @@ PROXIES_HTTP = os.environ.get('PROXIES_HTTP')
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -221,9 +221,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",
 ]
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static"
-]
+
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static"
+# ]
 
 MEDIA_URL = '/media/'
 
@@ -232,3 +233,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')

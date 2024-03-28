@@ -1,4 +1,4 @@
-const baseUrl = "http://127.0.0.1:8000/api";
+const baseUrlIndex = "http://pochtmen.ru/api";
 const integrationDiv = document.querySelector(".composition__item_simple-integration");
 const notificationsDiv = document.querySelector(".composition__item_real-time-notifications");
 const staticDiv = document.querySelector(".composition__item_static");
@@ -218,7 +218,7 @@ function moveBasedOnMouse(e) {
 }
 
 async function getNotifications(userId) {
-    let response = await fetch(`${baseUrl}/notifications/count`, {
+    let response = await fetch(`${baseUrlIndex}/notifications/count`, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',

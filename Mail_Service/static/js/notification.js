@@ -1,4 +1,4 @@
-const baseUrl = "http://127.0.0.1:8000/api";
+const baseUrlNotification = "http://pochtmen.ru/api";
 const fieldCard = document.querySelector('.field-card');
 const uid = fieldCard.getAttribute('data-uid');
 const csrf = fieldCard.getAttribute('data-csrf');
@@ -14,7 +14,7 @@ form.onsubmit = async (e) => {
     const data = {
         "uid": uid,
     };
-    let response = await fetch(`${baseUrl}/notifications/delete`, {
+    let response = await fetch(`${baseUrlNotification}/notifications/delete`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ async function changeStatus(uid) {
     const data = {
         "uid": uid,
     };
-    let response = await fetch(`${baseUrl}/notifications/status`, {
+    let response = await fetch(`${baseUrlNotification}/notifications/status`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

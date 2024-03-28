@@ -338,6 +338,12 @@
   box-shadow: 1px 3px 15px #1C58F0;
   transition: all 0.4s ease-in-out;
 }
+@media (max-width: 650px) {
+  .advantage__image {
+    height: 30rem;
+    width: 25rem;
+  }
+}
 .advantage__image:hover {
   transform: scale(0.9);
 }

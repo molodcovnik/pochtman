@@ -1,4 +1,4 @@
-const baseUrl = "http://127.0.0.1:8000/api";
+const baseUrlNotifications = "http://pochtmen.ru/api";
 const domain = "http://127.0.0.1:8000";
 let gridCells = document.getElementById('table-results');
 let url = window.location.pathname;
@@ -95,11 +95,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
 async function getNotification(pk) {
-    return await fetch(`${baseUrl}/notifications/${pk}/`);
+    return await fetch(`${baseUrlNotifications}/notifications/${pk}/`);
     }
 
 async function getFieldsName(pk) {
-    return await fetch(`${baseUrl}/templates/${pk}/fields/`);
+    return await fetch(`${baseUrlNotifications}/templates/${pk}/fields/`);
     }
 
 document.querySelector('.view-checks').addEventListener('click', (e) => {
@@ -114,7 +114,7 @@ async function deleteNotification(uid) {
     const data = {
         "uid": uid,
     };
-    let response = await fetch(`${baseUrl}/notifications/delete`, {
+    let response = await fetch(`${baseUrlNotifications}/notifications/delete`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

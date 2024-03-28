@@ -76,13 +76,13 @@ class NotificationUpdates(APIView):
 class LastTemplateView(APIView):
 
     def get(self, request, format=None):
-        user = User.objects.get(id=self.request.headers["Authentication"])
-        print(user)
+        try:
+            user = User.objects.get(id=self.request.headers["Authentication"])
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         try:
             form = TemplateForm.objects.filter(author=self.request.user).last()
-            fields = form.fields.all()
-            print(fields)
-
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -109,11 +109,11 @@ form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async<
         <span class="js-body-str">"{{field.field_name|lower}}"</span>: {{field.field_name|lower}},{% endfor %}
     };
                                
-    <span class="js-keyword">let</span> response = <span class="js-keyword">await</span> <span class="js-function">fetch</span>(<span class="js-body-str">'http://127.0.0.1:8000/api/send_data/'</span>, {
+    <span class="js-keyword">let</span> response = <span class="js-keyword">await</span> <span class="js-function">fetch</span>(<span class="js-body-str">'http://www.pochtmen.ru/api/send_data/'</span>, {
         method: <span class="js-body-str">'POST'</span>,
         headers: {
             <span class="js-body-str">'Content-Type'</span>: <span class="js-body-str">'application/json'</span>,
-            <span class="js-body-str">'Authorization'</span>: <span class="js-body-str">'Token ' + 'Ваш токен'</span>
+            <span class="js-body-str">'Authorization'</span>: <span class="js-body-str">'Token ' + 'Ваш_токен'</span>
         },
         body: JSON.<span class="js-function">stringify</span>(data),
       });
@@ -152,8 +152,10 @@ form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async<
 
 
 class TemplatesView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, format=None):
-        data = TemplateForm.objects.all()
+        data = TemplateForm.objects.filter(author=self.request.user)
         serializer = TemplatesSerializer(data, many=True)
         return Response(serializer.data)
 
@@ -166,6 +168,8 @@ class TemplatesView(APIView):
 
 
 class TemplateViews(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get_object(self, pk):
         try:
             return TemplateForm.objects.get(pk=pk)
@@ -174,12 +178,16 @@ class TemplateViews(APIView):
 
     def get(self, request, pk, format=None):
         temp = self.get_object(pk)
+        if temp.author != self.request.user:
+            return Response(data={"Error": "Detail template for only owner template"}, status=status.HTTP_403_FORBIDDEN)
         serializer = TemplatesSerializer(temp, )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk, format=None):
         temp = self.get_object(pk)
+        if temp.author != self.request.user:
+            return Response(data={"Error": "Updated template can be only owner template"}, status=status.HTTP_403_FORBIDDEN)
         serializer = TemplatesSerializer(temp, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -188,11 +196,14 @@ class TemplateViews(APIView):
 
     def delete(self, request, pk, format=None):
         temp = self.get_object(pk)
+        if temp.author != self.request.user:
+            return Response(data={"Error": "Delete template can be only owner template"}, status=status.HTTP_403_FORBIDDEN)
         temp.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TemplatesReadOnlyView(APIView):
+
     def get_object(self, pk):
         try:
             return TemplateForm.objects.get(pk=pk)
@@ -201,6 +212,8 @@ class TemplatesReadOnlyView(APIView):
 
     def get(self, request, pk, format=None):
         temp = self.get_object(pk)
+        if temp.author != self.request.user:
+            return Response(data={"Error": "Detail template for only owner template"}, status=status.HTTP_403_FORBIDDEN)
         serializer = TemplatesFieldsSerializer(temp, )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -305,6 +318,7 @@ class SendMessageViews(APIView):
 
 
 class TokenView(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
         user = self.request.user
@@ -402,6 +416,9 @@ class TemplateFormEmailView(APIView):
     def get(self, request, pk, format=None):
         try:
             template = TemplateForm.objects.get(id=pk)
+            if template.author != self.request.user:
+                return Response(data={"Error": "Detail template for only owner template"},
+                                status=status.HTTP_403_FORBIDDEN)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = EmailAuthorSerializer(template, )
@@ -409,6 +426,9 @@ class TemplateFormEmailView(APIView):
 
     def patch(self, request, pk):
         template = TemplateForm.objects.get(id=pk)
+        if template.author != self.request.user:
+            return Response(data={"Error": "Update template for only owner template"},
+                            status=status.HTTP_403_FORBIDDEN)
         serializer = EmailAuthorSerializer(template, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -420,6 +440,9 @@ class TemplateFormTelegramView(APIView):
     def get(self, request, pk, format=None):
         try:
             template = TemplateForm.objects.get(id=pk)
+            if template.author != self.request.user:
+                return Response(data={"Error": "Detail template for only owner template"},
+                                status=status.HTTP_403_FORBIDDEN)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = TelegramAuthorSerializer(template, )
@@ -427,6 +450,9 @@ class TemplateFormTelegramView(APIView):
 
     def patch(self, request, pk):
         template = TemplateForm.objects.get(id=pk)
+        if template.author != self.request.user:
+            return Response(data={"Error": "Update template telegram for only owner template"},
+                            status=status.HTTP_403_FORBIDDEN)
         serializer = TelegramAuthorSerializer(template, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -437,6 +463,9 @@ class TemplateFormTelegramView(APIView):
 class TelegramUserCheckView(APIView):
     def get(self, request, pk, format=None):
         template = TemplateForm.objects.get(id=pk)
+        if template.author != self.request.user:
+            return Response(data={"Error": "Check template telegram for only owner template"},
+                            status=status.HTTP_403_FORBIDDEN)
         tg_form_form = template.telegram_author
         tg_user = TelegramUser.objects.filter(username=tg_form_form).values("username")
         serializer = CheckTelegramSerializer(tg_user, )

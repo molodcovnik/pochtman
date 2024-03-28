@@ -288,6 +288,15 @@
         // float: right
         // clear: both
         transition: all .4s ease-in-out
+        @include respond(tab-land)
+        
+        @include respond(tab-port)
+
+
+        @include respond(phone)
+            height: 30rem
+            width: 25rem
+        @include respond(mobile)
         &:hover
             transform: scale(.9)
 

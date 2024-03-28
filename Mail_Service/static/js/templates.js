@@ -1,5 +1,5 @@
 const tempIds = document.querySelectorAll('div[data-tempid]');
-const baseUrl = "http://127.0.0.1:8000/api";
+const baseUrlTemps = "http://pochtmen.ru/api";
 
 let templatesAll = [].map.call(tempIds, async function(el) {
     let tempFetch = await getNotifications(el.dataset.tempid);
@@ -18,7 +18,7 @@ let templatesAll = [].map.call(tempIds, async function(el) {
 
 
 async function getNotifications(tempId) {
-    return await fetch(`${baseUrl}/notifications/${tempId}/count`, {
+    return await fetch(`${baseUrlTemps}/notifications/${tempId}/count`, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
