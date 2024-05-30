@@ -911,6 +911,11 @@ code {
   padding-top: 1rem;
 }
 
+#id_fields_helptext {
+  display: block;
+  padding-bottom: 2rem;
+}
+
 .form-wrapper-temp-edit {
   display: flex;
   justify-content: space-evenly;
@@ -933,6 +938,39 @@ code {
 }
 .temp-edit-form input[type=checkbox] {
   margin-right: 2rem;
+}
+.temp-edit-form label[for=id_check_ip_address] {
+  font-weight: 600;
+  color: #867575;
+  font-size: 1.7rem;
+  padding-bottom: 1rem;
+  padding-right: 5rem;
+}
+.temp-edit-form label[for=id_check_ip_address] + input[type=checkbox] {
+  transform: scale(1.5);
+}
+.temp-edit-form label[for=id_ip_address] {
+  font-weight: 600;
+  color: #867575;
+  font-size: 1.7rem;
+  padding-bottom: 1rem;
+  padding-right: 2rem;
+}
+.temp-edit-form label[for=id_ip_address] + input {
+  font-weight: bold;
+  padding: 0.5rem 0.5rem;
+  color: #867575;
+  border: 10px solid;
+  border-image-slice: 1;
+  border-width: 0.3rem;
+  border-image-source: linear-gradient(to left, #07a9b2, #3585e8);
+}
+.temp-edit-form label[for=id_ip_address] + input::placeholder {
+  font-weight: 300;
+  opacity: 0.5;
+}
+.temp-edit-form p:last-of-type {
+  padding-top: 2rem;
 }
 
 #id_name {
@@ -1455,6 +1493,11 @@ code {
   padding-top: 1rem;
 }
 
+#id_fields_helptext {
+  display: block;
+  padding-bottom: 2rem;
+}
+
 .form-wrapper-temp-edit {
   display: flex;
   justify-content: space-evenly;
@@ -1477,6 +1520,39 @@ code {
 }
 .temp-edit-form input[type=checkbox] {
   margin-right: 2rem;
+}
+.temp-edit-form label[for=id_check_ip_address] {
+  font-weight: 600;
+  color: #867575;
+  font-size: 1.7rem;
+  padding-bottom: 1rem;
+  padding-right: 5rem;
+}
+.temp-edit-form label[for=id_check_ip_address] + input[type=checkbox] {
+  transform: scale(1.5);
+}
+.temp-edit-form label[for=id_ip_address] {
+  font-weight: 600;
+  color: #867575;
+  font-size: 1.7rem;
+  padding-bottom: 1rem;
+  padding-right: 2rem;
+}
+.temp-edit-form label[for=id_ip_address] + input {
+  font-weight: bold;
+  padding: 0.5rem 0.5rem;
+  color: #867575;
+  border: 10px solid;
+  border-image-slice: 1;
+  border-width: 0.3rem;
+  border-image-source: linear-gradient(to left, #07a9b2, #3585e8);
+}
+.temp-edit-form label[for=id_ip_address] + input::placeholder {
+  font-weight: 300;
+  opacity: 0.5;
+}
+.temp-edit-form p:last-of-type {
+  padding-top: 2rem;
 }
 
 #id_name {

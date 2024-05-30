@@ -279,6 +279,15 @@ def random_code():
     return random.randint(1000, 999999999)
 
 
+def get_ip_address(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
 @extend_schema_view(
     get=extend_schema(
         exclude=True
@@ -301,6 +310,13 @@ class SendMessageViews(APIView):
     def post(self, request, format=None):
         temp_id = self.request.data.get("tempId")
         template = get_object_or_404(TemplateForm, id=temp_id)
+        checked_ip = template.check_ip_address
+        if checked_ip:
+            ip_client = get_ip_address(request)
+            if template.ip_address != ip_client:
+                return Response(data={"Error": "Not Acceptable",
+                                      "Detail": "IP-address not valid"},
+                                status=status.HTTP_406_NOT_ACCEPTABLE)
         try:
             user_id = self.request.user.id
             user = User.objects.get(id=user_id)
@@ -311,6 +327,7 @@ class SendMessageViews(APIView):
             return Response(status=status.HTTP_403_FORBIDDEN)
         uid = random_code()
         print(uid)
+
         time_add = datetime.datetime.now(datetime.timezone.utc)
         data = (self.request.data).copy()
         data.pop('tempId')

@@ -54,9 +54,11 @@ class TemplateForm(models.Model):
     author = models.ForeignKey(User, related_name='templates', on_delete=models.CASCADE)
     email_author = models.CharField(blank=True, null=True, max_length=64)
     telegram_author = models.CharField(blank=True, null=True, max_length=64)
+    check_ip_address = models.BooleanField(default=False)
+    ip_address = models.CharField(max_length=64, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.name} {self.fields} {self.author} {self.telegram_author} {self.email_author}'
+        return f'{self.name} {self.fields} {self.author} {self.telegram_author} {self.email_author} {self.check_ip_address} {self.ip_address}'
 
     def get_absolute_url(self):
         return reverse('template_detail', args=[str(self.id)])

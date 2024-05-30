@@ -97,6 +97,10 @@
     padding-bottom: 3rem
     padding-top: 1rem
 
+#id_fields_helptext
+    display: block
+    padding-bottom: 2rem
+
 .form-wrapper-temp-edit
     display: flex
     justify-content: space-evenly
@@ -121,6 +125,40 @@
         padding-bottom: 1rem
     input[type="checkbox"]
         margin-right: 2rem
+    
+    label[for="id_check_ip_address"]
+        font-weight: 600
+        color: #867575
+        font-size: 1.7rem
+        padding-bottom: 1rem
+        padding-right: 5rem
+        
+        & + input[type="checkbox"]
+            transform: scale(1.5)
+            
+    label[for="id_ip_address"]
+        font-weight: 600
+        color: #867575
+        font-size: 1.7rem
+        padding-bottom: 1rem
+        padding-right: 2rem
+        
+        & + input
+            font-weight: bold
+            padding: .5rem .5rem
+            color: #867575
+            border: 10px solid
+            border-image-slice: 1
+            border-width: .3rem
+            border-image-source: linear-gradient(to left, #07a9b2, #3585e8)
+            &::placeholder
+                font-weight: 300
+                opacity: 0.5
+    p
+        &:last-of-type
+            padding-top: 2rem
+        
+
 
 #id_name
     display: block

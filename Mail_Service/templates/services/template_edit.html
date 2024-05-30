@@ -10,7 +10,7 @@
         <a href="{% url 'template_detail' request.resolver_match.kwargs.pk %}" class="back-btn__btn" title="Назад">&#8592;</a>
     </div>
 </div>
-<div class="form-wrapper-temp-edit">
+<div class="form-wrapper-temp-edit padding-bottom-5rem">
     <form action="" class="temp-edit-form box-shadow" method="post">
         {% csrf_token %}
         {{ form.as_p }}
