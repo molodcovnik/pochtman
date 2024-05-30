@@ -15,7 +15,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.views.generic.detail import SingleObjectMixin
 from jinja2 import Template
-
+from rest_framework.authtoken.models import Token
 from users.views import json_serial
 from .forms import CommentForm, TemplatesForm
 from .models import Comment, Field, TemplateForm, FieldData
@@ -25,20 +25,29 @@ from dataclasses import dataclass
 def index(request):
     form = CommentForm(request.POST or None)
     comments = Comment.objects.all().order_by('-date')
+    if request.user.is_authenticated:
 
-    context = {
-        "form": form,
-        "comments": comments,
-    }
-    if request.method == 'POST':
-        if form.is_valid():
-            comment = Comment.objects.create(text=form.cleaned_data['text'])
-            comment.save()
-            return redirect(request.path)
+        token, created = Token.objects.get_or_create(user=request.user)
+        context = {
+            "form": form,
+            "comments": comments,
+            "tokenIndex": mark_safe(json.dumps(token.key)),
+        }
+
+        if request.method == 'POST':
+            if form.is_valid():
+                comment = Comment.objects.create(text=form.cleaned_data['text'])
+                comment.save()
+                return redirect(request.path)
+            else:
+                return render(request, "services/main_page.html", context)
         else:
             return render(request, "services/main_page.html", context)
-    else:
-        return render(request, "services/main_page.html", context)
+    context = {
+        "form": form,
+        "comments": comments
+    }
+    return render(request, "services/main_page.html", context)
 
 
 def document_view(request):
@@ -105,7 +114,6 @@ class TemplateEdit(SuccessMessageMixin, UpdateView):
     success_message = "Шаблон формы успешно изменен!"
     extra_tags = "messages__success_updated"
 
-
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.author = self.request.user
@@ -153,10 +161,8 @@ class NotificationListPerson(ListView):
         template = TemplateForm.objects.get(id=temp_id)
         context["count_fields"] = template.fields.all().count()
         context["fields"] = template.fields.all()
-
         return context
 
-#### test view for date
 
 class NotificationDetail(View):
     def get(self, request, **kwargs):
@@ -174,7 +180,6 @@ class NotificationDetail(View):
 
 
 def delete_template_data(request, uid):
-    print(uid)
     context = {}
 
     fd = FieldData.objects.filter(uid=uid)
@@ -186,6 +191,7 @@ def delete_template_data(request, uid):
 
 
 class StaticView(View):
+
     def get(self, request, **kwargs):
         today = datetime.datetime.now(datetime.timezone.utc)
         last_month = today - datetime.timedelta(days=30)

@@ -1,11 +1,10 @@
-const baseUrlTemp = "http://pochtmen.ru/api";
+const baseUrlTemp = window.location.protocol + "//" + window.location.host + "/api";
 const jsBlock = document.querySelector('.js-code-content');
 const cssDiv = document.querySelector('.css-result');
 const htmlDiv = document.querySelector('.html-code-content');
 const tempName = document.querySelector('#temp-card__template-name').textContent;
 const currentTempId = document.querySelector('.temp-card').getAttribute('data-temp-id');
-let token = document.querySelector(".temp-detail-left");
-let csrf = token.getAttribute("data-csrf");
+
 let template = document.querySelector('.temp-card');
 let tempId = template.getAttribute('data-temp-id');
 const message = document.querySelector(".messages__success_updated");
@@ -102,7 +101,7 @@ async function loadTempCode(currentTempId) {
         }),
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrf
+            'Authorization' : `Token ${localStorage.getItem("token")}`
         },
     })
     .then((response) => {
@@ -249,7 +248,7 @@ async function fetchUpdateAuthorContacts(value, service_name) {
         body: JSON.stringify(service_name === 'telegram' ? data_tg : data_email),
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrf
+            'Authorization' : `Token ${localStorage.getItem("token")}`
         }})
 
         if (response.status == 202) {
@@ -267,6 +266,7 @@ async function getCheckTgUserDB(tempId) {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization' : `Token ${localStorage.getItem("token")}`
             }
     });
     let tg_result = await tg_response.json();

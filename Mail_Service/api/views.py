@@ -1,8 +1,8 @@
 import datetime
 import json
 import random
-import re
-
+from django.conf import settings
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
@@ -14,9 +14,9 @@ from jinja2 import Template
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.decorators import action, api_view
+from rest_framework.decorators import action, api_view, authentication_classes, permission_classes
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status, permissions, viewsets
 from rest_framework.status import HTTP_200_OK
@@ -27,11 +27,16 @@ from api.models import TelegramUser
 from api.serializers import FormSerializer, FieldSerializer, TemplatesSerializer, LastTemplateSerializer, \
     TokenSerializer, FieldDataSerializer, NotifySerializerSerializer, UserEmailSerializer, EmailAuthorSerializer, \
     TelegramAuthorSerializer, FieldDataNotificationsSerializer, TemplatesFieldsSerializer, TelegramUserSerializer, \
-    CheckTelegramSerializer
+    CheckTelegramSerializer, SendDataSerializer, OwnerTemplatesSerializer, NotificationSerializer
+from api.utilites.code_renderer import CodeRenderService
 from services.models import Form, Field, TemplateForm, FieldData
 
 
 class FieldsViews(APIView):
+
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, format=None):
         # сортируем поля по их юзабельности в других шаблонах
         data = Field.objects.annotate(num_fields=Count('forms__id')).order_by('-num_fields')
@@ -41,12 +46,16 @@ class FieldsViews(APIView):
 
 
 class FieldViews(APIView):
+
     def get_object(self, pk):
         try:
             return Field.objects.get(pk=pk)
         except Field.DoesNotExist:
             raise Http404
 
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, pk, format=None):
         field = self.get_object(pk)
         serializer = FieldSerializer(field, )
@@ -55,11 +64,18 @@ class FieldViews(APIView):
 
 
 class NotificationUpdates(APIView):
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+
+    @extend_schema(
+        request=None,
+        responses=NotificationSerializer,
+        summary='Возвращает количество всех уведомлений'
+    )
     def get(self, request, format=None):
         try:
             uniq_uid = []
-            user = User.objects.get(id=self.request.headers["Authentication"])
-            templates = FieldData.objects.filter(template__author=user, read_status=False)
+            templates = FieldData.objects.filter(template__author=self.request.user, read_status=False)
             for temp in templates:
                 uniq_uid.append(temp.uid)
 
@@ -70,17 +86,18 @@ class NotificationUpdates(APIView):
         data = {
             'count': notifications_count,
              }
-        return Response(data)
+        serializer = NotificationSerializer(data, )
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class LastTemplateView(APIView):
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
 
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, format=None):
-        try:
-            user = User.objects.get(id=self.request.headers["Authentication"])
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
         try:
             form = TemplateForm.objects.filter(author=self.request.user).last()
         except:
@@ -89,60 +106,19 @@ class LastTemplateView(APIView):
         serializer = LastTemplateSerializer(form, )
         return Response(serializer.data)
 
+    @extend_schema(
+        exclude=True
+    )
     def post(self, request):
-        template_id = self.request.data["templateId"]
+        template_id = self.request.data.get("templateId")
         temp = TemplateForm.objects.get(id=template_id)
         t_name = temp.name
         temp_name = t_name.replace(" ", "_")
         fields = temp.fields.all()
-        js_template = Template("""<pre>
-<code class="js-code">
-<span class="js-keyword">const</span> form = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'.form'</span>);
-
-form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async</span> (e) => {
-    e.<span class="js-function">preventDefault</span>();{% for field in fields %}{% if field.field_type == "BOOLEAN" %}
-    <span class="js-keyword">const</span> {{field.field_name|lower}} = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'#{{field.field_name|lower}}'</span>).checked;{% else %}
-    <span class="js-keyword">const</span> {{field.field_name|lower}} = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'#{{field.field_name|lower}}'</span>).value;{% endif %}{% endfor %}
-    
-    <span class="js-keyword">const</span> data = {
-        <span class="js-body-str">"tempId"</span>: <span>{{template_id}}</span>, <span class="js-body-com">// "tempId": 123,</span>{% for field in fields %}
-        <span class="js-body-str">"{{field.field_name|lower}}"</span>: {{field.field_name|lower}},{% endfor %}
-    };
-                               
-    <span class="js-keyword">let</span> response = <span class="js-keyword">await</span> <span class="js-function">fetch</span>(<span class="js-body-str">'http://www.pochtmen.ru/api/send_data/'</span>, {
-        method: <span class="js-body-str">'POST'</span>,
-        headers: {
-            <span class="js-body-str">'Content-Type'</span>: <span class="js-body-str">'application/json'</span>,
-            <span class="js-body-str">'Authorization'</span>: <span class="js-body-str">'Token ' + 'Ваш_токен'</span>
-        },
-        body: JSON.<span class="js-function">stringify</span>(data),
-      });
-    <span class="js-keyword">let</span> result = <span class="js-keyword">await</span> response.<span class="js-function">json()</span>;
-    console.<span class="js-function">log</span>(result);
-};
-                </code>
-            </pre>""")
-        template = Template("""
-    <pre>
-    <code class="code-result">
-<span class="h-tag">&lt;div</span> <span class="h-atr">class=</span><span class="h-str">&quot;{{temp_name}}&quot;</span><span class="h-tag">&gt;</span>
-    <span class="h-tag">&lt;form</span> <span class="h-atr">action=</span><span class="h-str">"#"</span> <span class="h-atr">class=</span><span class="h-str">"form"</span><span class="h-atr"> method=</span><span class="h-str">"post"</span><span class="h-tag">&gt;</span>{% for field in fields %}
-        <span class="h-tag">&lt;div</span> <span class="h-atr">class=</span><span class="h-str">"field-wrapper {{field.field_name | lower}}"</span><span class="h-tag">></span>
-            <span class="h-tag">&lt;label</span> <span class="h-atr">for=</span><span class="h-str">"{{field.field_name|lower}}"</span> <span class="h-atr">class=</span><span class="h-str">"form__label"</span><span class="h-tag">></span>{{field.field_name}}<span class="h-tag">&lt;/label&gt;</span>{% if field.field_type == "EMAIL" %}
-            <span class="h-tag">&lt;input</span> <span class="h-atr">type=</span><span class="h-str">"email"</span> <span class="h-atr">id=</span><span class="h-str">"{{field.field_name|lower}}"</span> <span class="h-atr">class=</span><span class="h-str">&quot;form__input&quot;</span> <span class="h-atr">name=</span><span class="h-str">"{{field.field_name|lower}}"</span><span class="h-tag">&gt;</span>{% elif field.field_type == "DATE" %}
-            <span class="h-tag">&lt;input</span> <span class="h-atr">type=</span><span class="h-str">"date"</span> <span class="h-atr">id=</span><span class="h-str">"{{field.field_name|lower}}"</span> <span class="h-atr">class=</span><span class="h-str">&quot;form__input&quot;</span> <span class="h-atr">name=</span><span class="h-str">"{{field.field_name|lower}}"</span><span class="h-tag">&gt;</span>{% elif field.field_type == "BOOLEAN" %}
-            <span class="h-tag">&lt;input</span> <span class="h-atr">type=</span><span class="h-str">"checkbox"</span> <span class="h-atr">id=</span><span class="h-str">"{{field.field_name|lower}}"</span> <span class="h-atr">class=</span><span class="h-str">&quot;form__input&quot;</span> <span class="h-atr">name=</span><span class="h-str">"{{field.field_name|lower}}"</span><span class="h-tag">&gt;</span>{% else %}
-            <span class="h-tag">&lt;input</span> <span class="h-atr">type=</span><span class="h-str">"text"</span> <span class="h-atr">id=</span><span class="h-str">"{{field.field_name|lower}}"</span> <span class="h-atr">class=</span><span class="h-str">&quot;form__input&quot;</span> <span class="h-atr">name=</span><span class="h-str">"{{field.field_name|lower}}"</span><span class="h-tag">&gt;</span>{% endif %}
-        <span class="h-tag">&lt;/div&gt;</span>{% endfor %}
-        <span class="h-tag">&lt;div</span> <span class="h-atr">class=</span><span class="h-str">&quot;send-btn&quot;</span><span class="h-tag">&gt;</span>
-            <span class="h-tag">&lt;button</span> <span class="h-atr">class=</span><span class="h-str">&quot;btn&quot;</span> <span class="h-atr">type=</span><span class="h-str">&quot;submit&quot;</span><span class="h-tag">&gt;</span>Отправить<span class="h-tag">&lt;/button&gt;</span>
-        <span class="h-tag">&lt;/div&gt;</span>
-    <span class="h-tag">&lt;/form&gt;</span>
-<span class="h-tag">&lt;/div&gt;</span>
-</code>
-</pre>""")
-        code = template.render(temp_name=temp_name, fields=fields)
-        js_code = js_template.render(fields=fields, template_id=template_id)
+        domain = settings.SITE_URL
+        service = CodeRenderService()
+        code = service.get_html_code(temp_name=temp_name, fields=fields)
+        js_code = service.get_js_code(fields=fields, template_id=template_id, domain=domain)
 
         data = {
             "code": code,
@@ -153,16 +129,24 @@ form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async<
 
 class TemplatesView(APIView):
     permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication, )
 
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, format=None):
         data = TemplateForm.objects.filter(author=self.request.user)
         serializer = TemplatesSerializer(data, many=True)
         return Response(serializer.data)
 
+    @extend_schema(
+        exclude=True
+    )
     def post(self, request, format=None):
         serializer = TemplatesSerializer(data=request.data)
+        # print(request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            serializer.save(author=self.request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -176,6 +160,9 @@ class TemplateViews(APIView):
         except TemplateForm.DoesNotExist:
             raise Http404
 
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, pk, format=None):
         temp = self.get_object(pk)
         if temp.author != self.request.user:
@@ -184,6 +171,9 @@ class TemplateViews(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        exclude=True
+    )
     def put(self, request, pk, format=None):
         temp = self.get_object(pk)
         if temp.author != self.request.user:
@@ -194,6 +184,9 @@ class TemplateViews(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        exclude=True
+    )
     def delete(self, request, pk, format=None):
         temp = self.get_object(pk)
         if temp.author != self.request.user:
@@ -210,6 +203,9 @@ class TemplatesReadOnlyView(APIView):
         except TemplateForm.DoesNotExist:
             raise Http404
 
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, pk, format=None):
         temp = self.get_object(pk)
         if temp.author != self.request.user:
@@ -220,6 +216,9 @@ class TemplatesReadOnlyView(APIView):
 
 
 class FormsViews(APIView):
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, format=None):
         data = Form.objects.all()
 
@@ -227,6 +226,9 @@ class FormsViews(APIView):
 
         return Response(serializer.data)
 
+    @extend_schema(
+        exclude=True
+    )
     def post(self, request, format=None):
         serializer = FormSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -243,12 +245,18 @@ class FormViews(APIView):
         except Form.DoesNotExist:
             raise Http404
 
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, pk, format=None):
         form = self.get_object(pk)
         serializer = FormSerializer(form, )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        exclude=True
+    )
     def put(self, request, pk, format=None):
         form = self.get_object(pk)
         serializer = FormSerializer(form, data=request.data)
@@ -257,17 +265,34 @@ class FormViews(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        exclude=True
+    )
     def delete(self, request, pk, format=None):
         form = self.get_object(pk)
         form.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 def random_code():
     random.seed()
     return random.randint(1000, 999999999)
 
 
+@extend_schema_view(
+    get=extend_schema(
+        exclude=True
+    ),
+    post=extend_schema(
+        summary='Отправка данных на сервер со стороны клиента',
+        description='Эндпоинт для отправки данных на сервер со стороны клиента.',
+        request=SendDataSerializer,
+        responses={201: None},
+        methods=["POST"],
+    ),
+)
 class SendMessageViews(APIView):
+    permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, )
 
     def get(self, request, format=None):
@@ -285,6 +310,7 @@ class SendMessageViews(APIView):
         if template.author != user:
             return Response(status=status.HTTP_403_FORBIDDEN)
         uid = random_code()
+        print(uid)
         time_add = datetime.datetime.now(datetime.timezone.utc)
         data = (self.request.data).copy()
         data.pop('tempId')
@@ -320,6 +346,9 @@ class SendMessageViews(APIView):
 class TokenView(APIView):
     permission_classes = (IsAuthenticated,)
 
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, format=None):
         user = self.request.user
         try:
@@ -333,6 +362,9 @@ class TokenView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema(
+    exclude=True
+)
 @login_required
 def get_update_token(request):
     user = request.user
@@ -341,6 +373,21 @@ def get_update_token(request):
     t.update(key=new_key)
     return redirect('profile')
 
+
+@extend_schema_view(
+    retrieve=extend_schema(
+        exclude=True
+    ),
+    update=extend_schema(
+        exclude=True
+    ),
+    partial_update=extend_schema(
+        exclude=True
+    ),
+    destroy=extend_schema(
+        exclude=True
+    )
+)
 class FieldDataViewSet(viewsets.ModelViewSet):
     queryset = FieldData.objects.all()
     serializer_class = FieldDataSerializer
@@ -354,13 +401,15 @@ class FieldDataViewSet(viewsets.ModelViewSet):
         return Response(self.serializer_class(delete_fields, many=True).data)
 
 
+@extend_schema(
+    exclude=True
+)
 @api_view(['GET', 'PUT', 'DELETE'])
+@authentication_classes([TokenAuthentication])
 def field_data_delete(request):
-    """
-    Retrieve, update or delete a code snippet.
-    """
+
     try:
-        uid = request.data["uid"]
+        uid = request.data.get("uid")
         fd = FieldData.objects.filter(uid=uid)
     except FieldData.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -369,7 +418,12 @@ def field_data_delete(request):
         fd.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+@extend_schema(
+    exclude=True
+)
 @api_view(['POST'])
+@authentication_classes([TokenAuthentication])
 def change_status_field_data(request):
     try:
         uid = request.data["uid"]
@@ -383,6 +437,10 @@ def change_status_field_data(request):
 
 
 class NotificationUpdatesCurrentTemplate(APIView):
+
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, pk, format=None):
         try:
             temp = TemplateForm.objects.get(id=pk)
@@ -398,14 +456,21 @@ class NotificationUpdatesCurrentTemplate(APIView):
 
 
 class UserEmailView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, format=None):
-        user_mail = User.objects.get(id=self.request.headers["userId"])
-        serializer = UserEmailSerializer(user_mail, )
+        serializer = UserEmailSerializer(self.request.user, )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        exclude=True
+    )
     def patch(self, request):
-        user = User.objects.get(id=self.request.data["userId"])
-        serializer = UserEmailSerializer(user, data=request.data)
+        serializer = UserEmailSerializer(self.request.user, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -413,6 +478,12 @@ class UserEmailView(APIView):
 
 
 class TemplateFormEmailView(APIView):
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, pk, format=None):
         try:
             template = TemplateForm.objects.get(id=pk)
@@ -424,6 +495,9 @@ class TemplateFormEmailView(APIView):
         serializer = EmailAuthorSerializer(template, )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        exclude=True
+    )
     def patch(self, request, pk):
         template = TemplateForm.objects.get(id=pk)
         if template.author != self.request.user:
@@ -437,6 +511,12 @@ class TemplateFormEmailView(APIView):
 
 
 class TemplateFormTelegramView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, pk, format=None):
         try:
             template = TemplateForm.objects.get(id=pk)
@@ -448,6 +528,9 @@ class TemplateFormTelegramView(APIView):
         serializer = TelegramAuthorSerializer(template, )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        exclude=True
+    )
     def patch(self, request, pk):
         template = TemplateForm.objects.get(id=pk)
         if template.author != self.request.user:
@@ -461,6 +544,10 @@ class TemplateFormTelegramView(APIView):
 
 
 class TelegramUserCheckView(APIView):
+
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, pk, format=None):
         template = TemplateForm.objects.get(id=pk)
         if template.author != self.request.user:
@@ -473,6 +560,10 @@ class TelegramUserCheckView(APIView):
 
 
 class NotificationsView(APIView):
+
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, pk, format=None):
         qs = FieldData.objects.filter(template__pk=pk).order_by("uid").order_by("-time_add")
         serializer = FieldDataNotificationsSerializer(qs, many=True)
@@ -482,6 +573,9 @@ class NotificationsView(APIView):
 class TelegramUsersView(APIView):
     authentication_classes = (TokenAuthentication,)
 
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, format=None):
         if self.request.user.is_superuser:
             data = TelegramUser.objects.all()
@@ -489,6 +583,9 @@ class TelegramUsersView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(data={"Error": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
+    @extend_schema(
+        exclude=True
+    )
     def post(self, request, format=None):
         if self.request.user.is_superuser:
             serializer = TelegramUserSerializer(data=request.data)
@@ -508,6 +605,9 @@ class TelegramUserView(APIView):
         except TelegramUser.DoesNotExist:
             raise Http404
 
+    @extend_schema(
+        exclude=True
+    )
     def get(self, request, user_id, format=None):
         if self.request.user.is_superuser:
             tg_user = self.get_object(user_id)
@@ -515,6 +615,9 @@ class TelegramUserView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(data={"Error": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
+    @extend_schema(
+        exclude=True
+    )
     def delete(self, request, user_id, format=None):
         if self.request.user.is_superuser:
             tg_user = self.get_object(user_id)
@@ -522,18 +625,20 @@ class TelegramUserView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(data={"Error": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
-#
-# <div class="{{temp_name}}">
-#     <form action="#" class="form" method="post">{% for field in fields %}
-#         <div class="field-wrapper {{field.field_name | lower}}">
-#             <label for="{{field.field_name|lower}}" class="form__label">{{field.field_name}}</label>{% if field.field_type == "EMAIL" %}
-#             <input type="email" id="{{field.field_name|lower}}" class="form__input" name="{{field.field_name|lower}}">{% elif field.field_type == "DATE" %}
-#             <input type="date" id="{{field.field_name|lower}}" class="form__input" name="{{field.field_name|lower}}">{% elif field.field_type == "BOOLEAN" %}
-#             <input type="checkbox" id="{{field.field_name|lower}}" class="form__input" name="{{field.field_name|lower}}">{% else %}
-#             <input type="text" id="{{field.field_name|lower}}" class="form__input" name="{{field.field_name|lower}}">{% endif %}
-#         </div>{% endfor %}
-#         <div class="send-btn">
-#             <button class="btn" type="submit">Отправить</button>
-#         </div>
-#     </form>
-# </div>
+
+@extend_schema_view(
+    get=extend_schema(
+        summary='Получение своих шаблонов',
+        description='Получение всех своих шаблонов',
+        responses={200: OwnerTemplatesSerializer},
+        methods=["GET"],
+    )
+)
+class OwnerTemplatesAPIView(APIView):
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, format=None):
+        templates = TemplateForm.objects.filter(author=self.request.user)
+        serializer = OwnerTemplatesSerializer(templates, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

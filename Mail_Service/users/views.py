@@ -1,7 +1,7 @@
 import json
 from datetime import date, datetime
 from django.conf import settings
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model, login, authenticate
 from django.core import serializers
 from django.db.models import Count, Q, Sum, F
 from django.db.models.functions import TruncDay
@@ -17,7 +17,12 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.core.mail import send_mail
 from django.shortcuts import redirect
+from drf_spectacular.utils import extend_schema_view, extend_schema
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from api.serializers import LoginSerializer, TokenSerializer
 from services.models import TemplateForm, FieldData
 from .forms import UserRegisterForm, UserLoginForm, SignUpForm, UserEditForm, ProfileEditForm
 from .mixins import UserIsNotAuthenticated
@@ -145,8 +150,8 @@ def get_count_for_status(templates):
     count = len(set(uniq_uid))
     return count
 
-def get_personal_account(request):
 
+def get_personal_account(request):
     try:
         token = Token.objects.get(user=request.user)
     except Token.DoesNotExist:
@@ -154,10 +159,12 @@ def get_personal_account(request):
 
     context = {
         "title": "Личный кабинет",
-        "token": token,
+        "tokenView": token,
+        "tokenJson": mark_safe(json.dumps(token.key)),
     }
 
     return render(request, "users/lk.html", context)
+
 
 def edit_profile(request):
     if request.method == 'POST':
@@ -174,19 +181,6 @@ def edit_profile(request):
                       'users/edit_profile.html',
                       {'user_form': user_form, 'profile_form': profile_form})
 
-
-#
-# qs = (FieldData.objects.filter(template__author=admin)
-#       .annotate(created_day=TruncDay('time_add')).values('created_day')
-#       .annotate(count=Count('uid', distinct=True)))
-
-
-# ПУШКА !!!
-# qs = (FieldData.objects.filter(template__author=admin)
-#     .annotate(created_day=TruncDay('time_add')).values('created_day')
-#     .annotate(read=Count('uid', distinct=True, filter=Q(read_status=True)))
-#     .annotate(unread=Count('uid', distinct=True, filter=Q(read_status=False)))
-#     )
 
 class SignUp(CreateView):
     model = User
@@ -207,27 +201,33 @@ class SignUp(CreateView):
             return redirect('index')
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary='Получение токена авторизации',
+        description='Логинимся и получаем АПИ-токен',
+        request=LoginSerializer,
+        responses={200: TokenSerializer},
+        methods=["POST"],
+    ),
+)
+class LoginAPIView(APIView):
+    authentication_classes = ()
 
-   # uniq_uid = []
-    # received_form_sum = (FieldData.objects.filter(template__author=request.user)
-    #                      .aggregate(Count("uid", distinct=True)).get("uid__count"))
-    # templates = TemplateForm.objects.filter(author=request.user)
-    # read_forms = FieldData.objects.filter(template__author=request.user, read_status=True)
-    # unread_forms = FieldData.objects.filter(template__author=request.user, read_status=False)
-    # notifications_count = get_count(templates)
-    # notifications_read_count = get_count_for_status(read_forms)
-    # notifications_read_count = (FieldData.objects.filter(template__author=request.user, read_status=True)
-    #                             .aggregate(Count("uid", distinct=True)))
-    # notifications_unread_count = get_count_for_status(unread_forms)
-    # notifications_unread_count = (FieldData.objects.filter(template__author=request.user, read_status=False)
-    #                               .aggregate(Count("uid", distinct=True)))
+    def post(self, request, format=None):
+        data = request.data
 
-    # statics = (FieldData.objects.filter(template__author=request.user)
-    #   .annotate(created_day=TruncDay('time_add')).values('created_day')
-    #   .annotate(count=Count('uid', distinct=True)))
-    # qs = (FieldData.objects.filter(template__author=request.user)
-    #     .annotate(created_day=TruncDay('time_add')).values('created_day')
-    #     .annotate(total=Count('uid', distinct=True))
-    #     .annotate(read=Count('uid', distinct=True, filter=Q(read_status=True)))
-    #     .annotate(unread=Count('uid', distinct=True, filter=Q(read_status=False)))
-    #     )
+        email = data.get('email', None)
+        password = data.get('password', None)
+
+        user = authenticate(username=email, password=password)
+
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                token, created = Token.objects.get_or_create(user=user)
+                serializer = TokenSerializer(token, )
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)

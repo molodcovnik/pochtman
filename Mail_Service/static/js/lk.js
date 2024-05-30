@@ -1,10 +1,10 @@
-const baseUrlLk = "http://pochtmen.ru/api";
+const baseUrlLk = window.location.protocol + "//" + window.location.host + "/api";
 const createAPIKeyBtn = document.querySelector('.api__create-api-key-btn');
 const hiddenBtn = document.querySelector('.hidden-api-key');
-const csrfDiv = document.querySelector('.profile-csrf');
-let token = csrfDiv.getAttribute("data-csrf");
+
 const userNameDiv = document.querySelector('.navbar__username');
 let userId = userNameDiv.getAttribute("data-user-id");
+
 
 createAPIKeyBtn.addEventListener('click', () => {
     fetchTokenJSON();

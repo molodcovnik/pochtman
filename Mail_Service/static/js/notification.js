@@ -1,7 +1,6 @@
-const baseUrlNotification = "http://pochtmen.ru/api";
+const baseUrlNotification = window.location.protocol + "//" + window.location.host + "/api";
 const fieldCard = document.querySelector('.field-card');
 const uid = fieldCard.getAttribute('data-uid');
-const csrf = fieldCard.getAttribute('data-csrf');
 const pk = fieldCard.getAttribute('data-id');
 const form = document.querySelector('.form-delete-temp-data');
 
@@ -18,7 +17,7 @@ form.onsubmit = async (e) => {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrf
+            'Authorization' : `Token ${localStorage.getItem("token")}`
         },
         body: JSON.stringify(data),
       });
@@ -34,7 +33,7 @@ async function changeStatus(uid) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrf
+            'Authorization' : `Token ${localStorage.getItem("token")}`
         },
         body: JSON.stringify(data),
       });

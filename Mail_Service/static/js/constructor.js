@@ -1,9 +1,9 @@
-const baseUrlConst = "http://pochtmen.ru/api";
+const baseUrlConst = window.location.protocol + "//" + window.location.host + "/api";
 const createBtn = document.querySelector('.create-form-btn');
 const constructorDiv = document.querySelector('.constructor');
 const constructorResults = document.querySelector('.constructor-results');
-let token = document.querySelector(".constructor__fields-wrapper");
-let csrf = token.getAttribute("data-csrf");
+// let token = document.querySelector(".constructor__fields-wrapper");
+// let csrf = token.getAttribute("data-csrf");
 const codeBlock = document.querySelector('.code-result');
 const jsBlock = document.querySelector('.js-code-content')
 const cssDiv = document.querySelector('.css-result');
@@ -123,10 +123,10 @@ async function fetchFieldsJSON() {
                 return el.dataset.id;
             })
 
-            let authorUser = document.querySelector(".navbar__username");
-            let authorId = authorUser.getAttribute("data-user-id");
+            // let authorUser = document.querySelector(".navbar__username");
+            // let authorId = authorUser.getAttribute("data-user-id");
 
-            createForm(newFormName, fieldsSelected, authorId, csrf);
+            createForm(newFormName, fieldsSelected);
             constructorDiv.remove();
             addSectionResults(newFormName);
             constructorResults.classList.add('show');
@@ -144,7 +144,7 @@ function addSectionResults(formName) {
     document.querySelector('.constructor-results').insertAdjacentHTML("beforeend", `<div class="loader-css margin-top-5rem"><span class="loader"></span></div>`);
 }
 
-async function createForm(formName, fieldsSelected, userId, token){
+async function createForm(formName, fieldsSelected){
     
     try {
         
@@ -152,13 +152,13 @@ async function createForm(formName, fieldsSelected, userId, token){
          method: 'POST',
          headers: {
            'Content-Type': 'application/json',
-           'X-CSRFToken': token
+           'Authorization' : `Token ${localStorage.getItem("token")}`
            },
            body: JSON.stringify({
      // your expected POST request payload goes here
              name: formName.toLowerCase(),
-             fields: fieldsSelected,
-             author: userId
+             fields: fieldsSelected
+            //  author: userId
             })
          });
 
@@ -167,7 +167,7 @@ async function createForm(formName, fieldsSelected, userId, token){
          console.log(data);
         //  let templateId = data.id;
         //  localStorage.setItem("templateId", templateId);
-         let lastTemp =  await getLastTempId(userId);
+         let lastTemp =  await getLastTempId();
          let lastTempData =  await lastTemp.json();
          await fetch(`${baseUrlConst}/last_template/`, {
                 method: 'POST',
@@ -176,7 +176,7 @@ async function createForm(formName, fieldsSelected, userId, token){
                 }),
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrf
+                    'Authorization' : `Token ${localStorage.getItem("token")}`
                 },
                 
             })
@@ -210,12 +210,12 @@ async function createForm(formName, fieldsSelected, userId, token){
          } 
     }
 
-async function getLastTempId(userId) {
+async function getLastTempId() {
     return await fetch(`${baseUrlConst}/last_template`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authentication': userId,
+            'Authorization' : `Token ${localStorage.getItem("token")}`
             }
         });
 };

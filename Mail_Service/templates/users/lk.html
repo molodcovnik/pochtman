@@ -47,7 +47,7 @@
         <p class="api-block__desc margin-top-2rem">Скопируйте ваш уникальный API ключ из поля ниже.</p>
     </div>  
     <div class="api">
-      {% if token %}
+      {% if tokenView %}
       <button class="api__create-api-key-btn save-update-profile margin-top-2rem">Смотреть API-ключ</button>
       <button class="hidden-api-key hidden margin-top-2rem">Скрыть API-ключ</button>
       {% else %}
@@ -61,7 +61,16 @@
 
 
 
-
+{{ tokenJSON|json_script:"tokenJson" }}
 <script src="{% static 'js/lk.js' %}"></script>
 
 {% endblock content %}
+{% block scripts %}
+    <script>
+        var tokenUpdate = {{ tokenJson }};
+
+        document.addEventListener("DOMContentLoaded", (e) => {
+            localStorage.setItem('token', tokenUpdate);
+          })
+    </script>
+{% endblock scripts %}

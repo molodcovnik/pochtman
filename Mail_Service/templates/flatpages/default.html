@@ -33,6 +33,7 @@
                         <div class="dropdown-content">
                             <a href="{% url 'docs' %}">Старт</a>
                             <a href="{% url 'docs_video' %}">Видео-пример</a>
+                            <a href="{% url 'swagger-ui' %}">API Docs</a>
                         </div>
                     </div>
                     {% if request.user.is_authenticated %}
@@ -55,7 +56,7 @@
                                 <p>{% if user.email %}{{ user.email | truncatechars:10}}{% else %}{{user.username | truncatechars:15}}{% endif %}</p>
                             </div>
                             <div class="navbar__user">
-                                <a href="{% url 'profile' %}" class="navbar__username" data-user-id="{{ request.user.id }}">
+                                <a href="{% url 'profile' %}" class="navbar__username">
                                     {% if request.user.first_name and request.user.last_name %}
                                     <img src="https://ui-avatars.com/api/?name={{request.user.first_name}}+{{request.user.last_name}}&background=0e1015&color=2E8ED9&font-size=0.4&bold=true&rounded=true" alt="User image" title="Перейти в профиль" style="border: #6DCCF8 3px solid;border-radius:50%;"></a>
                                     {% else %}
@@ -87,7 +88,7 @@
                         </div>
                     {% else %}
                     <div class="navbar__nonauth">
-                        <a class="login-link navbar__username" data-user-id="0" href="{% url 'account_login' %}">Войти</a>
+                        <a class="login-link navbar__username" href="{% url 'account_login' %}">Войти</a>
                         <a class="register-link" href="{% url 'signup' %}">Регистрация</a>
                     </div>
                     <div class="navigation-menu">
@@ -123,9 +124,16 @@
                 <p>&#169; Почтмен 2024. Все права защищены.</p>
             </div>
         </footer>
+
     </div>
+    {{ tokenINDEX|json_script:"tokenIndex" }}
     <script src="{% static 'js/index.js' %}"></script>
+    <script>
+        var tokenAPI = {{ tokenIndex }};
+        localStorage.setItem('token', tokenAPI);
+    </script>
     {% block scripts %}
+
     {% endblock scripts %}
 </body>
 </html>

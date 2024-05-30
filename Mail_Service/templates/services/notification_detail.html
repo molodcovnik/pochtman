@@ -12,7 +12,7 @@
 </div>
 
 {% if fields %}
-    <div class="field-card" data-uid="{{request.resolver_match.kwargs.uid}}" data-csrf="{{csrf_token}}" data-id="{{request.resolver_match.kwargs.pk}}">
+    <div class="field-card" data-uid="{{request.resolver_match.kwargs.uid}}" data-id="{{request.resolver_match.kwargs.pk}}">
         <table class="field-card-table">
             {% for field in fields %}
             

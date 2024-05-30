@@ -1,11 +1,10 @@
-const baseUrlNotifications = "http://pochtmen.ru/api";
-const domain = "http://127.0.0.1:8000";
+const baseUrlNotifications = window.location.protocol + "//" + window.location.host + "/api";
+const domain = window.location.protocol + "//" + window.location.host;
 let gridCells = document.getElementById('table-results');
 let url = window.location.pathname;
 let url_array = url.split('/') // Split the string into an array with / as separator
 let pk_temp = url_array[url_array.length-3];
-let hiddenToken = document.querySelector('.csrf_token');
-let csrf = hiddenToken.getAttribute('data-csrf');
+
 
 gridCells.addEventListener('dblclick', (e) => {
     // let parent = e.target.parentNode;
@@ -110,7 +109,7 @@ document.querySelector('.view-checks').addEventListener('click', (e) => {
 });
 
 async function deleteNotification(uid) {
-    console.log(sessionStorage.getItem("csrftoken"));
+
     const data = {
         "uid": uid,
     };
@@ -118,7 +117,7 @@ async function deleteNotification(uid) {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrf
+                'Authorization' : `Token ${localStorage.getItem("token")}`
             },
             body: JSON.stringify(data),
         });

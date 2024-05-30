@@ -1,5 +1,5 @@
 const tempIds = document.querySelectorAll('div[data-tempid]');
-const baseUrlTemps = "http://pochtmen.ru/api";
+const baseUrlTemps = window.location.protocol + "//" + window.location.host + "/api";
 
 let templatesAll = [].map.call(tempIds, async function(el) {
     let tempFetch = await getNotifications(el.dataset.tempid);

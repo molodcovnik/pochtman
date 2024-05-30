@@ -83,7 +83,7 @@ class TemplatesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TemplateForm
-        fields = ("id", "name", "fields", "author", )
+        fields = ("id", "name", "fields", )
 
 
 class TemplatesFieldsSerializer(serializers.ModelSerializer):
@@ -127,3 +127,27 @@ class FieldDataNotificationsSerializer(serializers.ModelSerializer):
 class NotifySerializerSerializer(serializers.Serializer):
     read_status = serializers.BooleanField()
     total = serializers.IntegerField()
+
+
+class SendDataSerializer(serializers.Serializer):
+    tempId = serializers.IntegerField()
+    field_name = serializers.CharField()
+    field_name_second = serializers.CharField()
+    field_name_third = serializers.CharField()
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+
+class OwnerTemplatesSerializer(serializers.ModelSerializer):
+    fields = FieldSerializer(many=True)
+
+    class Meta:
+        model = TemplateForm
+        fields = ['id', 'name', 'fields', ]
+
+
+class NotificationSerializer(serializers.Serializer):
+    count = serializers.IntegerField()

@@ -1,4 +1,4 @@
-const baseUrlIndex = "http://pochtmen.ru/api";
+const baseUrlIndex = window.location.protocol + "//" + window.location.host + "/api";
 const integrationDiv = document.querySelector(".composition__item_simple-integration");
 const notificationsDiv = document.querySelector(".composition__item_real-time-notifications");
 const staticDiv = document.querySelector(".composition__item_static");
@@ -7,12 +7,11 @@ const telegramDiv = document.querySelector(".composition__item_tg");
 const aboutPochtmen = document.querySelector(".about-pochtman-link");
 let authorUser = document.querySelector(".navbar__username");
 let authorId = authorUser.getAttribute("data-user-id");
-
 // getNotifications(authorId);
 // запрос на новые уведомления
 
 let timeId = setTimeout(function notificationUpdates() {
-    getNotifications(authorId);
+    getNotifications();
     timeId = setTimeout(notificationUpdates, 15000);
 }, 1000);
 
@@ -217,12 +216,13 @@ function moveBasedOnMouse(e) {
   carouselContent.removeEventListener('mousemove', slightMove);
 }
 
-async function getNotifications(userId) {
+async function getNotifications() {
+    // console.log(localStorage.getItem("token"));
     let response = await fetch(`${baseUrlIndex}/notifications/count`, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
-          'Authentication': userId,
+          'Authorization' : `Token ${localStorage.getItem("token")}`
           }
       });
       let result = await response.json();

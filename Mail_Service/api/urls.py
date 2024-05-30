@@ -3,15 +3,18 @@ from api.views import FormsViews, FormViews, FieldsViews, TemplatesView, Templat
     SendMessageViews, TokenView, field_data_delete, change_status_field_data, NotificationUpdates, \
     NotificationUpdatesCurrentTemplate, UserEmailView, TemplateFormEmailView, TemplateFormTelegramView, \
     NotificationsView, TemplatesReadOnlyView, get_update_token, TelegramUsersView, TelegramUserView, \
-    TelegramUserCheckView
+    TelegramUserCheckView, OwnerTemplatesAPIView
+from users.views import LoginAPIView
 
 urlpatterns = [
+    path('login/', LoginAPIView.as_view()),
     path('users_email/', UserEmailView.as_view()),
     path('forms/', FormsViews.as_view()),
     path('form/<int:pk>/', FormViews.as_view()),
     path('fields/', FieldsViews.as_view()),
     path('fields/<int:pk>/', FieldViews.as_view()),
     path('templates/', TemplatesView.as_view()),
+    path('own_templates/', OwnerTemplatesAPIView.as_view()),
     path('last_template/', LastTemplateView.as_view()),
     path('templates/<int:pk>/', TemplateViews.as_view()),
     path('templates/<int:pk>/fields/', TemplatesReadOnlyView.as_view()),

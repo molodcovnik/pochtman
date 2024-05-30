@@ -19,8 +19,18 @@
                        value="{{ redirect_field_value }}" />
             {% endif %}
             <div class="wrapper-btn-auth center margin-top-2rem">
-                <button type="submit" class="navigation__btn">Выйти</button>
+                <button type="submit" class="navigation__btn quit_btn_allauth">Выйти</button>
             </div>
     </form>
     
 {% endblock content %}
+
+{% block scripts %}
+    <script>
+        const quitBtn = document.querySelector('.quit_btn_allauth');
+
+        quitBtn.addEventListener('click', (e) => {
+            localStorage.removeItem('token');
+        });
+    </script>
+{% endblock scripts %}
