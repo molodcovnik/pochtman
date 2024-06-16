@@ -5,6 +5,8 @@ import datetime
 from django.db.models.functions import TruncMonth, TruncDay
 from django.urls import reverse
 
+from services.utils import encrypt_pk
+
 
 class Form(models.Model):
     name = models.CharField(max_length=64)
@@ -43,7 +45,6 @@ class Field(models.Model):
                                   default=FormTypeEnum.TEXT,
                                   max_length=10)
 
-
     def __str__(self):
         return f'{self.field_name} {self.field_type}'
 
@@ -59,6 +60,9 @@ class TemplateForm(models.Model):
 
     def __str__(self):
         return f'{self.name} {self.fields} {self.author} {self.telegram_author} {self.email_author} {self.check_ip_address} {self.ip_address}'
+
+    def get_encrypted_pk(self):
+        return encrypt_pk(self.pk)
 
     def get_absolute_url(self):
         return reverse('template_detail', args=[str(self.id)])

@@ -1,6 +1,8 @@
 import datetime
 import json
 import random
+
+from cryptography.fernet import InvalidToken
 from django.conf import settings
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from django.contrib.auth.decorators import login_required
@@ -29,7 +31,9 @@ from api.serializers import FormSerializer, FieldSerializer, TemplatesSerializer
     TelegramAuthorSerializer, FieldDataNotificationsSerializer, TemplatesFieldsSerializer, TelegramUserSerializer, \
     CheckTelegramSerializer, SendDataSerializer, OwnerTemplatesSerializer, NotificationSerializer
 from api.utilites.code_renderer import CodeRenderService
+from callback.models import CallbackDetail
 from services.models import Form, Field, TemplateForm, FieldData
+from services.utils import decrypt_pk
 
 
 class FieldsViews(APIView):
@@ -112,13 +116,14 @@ class LastTemplateView(APIView):
     def post(self, request):
         template_id = self.request.data.get("templateId")
         temp = TemplateForm.objects.get(id=template_id)
+        temp_id = temp.get_encrypted_pk()
         t_name = temp.name
         temp_name = t_name.replace(" ", "_")
         fields = temp.fields.all()
         domain = settings.SITE_URL
         service = CodeRenderService()
         code = service.get_html_code(temp_name=temp_name, fields=fields)
-        js_code = service.get_js_code(fields=fields, template_id=template_id, domain=domain)
+        js_code = service.get_js_code(fields=fields, template_id=temp_id, domain=domain)
 
         data = {
             "code": code,
@@ -301,14 +306,20 @@ def get_ip_address(request):
     ),
 )
 class SendMessageViews(APIView):
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, )
+    # permission_classes = (IsAuthenticated, )
+    # authentication_classes = (TokenAuthentication, )
 
     def get(self, request, format=None):
         return Response(status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
-        temp_id = self.request.data.get("tempId")
+        tmp_id = self.request.data.get("tempId")
+        # temp_id = self.request.data.get("tempId")
+        try:
+            temp_id = decrypt_pk(tmp_id)
+            print(temp_id)
+        except (ValueError, TypeError) as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         template = get_object_or_404(TemplateForm, id=temp_id)
         checked_ip = template.check_ip_address
         if checked_ip:
@@ -317,17 +328,18 @@ class SendMessageViews(APIView):
                 return Response(data={"Error": "Not Acceptable",
                                       "Detail": "IP-address not valid"},
                                 status=status.HTTP_406_NOT_ACCEPTABLE)
-        try:
-            user_id = self.request.user.id
-            user = User.objects.get(id=user_id)
-        except:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-        if template.author != user:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        # try:
+        #     user_id = self.request.user.id
+        #     user = User.objects.get(id=user_id)
+        # except:
+        #     return Response(status=status.HTTP_401_UNAUTHORIZED)
+        #
+        # if template.author != user:
+        #     return Response(status=status.HTTP_403_FORBIDDEN)
         uid = random_code()
         print(uid)
-
+        callback_instance, created = CallbackDetail.objects.get_or_create(uid=uid)
+        callback_instance.save()
         time_add = datetime.datetime.now(datetime.timezone.utc)
         data = (self.request.data).copy()
         data.pop('tempId')

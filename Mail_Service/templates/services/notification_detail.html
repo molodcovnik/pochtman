@@ -13,26 +13,68 @@
 
 {% if fields %}
     <div class="field-card" data-uid="{{request.resolver_match.kwargs.uid}}" data-id="{{request.resolver_match.kwargs.pk}}">
-        <table class="field-card-table">
-            {% for field in fields %}
-            
-                <tr class="field-card-table__row">
-                    <td class="field-card-table__cell field-card-table__cell_type-field">{{field.field.field_name | truncatechars:15}}:</td>
-                    <td class="field-card-table__cell field-card-table__cell_data">{% if field.data == "True" %}Да{% elif field.data == "False" %}Нет{%else%}{{field.data}}{% endif %}</td>
-                </tr>
-            {% endfor %}
-        </table>
-        <div class="wrapper-time center ">
-            <p><span class="wrapper-time__text">Время получения:</span> <span class="wrapper-time__time">{{time_obj.time_add | date:'H:i d.m.Y'}}</span></p>
+        <div class="form-delete-wrapper">
+            <form action="" method="POST" class="form-delete-temp-data">
+                {% csrf_token %}
+                <div class="wrapper-btn center">
+                    <button type="submit" class="navigation__btn navigation__btn_red">Удалить</button>
+                </div>
+            </form>
         </div>
-        <form action="" method="POST" class="form-delete-temp-data padding-top-5rem">
-            {% csrf_token %}
-            <div class="wrapper-btn center">
-                <button type="submit" class="navigation__btn navigation__btn_red">Удалить</button>
+        <div class="field-card__wrapper">
+            <table class="field-card-table">
+                {% for field in fields %}
+                
+                    <tr class="field-card-table__row">
+                        <td class="field-card-table__cell field-card-table__cell_type-field">{{field.field.field_name | truncatechars:15}}:</td>
+                        <td class="field-card-table__cell field-card-table__cell_data">{% if field.data == "True" %}Да{% elif field.data == "False" %}Нет{%else%}{{field.data}}{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <div class="wrapper-time center ">
+                <p><span class="wrapper-time__text">Время получения:</span> <span class="wrapper-time__time">{{time_obj.time_add | date:'H:i d.m.Y'}}</span></p>
             </div>
-        </form>
+        </div>
+        <div class="field-card__work-status">
+            <div class="dropdown-status-wrapper">
+                <div class="dropdown-btn">
+                    <div class="dropdown-btn__active">{{ callback_result_status.get_status_display }}</div>                    
+                    <span><i class="fa-solid fa-caret-down"></i></span>
+                </div>
+
+                <div class="dropdown-status__menu">
+                    {% for status in result_statuses %}
+                    <div class="dropdown-status__item {{status.value | lower}}" data-result-status="{{status.value | lower}}">
+                        {{ status.label }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
     </div>
-    
+    <div class="form-froala-inner">
+        {% if comments %}
+            <div class="froala__comments">
+            {% for comment in comments %}
+                <div class="froala__comment margin-top-5rem">
+                    {{ comment.text | safe }}
+                </div>
+                <div class="arrow arrow-bottom"></div>
+            {% endfor %}
+            </div>
+        {% else %}
+        {% endif %}
+        <div class="form-froala">
+            <form action="" id="add_comment" class="form-froala__form" method="post">
+                {%csrf_token%}
+                {{form}}
+            </form>
+        </div>
+        <div class="add-comment-btn center padding-bottom-5rem">
+            <button form="add_comment" type="submit" class="save-update-profile margin-top-2rem">Добавить комментарий</button>
+        </div>
+    </div>
 {% else %}
 
 <h1>No data</h1>

@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'users',
     'api',
     'services',
+    'callback',
+    'froala_editor',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -116,6 +118,13 @@ DATABASES = {
     }
 }
 
+FROALA_EDITOR_PLUGINS = (
+    'align', 'char_counter', 'code_beautifier', 'code_view', 'colors', 'draggable', 'emoticons',
+    'entities', 'font_family', 'font_size', 'fullscreen', 'image_manager', 'inline_style',
+    'line_breaker', 'link', 'lists', 'paragraph_format', 'paragraph_style', 'quick_insert', 'quote', 'save', 'table',
+    'url',)
+
+
 REST_FRAMEWORK = {
     # YOUR SETTINGS
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -130,6 +139,8 @@ SPECTACULAR_SETTINGS = {
     'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
     'REDOC_DIST': 'SIDECAR',
 }
+
+FERNET_KEY = os.getenv('FERNET_KEY')
 
 # CELERY & Redis
 

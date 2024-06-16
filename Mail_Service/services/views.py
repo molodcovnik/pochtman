@@ -14,12 +14,17 @@ from django.views import View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import FormMixin
 from jinja2 import Template
 from rest_framework.authtoken.models import Token
+
+from callback.forms import CommentCallbackForm
+from callback.models import CallbackDetail, ResultTypeEnum, CallbackStatusEnum
 from users.views import json_serial
 from .forms import CommentForm, TemplatesForm
 from .models import Comment, Field, TemplateForm, FieldData
 from dataclasses import dataclass
+from callback.models import Comment as CommentCallback
 
 
 def index(request):
@@ -164,9 +169,20 @@ class NotificationListPerson(ListView):
         return context
 
 
-class NotificationDetail(View):
+class NotificationDetail(FormMixin, View):
+    form_class = CommentCallbackForm
+
+    def get_success_url(self):
+        return reverse_lazy("notification_detail", kwargs={"pk": self.kwargs.get('pk'), "uid": self.kwargs.get('uid')})
+
     def get(self, request, **kwargs):
+        form = self.form_class()
         uid = kwargs["uid"]
+        callback_result_status = CallbackDetail.objects.get(uid=uid)
+
+        # results_status = ResultTypeEnum.labels
+        cd, created = CallbackDetail.objects.get_or_create(uid=self.kwargs.get('uid'))
+        comments = cd.comments.all()
         qs = FieldData.objects.filter(uid=uid)
         last_obj = FieldData.objects.filter(uid=uid).last()
         if last_obj.template.author != self.request.user:
@@ -174,9 +190,31 @@ class NotificationDetail(View):
         context = {
             "fields": qs,
             "uid": uid,
-            "time_obj": last_obj
+            "time_obj": last_obj,
+            "form": form,
+            "comments": comments,
+            "result_statuses": CallbackStatusEnum,
+            "callback_result_status": callback_result_status,
         }
         return render(request, "services/notification_detail.html", context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user
+        self.object.time_add = timezone.now()
+        self.object.save()
+        # comment = CommentCallback.objects.get(id=self.object.id)
+        callback_detail, created = CallbackDetail.objects.get_or_create(uid=self.kwargs.get("uid"))
+        callback_detail.comments.add(self.object)
+        callback_detail.save()
+        return super().form_valid(form)
 
 
 def delete_template_data(request, uid):

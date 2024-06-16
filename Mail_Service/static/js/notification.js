@@ -41,3 +41,37 @@ async function changeStatus(uid) {
     console.log(result.status);
 
 }
+
+
+const dropDownBtn = document.querySelector('.dropdown-btn');
+const dropDownMenu = document.querySelector('.dropdown-status__menu');
+const dropItems = document.querySelectorAll('.dropdown-status__item');
+const selectedItem = document.querySelector('.dropdown-btn__active');
+
+window.addEventListener('click', function() {
+    closeMenu();
+});
+
+dropDownBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMenu();
+});
+
+dropItems.forEach(item => item.addEventListener('click', itemClickHandler));
+
+function toggleMenu() {
+    dropDownMenu.classList.toggle('dropdown-status__menu_open');
+}
+
+function closeMenu() {
+    dropDownMenu.classList.remove('dropdown-status__menu_open');
+}
+
+function itemClickHandler(e) {
+    e.stopPropagation();
+    selectedItem.innerText = e.target.innerText;
+    // dropItems.forEach(item => item.classList.remove('dropdown-status__item_active'));
+    // e.target.classList.add('dropdown-status__item_active');
+    // добавить функцию на пут запрос по юид на смену статуса
+    closeMenu();
+}

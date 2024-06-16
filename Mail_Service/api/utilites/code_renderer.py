@@ -40,7 +40,7 @@ form.<span class="js-function">onsubmit</span> = <span class="js-keyword">async<
     <span class="js-keyword">const</span> {{field.field_name|lower}} = document.<span class="js-function">querySelector</span>(<span class="js-body-str">'#{{field.field_name|lower}}'</span>).value;{% endif %}{% endfor %}
 
     <span class="js-keyword">const</span> data = {
-        <span class="js-body-str">"tempId"</span>: <span>{{template_id}}</span>, <span class="js-body-com">// "tempId": 123,</span>{% for field in fields %}
+        <span class="js-body-str">"tempId"</span>: <span class="js-body-str">'{{template_id}}'</span>, <span class="js-body-com">// "tempId": 123,</span>{% for field in fields %}
         <span class="js-body-str">"{{field.field_name|lower}}"</span>: {{field.field_name|lower}},{% endfor %}
     };
 

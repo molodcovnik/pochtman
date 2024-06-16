@@ -8,3 +8,13 @@
 .edit-profile input {
     margin-bottom: 2rem;
 }
+
+.form-froala {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.form-froala__form {
+    width: 50%;
+}
