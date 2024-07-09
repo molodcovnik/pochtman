@@ -35,6 +35,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('', include('services.urls')),
+    path('', include('callback.urls')),
     path('', include(swagger_urls)),
     path('froala_editor/', include('froala_editor.urls')),
     path('users/', include('users.urls')),
