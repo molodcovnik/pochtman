@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -31,6 +32,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['*', 'localhost']
 
 
+DJANGO_SERVER = 'runserver' in sys.argv
+TEST_MODE = 'test' in sys.argv
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,6 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
     'users',
     'api',
     'services',
@@ -54,8 +60,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
     "corsheaders",
-    'drf_spectacular',
-    'drf_spectacular_sidecar',
     # "debug_toolbar",
 
 ]
@@ -109,11 +113,22 @@ AUTHENTICATION_BACKENDS = [
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'pochtman',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'db_pochtman',
+        'PORT': '5432',
+    },
 }
 
 REST_FRAMEWORK = {
@@ -224,7 +239,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -240,8 +255,12 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
+STATIC_URL = '/static/'
+STATIC_ROOT = "/vol/static/"
+
+
 STATICFILES_DIRS = [
-    BASE_DIR / "static"
+    BASE_DIR / 'static',
 ]
 
 MEDIA_URL = '/media/'
