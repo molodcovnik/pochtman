@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pochtman"
-version = "0.0.3"
+version = "0.1.0"
 description = ""
 authors = ["molodcovnik <molodcov-nikolayy@yandex.ru>"]
 readme = "README.md"
