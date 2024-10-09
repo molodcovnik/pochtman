@@ -1,0 +1,28 @@
+name: Django Testing
+
+on: [pull_request, push]
+
+jobs:
+  run-tests:
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      - name: Set env variable
+        run: echo "CI_ENVIRONMENT=true" >> $GITHUB_ENV
+      - uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install poetry
+          poetry install
+      - name: Run Tests
+        env:
+          DJANGO_SETTINGS_MODULE: core.settings
+        run: |
+          cd Mail_Service
+          poetry run python3 manage.py migrate
+          poetry run python3 manage.py test

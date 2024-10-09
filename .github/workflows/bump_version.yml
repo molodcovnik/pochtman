@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - "develop"
+      - "dev"
+      - "actions"
+
+jobs:
+  bump_version:
+    runs-on: ubuntu-latest
+    name: Bump version
+    steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install python packages
+        run: |
+          pip install poetry
+          pip install invoke
+          pip install tomli
+          poetry install
+
+      - name: Bump patch version
+        if: ${{ contains(github.event.head_commit.message, 'fix:') || contains(github.event.head_commit.message, 'patch:') }}
+        run: |
+          poetry version patch
+      - name: Bump minor version
+        if: ${{ contains(github.event.head_commit.message, 'feat:')  || contains(github.event.head_commit.message, 'minor:')  }}
+
+        run: |
+          poetry version minor
+      - name: Bump major version
+        if: ${{ contains(github.event.head_commit.message, 'breaking:') }}
+        run: |
+          poetry version major
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: "Bump version"
