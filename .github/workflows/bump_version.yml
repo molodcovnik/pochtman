@@ -1,11 +1,10 @@
-name: Build
+name: Bump version
 
 on:
   push:
     branches:
       - "develop"
       - "dev"
-      - "actions"
 
 jobs:
   bump_version:
