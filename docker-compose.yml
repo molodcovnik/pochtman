@@ -38,6 +38,7 @@ services:
       DJANGO_SETTINGS_MODULE: core.settings
       DATABASE_URL: postgres://postgres:postgres@db_pochtman:5432/pochtman
       REDIS_URL: redis://redis_pochtman:6379/0
+      FERNET_KEY: ${FERNET_KEY}
 
   nginx_pochtman:
     image: nginx:latest

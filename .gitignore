@@ -10,7 +10,7 @@ __pycache__/
 local_settings.py
 .DS_Store
 # dotenv
-Mail_Service/.env
+.env
 
 # virtualenv
 .venv

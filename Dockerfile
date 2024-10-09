@@ -5,8 +5,12 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /code
 
-COPY requirements.txt /code/
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install poetry
+
+COPY poetry.lock pyproject.toml /code/
+RUN poetry export --without-hashes -f requirements.txt --output ./requirements.txt
+RUN pip install -r ./requirements.txt
 RUN pip install gunicorn
 
 COPY . /code/
