@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
     "corsheaders",
+    'django_extensions',
     # "debug_toolbar",
 
 ]
@@ -113,23 +114,25 @@ AUTHENTICATION_BACKENDS = [
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+if ('test' in sys.argv or 'migrate' in sys.argv) and os.getenv('CI_ENVIRONMENT') == 'true':
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pochtman',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db_pochtman',
-        'PORT': '5432',
-    },
-}
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'pochtman',
+            'USER': 'postgres',
+            'PASSWORD': 'postgres',
+            'HOST': 'db_pochtman',
+            'PORT': '5432',
+        },
+    }
 
 REST_FRAMEWORK = {
     # YOUR SETTINGS
@@ -148,8 +151,8 @@ SPECTACULAR_SETTINGS = {
 
 # CELERY & Redis
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', default='redis://localhost:6379')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', default='redis://localhost:6379')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -204,10 +207,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # email smtp
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_BACKEND = 'services.backends.email_backend.EmailBackend'
-EMAIL_HOST = 'smtp.mail.ru'
-EMAIL_PORT = 465
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = False

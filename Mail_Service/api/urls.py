@@ -11,7 +11,7 @@ urlpatterns = [
     path('users_email/', UserEmailView.as_view()),
     path('forms/', FormsViews.as_view()),
     path('form/<int:pk>/', FormViews.as_view()),
-    path('fields/', FieldsViews.as_view()),
+    path('fields/', FieldsViews.as_view(), name='fields'),
     path('fields/<int:pk>/', FieldViews.as_view()),
     path('templates/', TemplatesView.as_view()),
     path('own_templates/', OwnerTemplatesAPIView.as_view()),

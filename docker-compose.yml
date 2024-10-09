@@ -39,6 +39,48 @@ services:
       DATABASE_URL: postgres://postgres:postgres@db_pochtman:5432/pochtman
       REDIS_URL: redis://redis_pochtman:6379/0
       FERNET_KEY: ${FERNET_KEY}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL}
+      EMAIL_BACKEND: ${EMAIL_BACKEND}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
+
+  celery-worker_pochtman:
+    build:
+      context: .
+    container_name: celery-worker_pochtman
+    entrypoint: celery
+    command: -A core worker --loglevel=info
+    depends_on:
+      - redis_pochtman
+    restart: on-failure
+    working_dir: /code/Mail_Service/
+
+  celery-beat_pochtman:
+    build:
+      context: .
+    container_name: celery-beat_pochtman
+    entrypoint: celery
+    command: -A core beat --loglevel=info
+    depends_on:
+      - redis_pochtman
+    restart: on-failure
+    working_dir: /code/Mail_Service/
+
+  flower_pochtman:
+    image: mher/flower
+    container_name: flower_pochtman
+    command: celery flower --broker=redis://redis_pochtman:6379/0 --port=5555
+    environment:
+      - CELERY_BROKER_URL=redis://redis_pochtman:6379/0
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis_pochtman
+    restart: always
 
   nginx_pochtman:
     image: nginx:latest
