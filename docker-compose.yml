@@ -84,7 +84,6 @@ services:
     restart: always
 
   nginx_pochtman:
-    image: nginx:latest
     build:
       context: ./proxy
     restart: always
