@@ -48,6 +48,7 @@ jobs:
           EMAIL_BACKEND: ${{ secrets.EMAIL_BACKEND }}
           DEFAULT_FROM_EMAIL: ${{ secrets.DEFAULT_FROM_EMAIL }}
           FERNET_KEY: ${{ secrets.FERNET_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
   deploy:
       runs-on: ubuntu-latest
@@ -75,5 +76,6 @@ jobs:
             EMAIL_BACKEND: ${{ secrets.EMAIL_BACKEND }}
             DEFAULT_FROM_EMAIL: ${{ secrets.DEFAULT_FROM_EMAIL }}
             FERNET_KEY: ${{ secrets.FERNET_KEY }}
+            SECRET_KEY: ${{ secrets.SECRET_KEY }}
           run: |
             ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_USER }}@${{ secrets.HOST_IP }} "cd pochtman/ && docker pull ${{ secrets.DOCKER_USERNAME}}/${{ secrets.DOCKER_REPO}}:latest && docker-compose up -d"
