@@ -21,4 +21,4 @@ jobs:
 
         - name: Pull latest code and restart Docker
           run: |
-            ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_USER }}@${{ secrets.HOST_IP }} "cd pochtman/ && git pull && docker-compose down && docker-compose up -d --build"
+            ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_USER }}@${{ secrets.HOST_IP }} "cd pochtman/ && docker-compose down && git checkout main && git pull origin main && docker-compose up -d --build"
