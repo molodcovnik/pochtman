@@ -23,6 +23,8 @@ services:
       - "6379:6379"
 
   web_pochtman:
+    env_file:
+      - .env
     build:
       context: .
     restart: always

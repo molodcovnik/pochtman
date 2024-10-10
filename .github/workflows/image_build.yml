@@ -34,8 +34,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker-compose build
-          docker-compose push
+          docker build -t molodcov/pochtman:latest .
+          docker push molodcov/pochtman:latest
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -56,5 +56,15 @@ jobs:
             ssh-keyscan -H ${{ secrets.HOST_IP }} >> ~/.ssh/known_hosts
 
         - name: Deploy to server
+          env:
+            CELERY_BROKER_URL: ${{ secrets.CELERY_BROKER_URL }}
+            CELERY_RESULT_BACKEND: ${{ secrets.CELERY_RESULT_BACKEND }}
+            EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+            EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+            EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+            EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+            EMAIL_BACKEND: ${{ secrets.EMAIL_BACKEND }}
+            DEFAULT_FROM_EMAIL: ${{ secrets.DEFAULT_FROM_EMAIL }}
+            FERNET_KEY: ${{ secrets.FERNET_KEY }}
           run: |
             ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_USER }}@${{ secrets.HOST_IP }} "cd pochtman/ && docker pull ${{ secrets.DOCKER_USERNAME}}/${{ secrets.DOCKER_REPO}}:latest && docker-compose up -d"
