@@ -1,5 +1,6 @@
 server {
     listen ${LISTEN_PORT};
+    server_name pochtmen.ru;
 
     location /static/ {
         alias /vol/static/;
